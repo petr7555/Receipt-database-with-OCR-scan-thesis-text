@@ -4,7 +4,7 @@
   location  = {Boston, MA},
   publisher = {Springer US},
   url       = {https://doi.org/10.1007/978-1-4419-5906-5_772},
-  booktitle = {Encyclopedia of Cryptography and Security},
+  title = {Encyclopedia of Cryptography and Security},
   date      = {2011},
   doi       = {10.1007/978-1-4419-5906-5_772},
   isbn      = {978-1-4419-5906-5},
@@ -17,6 +17,7 @@
   location  = {New York, NY},
   publisher = {Apress},
   chapter   = {2, Building Xamarin.Forms Apps Using XAML},
+  year      = {c2019},
   doi       = {10.1007/978-1-4842-4030-4},
   isbn      = {978-1-4842-4030-4},
   pages     = {43--44},
@@ -39,7 +40,7 @@
   location  = {Norwood, Massachusetts, United States},
   publisher = {Artech House},
   chapter   = {6, Black-box testing methods for software components},
-  date      = {c2003},
+  year      = {c2003},
   isbn      = {978-1-5805-3480-2},
   title     = {Testing and Quality Assurance for Component-Based Software},
 }
@@ -112,9 +113,9 @@
   institution = {University of Passau, Faculty of Computer Science and Mathematics},
   location    = {Passau, Germany},
   url         = {https://www.fim.uni-passau.de/fileadmin/dokumente/fakultaeten/fim/lehrstuhl/sauer/geyer/BA_MA_Arbeiten/BA-ZiegausMarco-201607.pdf},
-  chapter     = {5.4.3, Template matching},
   title       = {Optical Character Recognition on supermarket receipts},
   type        = {Bachelor's thesis},
+  year        = {2016-06-19, {\upshape chap. 5.4.3, Template matching}},
   urldate     = {2021-04-01},
 }
 
@@ -253,13 +254,23 @@
   urldate      = {2021-05-18},
 }
 
+@online{Unicode,
+  publisher    = {Unicode},
+  url          = {https://unicode.org/glossary/#unicode},
+  date         = {2021-02-10}, 
+  journaltitle = {Unicode Glossary},
+  title        = {Unicode},
+  urldate      = {2021-05-19},
+}
+
 @online{FlutterDesktopSupport,
   location     = {Mountain View, California, USA},
   publisher    = {Google},
-  url          = {https://flutter.dev/},
+  url          = {https://flutter.dev/desktop},
   journaltitle = {Flutter},
   title        = {Desktop support for Flutter},
-  urldate      = {2021-04-17},
+  date         = {2021-05-17},
+  urldate      = {2021-05-19},
 }
 
 @online{WhatIsElectron,
@@ -268,7 +279,8 @@
   url          = {https://www.electronjs.org/docs/tutorial/quick-start},
   journaltitle = {Electron},
   title        = {Quick Start Guide},
-  urldate      = {2021-04-18},
+  date         = {2021-05-13},
+  urldate      = {2021-05-19},
 }
 
 @online{CapacitorHomepage,
@@ -339,7 +351,8 @@
   url          = {https://cloud.google.com/firestore/pricing},
   journaltitle = {Google Cloud},
   title        = {Cloud Firestore Pricing},
-  urldate      = {2021-04-28},
+  date         = {2021-05-17},
+  urldate      = {2021-05-18},
 }
 
 @online{CloudStoragePricing,
@@ -348,7 +361,8 @@
   url          = {https://cloud.google.com/storage/pricing},
   journaltitle = {Google Cloud},
   title        = {Cloud Storage Pricing},
-  urldate      = {2021-04-28},
+  date         = {2021-05-17},
+  urldate      = {2021-05-18},
 }
 
 @online{ContainerRegistryPricing,
@@ -357,7 +371,8 @@
   url          = {https://cloud.google.com/container-registry/pricing},
   journaltitle = {Google Cloud},
   title        = {Container Registry Pricing},
-  urldate      = {2021-04-28},
+  date         = {2021-05-17},
+  urldate      = {2021-05-18},
 }
 
 @online{CloudRunPricing,
@@ -366,7 +381,8 @@
   url          = {https://cloud.google.com/run/pricing},
   journaltitle = {Google Cloud},
   title        = {Cloud Run Pricing},
-  urldate      = {2021-04-28},
+  date         = {2021-05-17},
+  urldate      = {2021-05-18},
 }
 
 @online{CloudBuildPricing,
@@ -375,7 +391,8 @@
   url          = {https://cloud.google.com/build/pricing},
   journaltitle = {Google Cloud},
   title        = {Cloud Build Pricing},
-  urldate      = {2021-04-28},
+  date         = {2021-05-17},
+  urldate      = {2021-05-18},
 }
 
 @inbook{Jurafsky2020Speech,
@@ -385,6 +402,7 @@
   edition  = {3rd ed. draft},
   subtitle = {An introduction to natural language processing, computational linguistics, and speech recognition.},
   title    = {Speech and Language Processing},
+  year     = {c2020},
   urldate  = {2021-04-29},
 }
 
@@ -430,6 +448,7 @@
 
 @comment{"date field contains date created and date edited, separated by comma, in the format of YYYY-MM-DD, e.g. date = {2020-04-15/2021-03-27}"}
 @comment{"urldate has the same format of YYYY-MM-DD"}
-@comment{"reformatted with: biber --tool --output-fieldcase=lower --output-align bibliography.bib"}
-@comment{"c2019 emits warning about not sorting properly, but it is fine, since the entries are processed in citation order - https://www.overleaf.com/learn/latex/Bibliography_management_with_biblatex#Reference_guide"}
-@comment{"\upshape is a hack to include chapter"}
+@comment{"Do not reformat with biber! It will delete invalid entries such as those mentioned in the comments below. (biber --tool --output-fieldcase=lower --output-align bibliography.bib)"}
+@comment{"\upshape is a hack to include chapter. The field has to be year, not date."}
+@comment{"c2019 emits warning about not sorting properly, but it is fine, since the entries are processed in citation order - https://www.overleaf.com/learn/latex/Bibliography_management_with_biblatex#Reference_guide. The field has to be year, not date."}
+@comment{"booktitle is used only in inproceedings and incollection"}

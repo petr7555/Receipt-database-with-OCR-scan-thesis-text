@@ -281,7 +281,7 @@ React itself is not a cross-platform framework. However, if we release the const
 In a similar manner to Capacitor, desktop support is possible by wrapping the React application inside Electron. 
 
 \section{React Native}
-React Native is a JavaScript framework created by Facebook. It is based on React, but instead of targeting the browser, it targets mobile platforms \Dash Android and iOS \cite{Eisenman2015Learning}. There are community-supported projects\footnote{See https://reactnative.dev/docs/out-of-tree-platforms.} that bring React Native to other platforms, such as React Native Windows, React Native macOS and React Native Web. It is used by companies such as Facebook, Instagram and Shopify. 
+React Native is a JavaScript framework created by Facebook. It is based on React, but instead of targeting the browser, it targets mobile platforms \Dash Android and iOS \cite{Eisenman2015Learning}. There are community-supported projects\footnote{\url{https://reactnative.dev/docs/out-of-tree-platforms}} that bring React Native to other platforms, such as React Native Windows, React Native macOS and React Native Web. It is used by companies such as Facebook, Instagram and Shopify. 
 
 Unlike Capacitor, which uses Web Views, React Native is compiled into native code, allowing developers to create applications that look and feel like native applications written in Java/Kotlin (for Android) and Objective-C/Swift (for iOS). It also comes with performance benefits. 
 
@@ -305,7 +305,7 @@ The official way of creating a new React Native application is to use React Nati
 Developing applications with React Native is often repetitive, and the same setup needs to be made for every application. To reduce the time it would take to install all required libraries and to enforce the best practices, application boilerplates have been created.
 
 \subsection{Ignite}
-The most used boilerplate for React Native is Ignite\footnote{See \url{https://github.com/infinitered/ignite}.}.
+The most used boilerplate for React Native is Ignite\footnote{Ignite on GitHub: \url{https://github.com/infinitered/ignite}.}.
 Ignite is a CLI and an application boilerplate at the same time. It is opinionated, meaning that it enforces specific project structure and libraries. Navigation, application state management, Storybook component library\footnote{Described in Section \ref{sec:component_library}.}, Detox end-to-end tests\footnote{Described in Section \ref{sec:end_to_end_testing}.} and Reactotron\footnote{Described in Section \ref{phantom:reactotron}.} (for inspecting the application) are already set up. The CLI can be used for generating new components and screens.
 
 \subsection{Expo}
@@ -334,15 +334,15 @@ In case a native module is not available on a given platform, there are four ava
     \item \textbf{Omitting the module.} 
     If the functionality provided by the native module is not critical, it might be omitted on a given platform. This is possible by having a different code for each platform. This concept is described in Section \ref{sec:platform_specific_code}.
     
-    In Receipts scanner, this approach has been taken with Google Sign In\footnote{Authentication using Google, further described in Section \ref{phantom:google_sign_in}.}, which is not available on Windows.
+    In Receipts Scanner, this approach has been taken with Google Sign In\footnote{Authentication using Google, further described in Section \ref{phantom:google_sign_in}.}, which is not available on Windows.
     
     \item \textbf{Mocking the module.}
     TODO co je mocking
-    This approach has been applied in Receipts Scanner on NetInfo module, which provides information about the internet connection. Currently, it is not possible to use it on Windows\footnote{GitHub issue: \url{https://github.com/react-native-netinfo/react-native-netinfo/issues/306}.}. Therefore it has been temporarily mocked TODO always to return information about the device being online.
+    This approach has been applied in Receipts Scanner on NetInfo module, which provides information about the internet connection. Currently, it is not possible to use NetInfo on Windows\footnote{GitHub issue: \url{https://github.com/react-native-netinfo/react-native-netinfo/issues/306}.}. Therefore it has been temporarily mocked TODO always to return information about the device being online.
     
-    \item \textbf{Replacing the module.} In case a different module that provides q similar functionality is available, it can be used instead. If such module does not exist, it can be implemented.
+    \item \textbf{Replacing the module.} In case a different module that provides similar functionality is available, it can be used instead. If such a module does not exist, it can be implemented.
     
-    Receipts Scanner implements its own \footnote{FilePicker} module to provide functionality of picking an image from the file system on Windows.
+    Receipts Scanner implements its own\footnote{FilePicker} module to provide the functionality of picking an image from the file system on Windows.
     
     \item \textbf{Adding the missing platform to the module.}
     Most of the modules are open-source projects to which anyone can contribute. React Native is a relatively new ecosystem and relies on community contributions. In general, anyone can add a new platform to an existing library.
@@ -351,43 +351,44 @@ In case a native module is not available on a given platform, there are four ava
 \section{Platform-specific code}
 \label{sec:platform_specific_code}
 Sometimes it is necessary to have a different code for a different platform. The main reasons are:
-\begin{enumerate}
-\item some platform does not support certain functionality or the same functionality needs to be implemented in a different way,
-\item the application on a certain platform should behave differently,
+\begin{itemize}
+\item some platform does not support certain functionality, or the same functionality needs to be implemented differently,
+\item the application on a particular platform should behave differently,
 \item the styles need to be different.
-\end{enumerate}
+\end{itemize}
 
-React Native provides two ways to separate code by platform:
+React Native provides two ways TODO to separate code by platform:
 \begin{enumerate}
 \item \textbf{\texttt{Platform} module}
     
     By writing \code{Platform.OS === 'windows'}, it is possible to determine if the code is running on Windows.
 \item \textbf{Platform-specific file extensions}
 
-    If there are two files, \texttt{Button.android.ts} and \texttt{Button.windows.ts} and the \texttt{Button} is imported as \code{import Button from './Button';}‚ the file with the extension of the running platform will be picked.
+    If there are two files, \texttt{Button.android.ts} and \texttt{Button.windows.ts} and the \texttt{Button} is imported as \code{import Button from './Button';}‚ the file with the extension of the platform on which the application is running will be picked.
 \end{enumerate}
 
-In Receipts Scanner, the \texttt{Platform} module's functionality is used for example on the following places:
-\begin{enumerate}
+In Receipts Scanner, the \texttt{Platform} module's functionality is used, for example, in the following places:
+\begin{itemize}
     \item to allow scanning of a receipt only on Android,
     \item to use different styles for each platform,
     \item to use Google Sign In only on Android,
-    \item in Firebase adapter to use a different Firebase library for each platform 
-    \item to use a different \texttt{Modal} component for each platform.
-\end{enumerate}
-Most of these were driven by libraries not having a support for React Native Windows.
+    \item in Firebase adapter\footnote{Described in Section \ref{phantom:firebase_adapter}.} to use a different Firebase library for each platform,
+    \item to use a different \texttt{Modal}\footnote{A component that appears on top overlaying other components. The background is usually grayed out.} component for each platform.
+\end{itemize}
+Most of these were driven by libraries not having support for React Native Windows.
 
 \chapter{Development}
 \section{Version control system commit messages}
-When working with a version control system \footnote{A software for tracking changes in files, for example Git.}, it is a good practise to indicate the type of the source code change in a commit message. This can be done either verbally or using an emoji.
-Using emojis in commit messages provides an easy way of identifying the purpose or intention of a commit. In Receipts Scanner repository, the notation in Figure \ref{fig:emoji_commits} has been used. It is loosely based on Gitmoji \footnote{Gitmoji is an initiative to standardize and explain the use of emojis on GitHub commit messages. See \url{https://gitmoji.dev/}}. The Figure shows a Unicode representation of an emoji and its meaning.
-    \begin{figure}
-        \begin{center}
-            \includegraphics[width=\textwidth]{figures/other/Emoji_commits}
-        \end{center}
-        \caption{Meaning of emojis in commit messages.}
-        \label{fig:emoji_commits}
-    \end{figure}
+When working with a version control system\footnote{Software for tracking changes in files, for example, Git.}, it is good to indicate the type of source code change in a commit message. This can be done either verbally or using an emoji.
+Using emojis in commit messages provides an easy way of identifying the purpose or intention of a commit. In the Receipts Scanner repository, the notation in Figure \ref{fig:emoji_commits} has been used. It is loosely based on Gitmoji\footnote{Gitmoji is an initiative to standardize and explain the use of emojis on GitHub commit messages. See \url{https://gitmoji.dev/}.}. The Figure \ref{fig:emoji_commits} shows a Unicode\footnote{\textit{"The standard for digital representation of the characters used in writing all of the world's languages."} \cite{Unicode}} representation of an emoji and its meaning.
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=\textwidth]{figures/other/Emoji_commits}
+    \end{center}
+    \caption{Meaning of emojis in commit messages.}
+    \label{fig:emoji_commits}
+\end{figure}
 
 \section{Component library}
 \label{sec:component_library}
@@ -396,7 +397,7 @@ When developing a React application, it is a good practise to have a set of basi
 
 that allows development of each component in isolation.
 
-Storybook\footnote{See \url{https://storybook.js.org/}.} is a widely used tool for developing UI components in isolation. It is based on plugins. Thanks to its open-source nature, there are many plugins created by the community, which extend the core functionality of Storybook.
+Storybook\footnote{\url{https://storybook.js.org/}} is a widely used tool for developing UI components in isolation. It is based on plugins. Thanks to its open-source nature, there are many plugins created by the community, which extend the core functionality of Storybook.
 
 Storybook is based on the concept of stories. A story is a permutation of the component with given properties. Each component can have multiple stories. A \texttt{Button} component could have one story displaying the Button in its \textit{enabled} state and a second one for the \textit{disabled} state.
 
@@ -407,7 +408,7 @@ Whereas Storybook for React runs in a web browser, Storybook for React Native ne
 
 \phantomsection
 \label{phantom:reactotron}
-Running Storybook on a mobile device is achieved by rendering the Storybook component instead of the root component that would normally be rendered. In order not to have to replace the component manually in code every time, Receipts Scanner takes advantage of Reactotron\footnote{See \url{https://github.com/infinitered/reactotron}}. Reactotron is a desktop application that provides a suite of tools for easier development in React Native. It is integrated inside the project, so it is possible to switch between displaying Storybook and the actual application from the Reactotron UI. 
+Running Storybook on a mobile device is achieved by rendering the Storybook component instead of the root component that would normally be rendered. In order not to have to replace the component manually in code every time, Receipts Scanner takes advantage of Reactotron\footnote{Reactotron on GitHub: \url{https://github.com/infinitered/reactotron}.}. Reactotron is a desktop application that provides a suite of tools for easier development in React Native. It is integrated inside the project, so it is possible to switch between displaying Storybook and the actual application from the Reactotron UI. 
 
 Figure \ref{fig:storybook_rn} shows how the component library and the interface of Storybook for React Native look like.
 
@@ -430,7 +431,7 @@ Figure \ref{fig:storybook_rn} shows how the component library and the interface 
 \label{fig:storybook_rn}
 
 
-It is possible to install a Storybook server that enables navigation between stories directly in the browser. However, the stories are still displayed only on the mobile device. In order to show the stories in the browser a react-native-web\footnote{See \url{https://necolas.github.io/react-native-web/}.} library can be used. There are two options:
+It is possible to install a Storybook server that enables navigation between stories directly in the browser. However, the stories are still displayed only on the mobile device. In order to show the stories in the browser a react-native-web\footnote{\url{https://necolas.github.io/react-native-web/}} library can be used. There are two options:
 \begin{enumerate}
     \item Alias react-native imports to react-native-web in the bundling\footnote{Bundling is the process of transpiling all source files and assets of the application, usually into one large JavaScript file that can be run across different browsers.} process of the whole app. This makes the whole application able to run in the browser. The Storybook functionality is therefore a side-effect.
     
@@ -482,7 +483,7 @@ The issue of testing with react-test-renderer is that the tests rely on implemen
 Snapshot tests verify that the rendered markup of the components stays the same. When the snapshot tests are run for the first time, the rendered markup is saved in a file.
 During subsequent runs, the newly rendered markup is compared to the saved one. The tests fail when there is a differences between the two. Those differences are usually highlighted for the developer to asses, whether or not this change was intentional. If it was, the saved snapshots are updated. Otherwise the unintentional changes are fixed.
 
-It is possible to create snapshot tests with Jest and react-test-renderer by rendering the component to JSON and comparing it to the previously rendered version \footnote{See snapshot testing with Jest: \url{https://jestjs.io/docs/snapshot-testing}.}.
+It is possible to create snapshot tests with Jest and react-test-renderer by rendering the component to JSON and comparing it to the previously rendered version\footnote{See snapshot testing with Jest: \url{https://jestjs.io/docs/snapshot-testing}.}.
 
 This process can be automated with Storybook.
 By using a Storybook addon StoryShots\footnote{\url{https://www.npmjs.com/package/@storybook/addon-storyshots}}, all stories in the project are turned into snapshot tests. 
@@ -514,7 +515,7 @@ Figure \ref{fig:chromatic_diff} shows how the review process of a visual change 
     \label{fig:chromatic_diff}
 \end{figure}
 
-An alternative to Chromatic is a tool called Loki\footnote{See \url{https://loki.js.org/}.}, which also integrates with Storybook. It is able to take screenshots in a Chrome browser, on iOS simulator or on Android emulator, which means it can be used both with Storybook for React and Storybook for React Native.
+An alternative to Chromatic is a tool called Loki\footnote{\url{https://loki.js.org/}}, which also integrates with Storybook. It is able to take screenshots in a Chrome browser, on iOS simulator or on Android emulator, which means it can be used both with Storybook for React and Storybook for React Native.
 
 Loki creates difference images which highlight the visual change. A visual change of scan button component is shown in Figure \ref{fig:loki_diff}.
 
@@ -529,7 +530,7 @@ Loki creates difference images which highlight the visual change. A visual chang
 I would not recommend using Loki for Storybook for React Native. The tests are unstable and the screenshots differ even though the component itself has not changed. This is caused by the component not being fully loaded when the screenshot is made. Loki uses running Storybook server for controlling which story is shown, which sometimes does not work, resulting in flashing between different stories.
 Loki performs better with Storybook for React, but it cannot take screenshots of modal components.
 
-A third approach of visual testing I tried was a combination of Storycap\footnote{See Storycap on GitHub: \url{https://github.com/reg-viz/storycap}.} and Reg Suit\footnote{See Reg Suit on GitHub: \url{https://github.com/reg-viz/reg-suit}.}. Similar to Chromatic, this works only with Storybook for React.
+A third approach of visual testing I tried was a combination of Storycap\footnote{Storycap on GitHub: \url{https://github.com/reg-viz/storycap}.} and Reg Suit\footnote{Reg Suit on GitHub: \url{https://github.com/reg-viz/reg-suit}.}. Similar to Chromatic, this works only with Storybook for React.
 
 First, Storycap takes screenshots of the stories. Reg Suit then downloads the previous screenshots from Google Cloud Storage, compares them with the new ones and stores the differences. 
 
@@ -546,7 +547,7 @@ End-to-end tests are used to test a user interaction with the application from t
 An example of an end-to-end test would be testing of the sign in functionality, i.e. after the required fields of the sign in form are filled in and the \textit{Sign in} button is pressed, a screen for the authenticated users is shown.
 
 Multiple end-to-end testing frameworks for React Native exist.
-Receipts Scanner uses Detox\footnote{https://github.com/wix/Detox} end-to-end tests. Detox is a popular choice for React Native testing, mostly for its speed and reliability. Apart from test logs, it is able to capture screenshots and videos of the running tests, which can provide a greater insight into why tests are failing.
+Receipts Scanner uses Detox\footnote{Detox on GitHub: \url{https://github.com/wix/Detox}.} end-to-end tests. Detox is a popular choice for React Native testing, mostly for its speed and reliability. Apart from test logs, it is able to capture screenshots and videos of the running tests, which can provide a greater insight into why tests are failing.
 
 A more recent project, Cavy\footnote{\url{https://cavy.app/}}, takes a different approach from Detox. It does not use any native code, all functionality is achieved with pure JavaScript. The setup is therefore easier but the functionality is limited. 
 
@@ -669,7 +670,7 @@ For textual receipt information, document-oriented databases are a perfect fit, 
 
 The document-oriented database is a type of NoSQL\footnote{NoSQL database is a database that does not employ the relational model of data \cite{DigitalOcean2019Database}} database that stores data in the form of documents. All data of a given object (for example receipt) can be stored in one document. The documents are stored mostly in JSON\footnote{JavaScript Object Notation}, BSON\footnote{Binary JSON;}, XML\footnote{Extensible Markup Language} or YAML\footnote{YAML is a human-readable data-serialization language.} format. Unlike SQL databases, document-orient databases do not have a schema and are therefore more flexible. 
 The documents are stored in collections. Documents can also contain subcollections of documents.
-Two very popular document-oriented databases are MongoDB\footnote{See \url{https://www.mongodb.com/}} and Google Firestore\footnote{See \url{https://firebase.google.com/products/firestore}}. MongoDB uses BSON to store documents, Firestore uses JSON. Both databases support data types such as strings, numbers, arrays and timestamps. 
+Two very popular document-oriented databases are MongoDB\footnote{\url{https://www.mongodb.com/}.} and Google Firestore\footnote{\url{https://firebase.google.com/products/firestore}}. MongoDB uses BSON to store documents, Firestore uses JSON. Both databases support data types such as strings, numbers, arrays and timestamps. 
 % https://www.tutorialspoint.com/mongodb/mongodb_datatype.htm
 Although document-oriented databases do not have a schema, it is very useful to have a fixed data model, so that the shape of the stored data is predictable. 
 The data model for Receipts Scanner is shown in Figure \ref{fig:data_model_firestore}. It shows how the data are structured into two collections, \texttt{Users} and \texttt{Receipts}. Because all user data are child nodes of a given user document, it is easy to restrict access to other documents based on the path to that document.
@@ -687,7 +688,7 @@ Other notable fields are \texttt{urlOriginal} and \texttt{urlProcessed}, which s
     \end{figure}
 
 \subsection{Image data}
-Although storing images directly in the document-oriented database would be possible \footnote{In MongoDB, it is possible to store BSON documents up to 16 MB. Larger files can be split into parts of 255 kB using GridFS \cite{GridFS}}, this solution is not optimal.
+Although storing images directly in the document-oriented database would be possible\footnote{In MongoDB, it is possible to store BSON documents up to 16 MB. Larger files can be split into parts of 255 kB using GridFS \cite{GridFS}}, this solution is not optimal.
 
 For receipt images, the most cost-effective storage is an object storage. An object storage is a storage optimized for storing BLOBs (Binary Large OBjects). BLOB is a collection of binary data stored as a single entity. It can be for example an image, audio or video. 
 
@@ -695,6 +696,8 @@ The images are stored inside \texttt{Users/<user\_id>/Receipts/} directory. This
 
 I have chosen Google Firestore to store the textual data and Google Storage to store the photos of receipts. These two cloud-based services are available under a platform called Firebase. The Firebase platform provides also the authentication and analytics services to Receipts Scanner.
 
+\phantomsection
+\label{phantom:firebase_adapter}
 Firebase is supported on iOS, Android and the Web. An unofficial library called React Native Firebase\footnote{\url{https://rnfirebase.io/}} provides the same services on React Native for Android and iOS. However, it does not support React Native Windows. Therefore Receipts Scanner uses Firebase for Web on Windows and React Native Firebase on Android. To be able to write the same code that could be run both on Android and Windows, an adapter `firebase.ts` was created. It imports both libraries and based on the platform the application is currently running on exports the right objects. Rest of the code that needs to work with Firebase imports the objects from `firebase.ts` instead of importing either from Firebase for Web or React Native Firebase directly.
 
 In theory, the Receipts Scanner could use Firebase for Web on both Android and Windows, but I would expect React Native Firebase to be more suitable and faster, since it uses native APIs. React Native Firebase could also get support for React Native Windows in the future.
@@ -702,7 +705,7 @@ In theory, the Receipts Scanner could use Firebase for Web on both Android and W
 \section{Python API}
 The Python API serves two purposes: to process an image of a receipt and to categorize receipt items.
 
-It provides three endpoints \footnote{The detailed documentation of endpoints is available here: \url{https://documenter.getpostman.com/view/9355808/TzJsfdUK}}:
+It provides three endpoints\footnote{The detailed documentation of endpoints is available at \url{https://documenter.getpostman.com/view/9355808/TzJsfdUK}.}:
 
 \begin{itemize}
     \item \texttt{GET /} \Dash Returns a health check string. Used to make sure that the service is running.
@@ -720,7 +723,7 @@ When a user adds a new receipt, the items on the receipt are sent to the Python 
 The method \texttt{most\_similar\_to\_given} is provided by the Magnitude library\cite{PatelEtal2018Magnitude}. Magnitude is a tool for utilizing and processing word embeddings. Word embeddings are typically real-valued vectors that encode the meaning of a word, such that the vectors that are close in the vector space are similar in their meaning \cite{Jurafsky2020Speech}. Magnitude is a faster and memory efficient alternative to tools like Gensim\footnote{\url{https://radimrehurek.com/gensim/}}. 
 
 It uses its own vector storage file format \texttt{.magnitude}.
-Popular embedding models such as Google's word2vec, Stanford's GloVe and Facebook's fastText have been pre-converted to the \texttt{.magnitude} format for immediate download and usage\footnote{Pre-converted models for immediate download: \url{https://github.com/plasticityai/magnitude\#pre-converted-magnitude-formats-of-popular-embeddings-models}}. Furthermore, each word embeddings model is available in three variants: light, medium and heavy. The difference is that medium and heavy models have advanced support for out-of-vocabulary keys\footnote{Words that do not appear in the model's vocabulary.}. The heavy model also features faster approximate k-nearest neighbors.
+Popular embedding models such as Google's word2vec, Stanford's GloVe and Facebook's fastText have been pre-converted to the \texttt{.magnitude} format for immediate download and usage\footnote{Pre-converted models for immediate download: \url{https://github.com/plasticityai/magnitude\#pre-converted-magnitude-formats-of-popular-embeddings-models}.}. Furthermore, each word embeddings model is available in three variants: light, medium and heavy. The difference is that medium and heavy models have advanced support for out-of-vocabulary keys\footnote{Words that do not appear in the model's vocabulary.}. The heavy model also features faster approximate k-nearest neighbors.
 
 Magnitude implements functions for looking up
 vector representations for misspelled or out-of-vocabulary words. This means it can handle abbreviations, which often appear on receipts, and whole sentences reasonably well.
@@ -730,7 +733,7 @@ In Receipt Scanner, the fastText model is used – in particular its medium vari
 
 Another constraint for choosing the model was its size. Google Cloud Run, which is a cloud service where the model is running, does not allow containers larger than 8 GB. The Google's medium word2vec model is 4.9 GB large, as compared to fastText, which is only 1.6 GB large. The container with word2vec did not fit into the 8 GB limit.
 
-The used fastText model was pretrained on over 16 billion words from Wikipedia 2017, Statmt.org news and UMBC news \cite{Mikolov2018Advances}. It contains only English word vectors, but fastText provides also models for other languages \footnote{Word vectors for 157 languages:\\ \url{https://fasttext.cc/docs/en/crawl-vectors.html}}, which could be converted using the Magnitude converter\footnote{Magnitude converter:\\ \url{https://github.com/plasticityai/magnitude\#file-format-and-converter}} and used in a localized Receipts Scanner, e.g. with a support for Czech language.
+The used fastText model was pretrained on over 16 billion words from Wikipedia 2017, Statmt.org news and UMBC news \cite{Mikolov2018Advances}. It contains only English word vectors, but fastText provides also models for other languages\footnote{Word vectors for 157 languages:\\ \url{https://fasttext.cc/docs/en/crawl-vectors.html}.}, which could be converted using the Magnitude converter\footnote{Magnitude converter:\\ \url{https://github.com/plasticityai/magnitude\#file-format-and-converter}.} and used in a localized Receipts Scanner, e.g. with a support for Czech language.
 
 Figure \ref{fig:models_comparison} shows results from various word embeddings models. First two columns are generated by Google's word2vec, which was trained on 1 billion words from Google News. The third column is the mentioned fastText. The fourth column is fastText with subwords information. In subwords model, each word is represented as a bag of character \textit{n}-grams. Taking the
 word \textit{where} and $n = 3$ as an example, it will be
@@ -929,7 +932,7 @@ A comparison of the original image and the final processed image is shown in Fig
 % $M$ is a $3\times3$ transformation matrix, computed as follows:
 
 \subsection{Deployment}
-The Python API is a Flask\footnote{See \url{https://flask.palletsprojects.com/en/1.1.x/}.} server. 
+The Python API is a Flask\footnote{\url{https://flask.palletsprojects.com/en/1.1.x/}} server. 
 It is deployed after each push to the master branch.
 First, a Docker image that contains the source files, external dependencies and the Magnitude word embeddings model is built using Google Cloud Build. The built image is saved into Google Container Registry. Google Cloud Run then start a container from that image.
 It the image was not built successfully or the service failed to start, the previously deployed service will stay available.
@@ -937,7 +940,7 @@ It the image was not built successfully or the service failed to start, the prev
 API tests are run during the CI pipeline after the new service is deployed.  
 
 \section{Form Recognizer}
-Form Recognizer provides a pre-built model that is suitable for recognizing English receipts. It can be accessed through a JavaScript client library \footnote{\url{https://docs.microsoft.com/en-us/javascript/api/overview/azure/ai-form-recognizer-readme?view=azure-node-latest\#recognize-receipts}}. However, this library is built for Node.js runtime, which is different from the React Native runtime. In most cases, React Native uses JavaScriptCore, which is the JavaScript engine that powers Safari \cite{JavaScriptRNEnvironment}.
+Form Recognizer provides a pre-built model that is suitable for recognizing English receipts. It can be accessed through a JavaScript client library\footnote{\url{https://docs.microsoft.com/en-us/javascript/api/overview/azure/ai-form-recognizer-readme?view=azure-node-latest\#recognize-receipts}}. However, this library is built for Node.js runtime, which is different from the React Native runtime. In most cases, React Native uses JavaScriptCore, which is the JavaScript engine that powers Safari \cite{JavaScriptRNEnvironment}.
 
 Receipts Scanner implements a service \texttt{FormRecognizerClient} with the same interface as the one from the official library, but it relies solely on API calls to the Form Recognizer API. The method to extract the information from the receipt is modeled as long-running operation, which means that the initial request returns a URL to which the subsequent requests for the result should be made.
 
@@ -976,7 +979,7 @@ For this reason, a native C++ module FilePicker was implemented. It allows to pi
 The FilePicker module could be eventually released as a separate package, so that it could be used by other React Native developers.
 
 \section{Styles}
-Throughout Receipts Scanner, apart from black and white, two main colors are used. The primary color is malachite, \texttt{\#078331} \testclr[HTML]{078331} and the secondary is \texttt{\#310783} \testclr[HTML]{310783}. The primary color was chosen to resemble the color of banknotes. The secondary color is one of the three colors of malachite's triadic colors\footnote{The color triad was generated using this tool: \url{https://www.color-hex.com/color/078331}.}. 
+Throughout Receipts Scanner, apart from black and white, two main colors are used. The primary color is malachite, \texttt{\#078331} \testclr[HTML]{078331} and the secondary is \texttt{\#310783} \testclr[HTML]{310783}. The primary color was chosen to resemble the color of banknotes. The secondary color is one of the three colors of malachite's triadic colors\footnote{The color triad was generated using color-hex tool available at \url{https://www.color-hex.com/color/078331}.}. 
 The colors are chosen with respect to the contrast ration between each other as well as the contrast ration between those two colors and black and white. This is especially important in the dark mode.
 
 Most of the elements are styled with these two colors to ensure a simple and consistent look of the user interface. 
@@ -1109,7 +1112,7 @@ where $n$ is a point in time (e.g. month) and $c$ is the number of receipts per 
 The images of receipts are stored on Google Cloud Storage. The price is \$0.026 per GB \cite{CloudStoragePricing}. For the first month, the cost would be $\num{1000}\cdot30\cdot(600\text{ KB} / 1\text{ GB})\cdot\$0.026 = \$0.468$.
 For the second, assuming \num{1000} new users, it would be \$1.404.
 
-The Google Container Registry is charged the same way as Google Cloud Storage \cite{ContainerRegistryPricing}, depending on the size of all stored containers. Only a few last containers need to be stored. Older containers can be deleted\footnote{Google provides an automated way of deleting old containers available at https://github.com/sethvargo/gcr-cleaner.}. This means that the price for stored containers will be fixed. The size of one Python API container is 2.7 GB. The price of storing 5 last containers would be $5\cdot2.7\cdot\$0.02 = \$0.27$ per month. 
+The Google Container Registry is charged the same way as Google Cloud Storage \cite{ContainerRegistryPricing}, depending on the size of all stored containers. Only a few last containers need to be stored. Older containers can be deleted\footnote{Google provides an automated way of deleting old containers available at \url{https://github.com/sethvargo/gcr-cleaner}.}. This means that the price for stored containers will be fixed. The size of one Python API container is 2.7 GB. The price of storing 5 last containers would be $5\cdot2.7\cdot\$0.02 = \$0.27$ per month. 
 
 Google Cloud Run provides autoscaling, which means that the number of provisioned instances depends on the number of incoming request. If a minimum number of instances is set to 0, the service goes idle each time the requests are not coming. The service is set up to use 2 CPUs and 6 GB of memory. For each receipt, one request is made to process the image and one to assign categories to items, therefore $\num{1000}\cdot30\cdot2 = \num{60000}$ requests per month. Assuming that each request comes after the previous ended and \num{1000} ms per request, the service will be used only for \num{120000} vCPU-seconds\footnote{vCPU-seconds are computed as $\textit{number of CPUs} \times \textit{time in seconds the service is running}$.}. This is included in the free plan. Memory consumption would be \num{480000} GiB-seconds\footnote{GiB-seconds are computed as $\textit{size in GiB} \times \textit{time in seconds the service is running}.$}, which slightly exceeds the free plan \cite{CloudRunPricing}, incurring \$0.3 of additional costs. 
 If a minimum number of instances was set to 1 in order to prevent a cold-start, the cost would be \$66.00 per month.
