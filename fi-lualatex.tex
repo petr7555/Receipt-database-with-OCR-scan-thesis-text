@@ -183,6 +183,10 @@
 \def\Ldash{\dosh\empty{\hbox{\emdash}\nobreak}}
 \def\Rdash{\dosh\nobreak\emdash}
 
+
+
+
+
 \begin{document}
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
@@ -252,7 +256,7 @@ According to Statcounter \cite{Statcounter2021Desktop}, Windows\footnote{Group o
 For the same reasons (ability to cover more devices and having Windows PC), I chose Windows as the supported desktop operating system.
 
 \chapter{Choice of technology}
-As established in the previous Chapter \ref{chap:choice_of_platforms}, the targeted platforms are Android and Windows. The traditional approach would be to implement a separate application for each platform, for Android using Java or Kotlin, and for Windows using Universal Windows Platform (UWP) or Windows Presentation Foundation (WPF). This approach suffers from the apparent disadvantage of writing the code twice. The application's functionality differs only slightly on Android and Windows, so the preferred solution is to have a cross-platform application. A cross-platform application is an application that can run on multiple platforms without a need for having a separate code base for each.
+As established in the previous Chapter \ref{chap:choice_of_platforms}, the targeted platforms are Android and Windows. The traditional approach would be to implement a separate application for each platform, for Android using Java or Kotlin, and for Windows using Universal Windows Platform (UWP) or Windows Presentation Foundation (WPF). This approach suffers from the apparent disadvantage of writing the code twice. The functionality of the application differs only slightly on Android and Windows, so the preferred solution is to have a cross-platform application. A cross-platform application is an application that can run on multiple platforms without a need for having a separate code base for each.
 
 There are many available frameworks that aid cross-platform development.
 
@@ -267,12 +271,13 @@ Xamarin.Forms extends this code reuse to the user interface (UI). The user inter
 \textit{``Flutter is Google’s UI toolkit for building beautiful, natively compiled applications for mobile, web, and desktop from a single codebase.''} \cite{FlutterHomepage} It uses Dart programming language. The desktop support is available as a beta release \cite{FlutterDesktopSupport}.
 
 \section{Capacitor}
-Capacitor is an open-source native runtime for building Web Native\footnote{A Web app that accesses native APIs \cite{WebNative}.} apps. It enables development of cross-platform iOS, Android, and Progressive Web Apps \cite{CapacitorHomepage}. Capacitor is developed by Ionic. The application is built using web technologies (JavaScript\footnote{JavaScript is a scripting language targeted specifically to the Internet \cite{GartnerJavaScript}.}, HTML\footnote{Hypertext Markup Language is a document-formatting language used to create Web pages \cite{GartnerHTML}.}, and CSS\footnote{Cascading Style Sheets add style (e.g., fonts, colors, spacing) to Web documents\cite{W3CCSS}.}) and rendered using Web View. Web View resembles a full-screen browser, but it is not limited to browser APIs. It can call native APIs such as sensors and storage.
+Capacitor is an open-source native runtime for building Web Native\footnote{A Web application that accesses native APIs \cite{WebNative}.} apps. It enables development of cross-platform iOS, Android, and Progressive Web Apps \cite{CapacitorHomepage}. Capacitor is developed by Ionic. The application is built using web technologies (JavaScript\footnote{JavaScript is a scripting language targeted specifically to the Internet \cite{GartnerJavaScript}.}, HTML\footnote{Hypertext Markup Language is a document-formatting language used to create Web pages \cite{GartnerHTML}.}, and CSS\footnote{Cascading Style Sheets add style (e.g., fonts, colors, spacing) to Web documents\cite{W3CCSS}.}) and rendered using Web View. Web View resembles a full-screen browser, but it is not limited to browser APIs. It can call native APIs such as sensors and storage.
 
 It is possible to create a desktop application by wrapping the web application inside Electron. Capacitor has built-in support for Electron.
 
 \subsection{Electron}
-Electron is a framework that enables creating desktop applications with JavaScript, HTML, and \textsc{CSS}. These applications can then be run on macOS, Windows, or Linux \cite{WhatIsElectron}. TODO Electron is used for example by Visual Studio Code and Slack.
+\label{sec:electron}
+Electron is a framework that enables creating desktop applications with JavaScript, HTML, and \textsc{CSS}. These applications can then be run on macOS, Windows, or Linux \cite{WhatIsElectron}. Electron is used, for example, by Visual Studio Code and Slack.
 
 \section{React + PWA + Electron}
 React is a JavaScript library for building user interfaces created by Facebook. It is one of the most used libraries for building web applications. It uses JSX, which is a combination of JavaScript and XML, for example, \code{const element = <h1>Hello {'react'.toUpperCase()}</h1>;}. React is declarative and component-based, which means that complex UIs are composed of multiple simpler, independent and reusable components. The components are parametrized with properties (very often called \textit{props}).
@@ -309,6 +314,7 @@ The most used boilerplate for React Native is Ignite\footnote{Ignite on GitHub: 
 Ignite is a CLI and an application boilerplate at the same time. It is opinionated, meaning that it enforces specific project structure and libraries. Navigation, application state management, Storybook component library\footnote{Described in Section \ref{sec:component_library}.}, Detox end-to-end tests\footnote{Described in Section \ref{sec:end_to_end_testing}.} and Reactotron\footnote{Described in Section \ref{phantom:reactotron}.} (for inspecting the application) are already set up. The CLI can be used for generating new components and screens.
 
 \subsection{Expo}
+\label{sec:expo}
 Expo\footnote{\url{https://docs.expo.io/}} is a framework built on top of React Native. An application created with Expo CLI can run on iOS, Android and the Web. It provides many external tools that help with the development process. 
 Many libraries for React Native have been created by Expo. Those libraries can be often used also in applications that do not run on Expo.
 
@@ -316,7 +322,7 @@ It is not possible to add a React Native for Windows to the Expo project. For th
 
 Expo will likely support React Native for Windows in the future\footnote{Feature request to support React Native for Windows in Expo: \url{https://expo.canny.io/feature-requests/p/support-for-react-native-windows-apps}.}.
 
-In the meantime, the Expo built for the Web could be run on Windows using Electron. TODO chci nějak odkazovat zpět?
+In the meantime, the Expo built for the Web could be run on Windows using Electron\footnote{Expo has been introduced in Section \ref{sec:electron}.}.
 
 \section{Native Modules}
 Native modules provide access to the native platform API that is not available by default in JavaScript \cite{RNNativeModulesIntro}, for example, an API to select a picture on the device. Other reasons for using native modules are taking advantage of existing native libraries or running multi-threaded code.
@@ -324,7 +330,7 @@ Native modules provide access to the native platform API that is not available b
 Native modules for Android are written in Java or Kotlin.
 For Windows, they can be written in C++ or C\#, but C++ is the preferred language, primarily due to its performance.
 
-Native modules can be written directly in the application or added as an external package. React Native Directory\footnote{\url{https://reactnative.directory/}} provides a list of available native modules. They can be filtered by the supported platform TODO because, very often, the native module is not available on all platforms that React Native supports.
+Native modules can be written directly in the application or added as an external package. React Native Directory\footnote{\url{https://reactnative.directory/}} provides a list of available native modules. They can be filtered by the supported platform because the native module is often unavailable on all platforms that React Native supports.
 
 In my opinion, not having a native module's functionality available for a given platform is the most considerable drawback of using React Native.
 Most native modules are made for Android and iOS only and cannot be therefore used on the Web or Windows. The missing Windows support is an obstacle encountered many times during Receipts Scanner development.
@@ -338,7 +344,7 @@ In case a native module is not available on a given platform, there are four ava
     
     \item \textbf{Mocking the module.}
     TODO co je mocking
-    This approach has been applied in Receipts Scanner on NetInfo module, which provides information about the internet connection. Currently, it is not possible to use NetInfo on Windows\footnote{GitHub issue: \url{https://github.com/react-native-netinfo/react-native-netinfo/issues/306}.}. Therefore it has been temporarily mocked TODO always to return information about the device being online.
+    This approach has been applied in Receipts Scanner on NetInfo module, which provides information about the internet connection. Currently, it is not possible to use NetInfo on Windows\footnote{GitHub issue: \url{https://github.com/react-native-netinfo/react-native-netinfo/issues/306}.}. Therefore it has been temporarily mocked always to return information about the device being online.
     
     \item \textbf{Replacing the module.} In case a different module that provides similar functionality is available, it can be used instead. If such a module does not exist, it can be implemented.
     
@@ -357,7 +363,7 @@ Sometimes it is necessary to have a different code for a different platform. The
 \item the styles need to be different.
 \end{itemize}
 
-React Native provides two ways TODO to separate code by platform:
+React Native provides two ways of separating code by platform:
 \begin{enumerate}
 \item \textbf{\texttt{Platform} module}
     
@@ -380,37 +386,27 @@ Most of these were driven by libraries not having support for React Native Windo
 \chapter{Development}
 \section{Version control system commit messages}
 When working with a version control system\footnote{Software for tracking changes in files, for example, Git.}, it is good to indicate the type of source code change in a commit message. This can be done either verbally or using an emoji.
-Using emojis in commit messages provides an easy way of identifying the purpose or intention of a commit. In the Receipts Scanner repository, the notation in Figure \ref{fig:emoji_commits} has been used. It is loosely based on Gitmoji\footnote{Gitmoji is an initiative to standardize and explain the use of emojis on GitHub commit messages. See \url{https://gitmoji.dev/}.}. The Figure \ref{fig:emoji_commits} shows a Unicode\footnote{\textit{"The standard for digital representation of the characters used in writing all of the world's languages."} \cite{Unicode}} representation of an emoji and its meaning.
-
-\begin{figure}
-    \begin{center}
-        \includegraphics[width=\textwidth]{figures/other/Emoji_commits}
-    \end{center}
-    \caption{Meaning of emojis in commit messages.}
-    \label{fig:emoji_commits}
-\end{figure}
+Using emojis in commit messages provides an easy way of identifying the purpose or intention of a commit. In the Receipts Scanner repository, the notation in Figure \ref{fig:emoji_commits} has been used. It is loosely based on Gitmoji\footnote{Gitmoji is an initiative to standardize and explain the use of emojis on GitHub commit messages. See \url{https://gitmoji.dev/}.}. The Figure \ref{fig:emoji_commits} shows a Unicode\footnote{\textit{``The standard for digital representation of the characters used in writing all of the world's languages.''} \cite{Unicode}} representation of an emoji and its meaning.
 
 \section{Component library}
 \label{sec:component_library}
-When developing a React application, it is a good practise to have a set of basic components from which more complex ones are built up. The set of those basic components is called a component library or a design system. An efficient way of building the component library is by using a tool
-
-
-that allows development of each component in isolation.
+When developing a React application, it is a good practice to have a set of basic components from which more complex ones are built up. The set of those foundational components is called a component library or a design system. An efficient way of building the component library is by using a tool that allows the development of each component in isolation. 
 
 Storybook\footnote{\url{https://storybook.js.org/}} is a widely used tool for developing UI components in isolation. It is based on plugins. Thanks to its open-source nature, there are many plugins created by the community, which extend the core functionality of Storybook.
 
 Storybook is based on the concept of stories. A story is a permutation of the component with given properties. Each component can have multiple stories. A \texttt{Button} component could have one story displaying the Button in its \textit{enabled} state and a second one for the \textit{disabled} state.
 
-Storybook stories serve as a gallery of available components and a documentation of their properties. They can be used for snapshot and visual tests, which are described in Sections \ref{sect:snapshot_testing} and \ref{sect:visual_testing} respectively.
+Storybook stories serve as a gallery of available components and as a documentation of their properties. They can be used for snapshot and visual tests, which are described in Sections \ref{sec:snapshot_testing} and \ref{sec:visual_testing} respectively.
 
-Storybook exists both in React and React Native version. 
-Whereas Storybook for React runs in a web browser, Storybook for React Native needs to run on a mobile device, because React Native uses native components that cannot be displayed in the browser. 
+Storybook supports multiple platforms, including React and React Native. To better distinguish between the two, I will refer to Storybook for React as \textit{Storybook for Web} because React is a web framework.
+
+Whereas Storybook for Web runs in a web browser, Storybook for React Native needs to run on a mobile device because React Native uses native components that cannot be displayed in the browser.
 
 \phantomsection
 \label{phantom:reactotron}
-Running Storybook on a mobile device is achieved by rendering the Storybook component instead of the root component that would normally be rendered. In order not to have to replace the component manually in code every time, Receipts Scanner takes advantage of Reactotron\footnote{Reactotron on GitHub: \url{https://github.com/infinitered/reactotron}.}. Reactotron is a desktop application that provides a suite of tools for easier development in React Native. It is integrated inside the project, so it is possible to switch between displaying Storybook and the actual application from the Reactotron UI. 
+Running Storybook on a mobile device is achieved by rendering the Storybook component instead of the root component that would normally be rendered. To not have to replace the component manually in code every time, Receipts Scanner takes advantage of Reactotron\footnote{Reactotron on GitHub: \url{https://github.com/infinitered/reactotron}.}. Reactotron is a desktop application that provides a suite of tools for easier development in React Native. It is integrated inside the project, so it is possible to switch between displaying Storybook and the actual application from the Reactotron UI. 
 
-Figure \ref{fig:storybook_rn} shows how the component library and the interface of Storybook for React Native look like.
+Figure \ref{fig:storybook_rn} shows the component library and the interface of Storybook for React Native.
 
 \begin{figure}
     \centering
@@ -419,29 +415,29 @@ Figure \ref{fig:storybook_rn} shows how the component library and the interface 
       \includegraphics[width=\subfigsize\textwidth]{figures/other/storybook_rn_menu}
       \caption{Menu of components.}
       \label{fig:storybook_rn_menu}
-    \end{subfigure}%
+    \end{subfigure}
     \begin{subfigure}[t]{\half\textwidth}
       \centering
       \includegraphics[width=\subfigsize\textwidth]{figures/other/storybook_rn_confirm_delete_component}
       \caption{Detail of \textit{Confirmation Dialog} component.}
       \label{fig:storybook_rn_confirm_delete_component}
     \end{subfigure}
-    \caption{Login screen.}
+    \caption{Storybook for React Native.}
+    \label{fig:storybook_rn}
 \end{figure}
-\label{fig:storybook_rn}
 
+It is possible to install a Storybook server that enables navigation between stories directly in the browser. However, the stories are still displayed only on mobile device. In order to show the stories in the browser, a react-native-web\footnote{\url{https://necolas.github.io/react-native-web/}} library must be used. This library provides the same elementary components that are used to create React Native applications. The difference is that instead of translating those components into Android and iOS native components, it translates them into HTML elements.
 
-It is possible to install a Storybook server that enables navigation between stories directly in the browser. However, the stories are still displayed only on the mobile device. In order to show the stories in the browser a react-native-web\footnote{\url{https://necolas.github.io/react-native-web/}} library can be used. There are two options:
 \begin{enumerate}
-    \item Alias react-native imports to react-native-web in the bundling\footnote{Bundling is the process of transpiling all source files and assets of the application, usually into one large JavaScript file that can be run across different browsers.} process of the whole app. This makes the whole application able to run in the browser. The Storybook functionality is therefore a side-effect.
+    \item \textbf{Adding Web support to the whole application.} All react-native components are replaced by react-native-web components by aliasing react-native imports to react-native-web in the bundling\footnote{Bundling is the process of transpiling all source files and assets of the application, usually into one large JavaScript file that can be run across different browsers.} process of the whole application. This makes the whole application run in the browser. The Storybook functionality is, therefore, a side-effect.
     
-    The Expo applications can run in the browser by default, no extra configuration is necessary to have Storybook for React Native running in the browser.
+    The Expo\footnote{Expo has been introduced in Section\ref{sec:expo}.} applications can run in the browser by default. They are set up with react-native-web from the beginning. No extra configuration is necessary to have Storybook for React Native running in the browser.
     
-    \item Install Storybook for React. Alias react-native to react-native-web in the bundling process of Storybook. This approach is used in Receipts Scanner. Figure \ref{fig:storybook_web} shows how the component library and the interface look like.
+    \item \textbf{Installing Storybook for Web.} It is possible to install Storybook for Web and alias react-native imports to react-native-web in the bundling process of Storybook. This approach is used in Receipts Scanner. Figure \ref{fig:storybook_web} shows the component library and the user interface of Storybook for Web.
     
-    An advantage of this approach is that even though Storybook for React Native is in version 5, the Storybook for React can use the latest version 6. The version 6 is able to find all stories in the projects automatically without having to list each story explicitly. It also uses more concise and more intuitive syntax of writing stories.
+    An advantage of this approach is that even though Storybook for React Native is in version 5, the Storybook for Web can use the latest version 6 (as of May 2021). In version 6, all stories in the projects are found automatically without having to list each story explicitly. It also uses a more concise and more intuitive syntax for writing stories.
     
-    Another advantage is that the Storybook created by this approach can be used with libraries for web development, such as Chromatic for visual testing. It can be built into static files and served as a application independent of the React Native application.
+    Another advantage is that the Storybook for Web can be used with other libraries for web development, such as Chromatic for visual testing, which is described in Section \ref{sec:visual_testing}. Storybook for Web can be built into static files and served as an application independent of the React Native application.
     
     The main disadvantage is that there are two separate Storybooks in the project. A small amount of extra code needs to be written for each story to make it visible in both Storybooks. 
     
@@ -451,59 +447,54 @@ It is possible to install a Storybook server that enables navigation between sto
     \begin{center}
         \includegraphics[width=\textwidth]{figures/other/storybook_web}
     \end{center}
-    \caption{Storybook for React in the browser.}
+    \caption{Storybook for Web in the browser.}
     \label{fig:storybook_web}
 \end{figure}
 
 \section{Logging}
-The logging in the application happens via methods of a \texttt{LOG} object. This abstraction ensures that the application does not depend on a particular logging system.
+The logging in Receipts Scanner happens via methods of a \texttt{LOG} object. This abstraction ensures that the application does not depend on a particular logging system.
 
-All logs are sent to the console in development mode. \texttt{WARN} and \texttt{ERROR} level messages are sent into Sentry\footnote{\url{https://sentry.io/}}, both in development and release mode. Sentry is a third party service that collects logs, errors and events sent though the network. This enables monitoring of the application behaviour on users' devices.
+All logs are sent to the console in development mode. \texttt{WARN} and \texttt{ERROR} level messages are sent into Sentry\footnote{\url{https://sentry.io/}}, both in development and release mode. Sentry is a third party service that collects logs, errors, and events sent through the network. This enables monitoring of the application behaviour on users' devices.
 
 \section{Testing}
-The Receipts Scanner uses five kinds of tests: unit tests, component tests, snapshot tests, visual regression tests and end-to-end tests.
-The former three use a JavaScript testing framework Jest\footnote{\url{https://jestjs.io/}}.
+The Receipts Scanner uses five TODO kinds of tests: unit tests, component tests, snapshot tests, visual regression tests and end-to-end tests.
+Apart from visual tests, all tests use a JavaScript testing framework Jest\footnote{\url{https://jestjs.io/}}.
 
 \subsection{Unit tests}
-Unit tests test individual functions. Their main goal is to assure that the utility functions such as RGB to HEX color conversion or receipt filtering works.
+Unit tests test individual functions. Their main goal is to assure that the utility functions such as RGB to HEX color conversion or receipt filtering work.
 
 \subsection{Component tests}
-Component tests test individual React components. An example could be a test for a \textit{Receipts List} component. Let us assume that the component calls an API and displays the returned receipts. The test would mock the API call, return fixed list of receipts and assert, that those receipts are visible.
+Component tests test individual React components. An example could be a test for a \textit{Receipts List} component. Let us assume that the component calls an API and displays the returned receipts. The test would mock the API call by returning a fixed list of receipts and then assert that those receipts are visible.
 
-In React Native, there is an option to choose between two libraries, react-test-renderer and React Native Testing Library. 
+In React Native, there is an option to choose between two libraries for component tests: react-test-renderer and React Native Testing Library. 
 
-react-test-renderer renders components to pure JavaScript objects without depending on the DOM\footnote{Document Object Model} or a native mobile environment \cite{ReactTestRenderer}. It provides methods for locating elements for example by component type (e.g. \texttt{Text}) or properties (e.g. finding a button with \texttt{title} value equal to \textit{Submit}).
+react-test-renderer renders components to pure JavaScript objects without depending on the DOM\footnote{Document Object Model} or a native mobile environment \cite{ReactTestRenderer}. It provides methods for locating elements, for example, by component type (e.g. \texttt{Text}) or properties (e.g. finding a button with \texttt{title} value equal to \textit{Submit}).
 
-It is possible to get the rendered component as a JSON and use it for snapshot testing, which is described in the next section \ref{sect:snapshot_testing}.
+It is possible to get the rendered component as a JSON\footnote{JavaScript Object Notation is a lightweight data-interchange format \cite{Ecma2017JSON}.} and use it for snapshot testing. Snapshot testing is described in Section \ref{sec:snapshot_testing}.
 
-The issue of testing with react-test-renderer is that the tests rely on implementation details of the components. React Native Testing Library solves this problem by providing utility functions on top of react-test-renderer \cite{ReactNativeTestingLibrary} for locating elements, e.g. by the visible text or accessibility label, so that tests resemble how users interact with the application. It is inspired by React Testing Library \cite{ReactNativeTestingLibrary}, which is a widely used testing library for React.
+The issue of testing with react-test-renderer is that the tests rely on implementation details of the components. React Native Testing Library solves this problem by providing utility functions on top of react-test-renderer \cite{ReactNativeTestingLibrary} for locating elements, e.g. by the visible text or accessibility label so that tests resemble how users interact with the application. It is inspired by React Testing Library \cite{ReactNativeTestingLibrary}, which is a widely used testing library for React.
 
 \subsection{Snapshot testing}
-\label{sect:snapshot_testing}
+\label{sec:snapshot_testing}
 Snapshot tests verify that the rendered markup of the components stays the same. When the snapshot tests are run for the first time, the rendered markup is saved in a file.
-During subsequent runs, the newly rendered markup is compared to the saved one. The tests fail when there is a differences between the two. Those differences are usually highlighted for the developer to asses, whether or not this change was intentional. If it was, the saved snapshots are updated. Otherwise the unintentional changes are fixed.
+During subsequent runs, the newly rendered markup is compared to the saved one. The tests fail when there are differences between the two. Those differences are usually highlighted for the developer to assess whether or not this change was intentional. If it was, the saved snapshots are updated. Otherwise, the unintentional changes are fixed.
 
-It is possible to create snapshot tests with Jest and react-test-renderer by rendering the component to JSON and comparing it to the previously rendered version\footnote{See snapshot testing with Jest: \url{https://jestjs.io/docs/snapshot-testing}.}.
-
-This process can be automated with Storybook.
-By using a Storybook addon StoryShots\footnote{\url{https://www.npmjs.com/package/@storybook/addon-storyshots}}, all stories in the project are turned into snapshot tests. 
-
-This is a very efficient and inexpensive way of testing, because the stories most of the time already exist.
+It is possible to create snapshot tests with Jest and react-test-renderer by rendering the component to JSON and comparing it to the previously rendered version\footnote{See snapshot testing with Jest: \url{https://jestjs.io/docs/snapshot-testing}.}. This process can be automated with Storybook. Using a Storybook addon StoryShots\footnote{\url{https://www.npmjs.com/package/@storybook/addon-storyshots}}, all stories in the project are turned into snapshot tests. This is a very efficient and inexpensive way of testing because the stories most of the time already exist.
 
 Snapshot testing catches only changes in markup. This does not include any style changes. If the CSS or an image change, the snapshot tests will still pass. 
 
-On the other hand, changing markup does not necessarily mean that the result is different. It is very often the case, that even though the markup has changed, the page looks the same as before and the tests report false positives. For these reasons, snapshot tests can be quite brittle.
+On the other hand, changing markup does not necessarily mean that the result is different. It is often the case that even though the markup has changed, the page looks the same as before, and the tests report false positives. For these reasons, snapshot tests can be quite brittle.
 
 \subsection{Visual testing}
-\label{sect:visual_testing}
-Visual testing addresses the issues of snapshot testing mentioned earlier. It is not important if the markup changed. The important thing is whether the component looks as desired. Visual tests, also called visual regression tests, provide an assurance that once the expected look of a component was achieved, it will stay unchanged.
+\label{sec:visual_testing}
+Visual testing addresses the issues of snapshot testing mentioned earlier. It is not crucial if the markup changed. The important thing is whether the component looks as desired. Visual tests, also called visual regression tests, assure that once the expected look of a component was achieved, it will stay unchanged.
 
-Visual testing is a process of comparing screenshots of newly rendered components with the old screenshots, also called reference images.
-When visual tests are first run, a set of screenshots is made. During subsequent runs, those screenshots are compared to the stored ones. Possible differences are highlighted. There are various tools that can highlight the differences between images. Those tools can be independent of those that are used to take the screenshots.
+Visual testing compares screenshots of newly rendered components with the old screenshots, also called reference images.
+When visual tests run for the first time, a set of screenshots is made. During subsequent runs, those screenshots are compared to the stored ones. Possible differences are highlighted. There are various tools that can highlight the differences between images. Those tools can be independent of tools used to take the screenshots.
 
-A widely used tool for visual testing in React community is Chromatic\footnote{See \url{https://www.chromatic.com/}.}. It creates screenshots of the Storybook stories. It is not possible to use Chromatic with Storybook for React Native. Receipts Scanner repository uses Storybook for React too by utilizing react-native-web. The Chromatic is therefore setup for testing components with Storybook for React.
+A widely used tool for visual testing in React community is Chromatic\footnote{See \url{https://www.chromatic.com/}.}. It creates screenshots of the Storybook stories. It is not possible to use Chromatic with Storybook for React Native. Receipts Scanner repository uses Storybook for Web too by utilizing react-native-web. The Chromatic is therefore setup for testing components with Storybook for Web.
 
-Chromatic runs in the continuous integration pipeline (CI pipeline)\footnote{A series of steps that are executed when changes are pushed to the remote project repository.}. The changes need to be reviewed on the Chromatic website created for given CI run. Chromatic also publishes the Storybook as a website.
+Chromatic runs in the continuous integration (CI) pipeline\footnote{A series of steps executed when changes are pushed to the remote project repository. Described in Section \ref{sec:continuous_integration}.}. The changes need to be reviewed on the Chromatic website created for the given CI run. Chromatic also publishes the Storybook as a website.
 
 Figure \ref{fig:chromatic_diff} shows how the review process of a visual change in Chromatic UI looks. Both the visual change and the change in the markup are visible.
 
@@ -515,9 +506,9 @@ Figure \ref{fig:chromatic_diff} shows how the review process of a visual change 
     \label{fig:chromatic_diff}
 \end{figure}
 
-An alternative to Chromatic is a tool called Loki\footnote{\url{https://loki.js.org/}}, which also integrates with Storybook. It is able to take screenshots in a Chrome browser, on iOS simulator or on Android emulator, which means it can be used both with Storybook for React and Storybook for React Native.
+An alternative to Chromatic is a tool called Loki\footnote{\url{https://loki.js.org/}}, which also integrates with Storybook. It can take screenshots in a Chrome browser, on an iOS simulator or on an Android emulator, which means that it can be used both with Storybook for Web and Storybook for React Native.
 
-Loki creates difference images which highlight the visual change. A visual change of scan button component is shown in Figure \ref{fig:loki_diff}.
+Loki creates images that highlight the visual change. A visual change of a \textit{Scan Button} component is shown in Figure \ref{fig:loki_diff}.
 
 \begin{figure}
     \begin{center}
@@ -527,46 +518,46 @@ Loki creates difference images which highlight the visual change. A visual chang
     \label{fig:loki_diff}
 \end{figure}
 
-I would not recommend using Loki for Storybook for React Native. The tests are unstable and the screenshots differ even though the component itself has not changed. This is caused by the component not being fully loaded when the screenshot is made. Loki uses running Storybook server for controlling which story is shown, which sometimes does not work, resulting in flashing between different stories.
-Loki performs better with Storybook for React, but it cannot take screenshots of modal components.
+I would not recommend using Loki for Storybook for React Native. The tests are unstable, and the screenshots differ even though the component itself has not changed. This is caused by the component not being fully loaded when the screenshot is made. Loki uses a running Storybook server for controlling which story is shown, which sometimes does not work, resulting in flashing between different stories.
+Loki performs better with Storybook for Web, but it cannot take screenshots of modal components.
 
-A third approach of visual testing I tried was a combination of Storycap\footnote{Storycap on GitHub: \url{https://github.com/reg-viz/storycap}.} and Reg Suit\footnote{Reg Suit on GitHub: \url{https://github.com/reg-viz/reg-suit}.}. Similar to Chromatic, this works only with Storybook for React.
+The third approach of visual testing I tried was a combination of Storycap\footnote{Storycap on GitHub: \url{https://github.com/reg-viz/storycap}.} and Reg Suit\footnote{Reg Suit on GitHub: \url{https://github.com/reg-viz/reg-suit}.}. Similar to Chromatic, Storycap and Reg Suit work only with Storybook for Web.
 
 First, Storycap takes screenshots of the stories. Reg Suit then downloads the previous screenshots from Google Cloud Storage, compares them with the new ones and stores the differences. 
 
-Storycap and Reg Suit should run in the CI pipeline. From my experience, Reg Suit had issues determining the hash of the previous commit. This hash is used to pick correct images from the Google Cloud Storage bucket for comparison. For this reason, all stories were being reported as new and no comparison took place.
+Storycap and Reg Suit should run in the CI pipeline. From my experience, Reg Suit had issues determining the hash of the previous commit. This hash is used to pick correct images from the Google Cloud Storage bucket for comparison. For this reason, all stories were being reported as new, and no comparison took place.
 
-Naturally, it is not good to use all three solutions for visual testing together. I would suggest using only Chromatic, because it has a fast setup, provides clean user interface for reviewing the changes and seems as the most reliable solution among those that I have tried.
+Naturally, it is not good to use all three solutions for visual testing together. I would suggest using only Chromatic because it has a fast setup, provides a clean user interface for reviewing the changes, and seems the most reliable solution among those I have tried.
 
 Similarly to snapshot tests, the visual tests are created automatically from stories. The visual testing is therefore very convenient.
 
 \subsection{End-to-end testing}
 \label{sec:end_to_end_testing}
-End-to-end tests are used to test a user interaction with the application from the beginning to the end. 
+End-to-end tests are used to test user interaction with the application from the beginning to the end. 
 
-An example of an end-to-end test would be testing of the sign in functionality, i.e. after the required fields of the sign in form are filled in and the \textit{Sign in} button is pressed, a screen for the authenticated users is shown.
+An example of an end-to-end test would be testing the sign-in functionality, i.e. after the required fields of the sign-in form are filled in, and the \textit{Sign in} button is pressed, a screen for the authenticated users is shown.
 
-Multiple end-to-end testing frameworks for React Native exist.
-Receipts Scanner uses Detox\footnote{Detox on GitHub: \url{https://github.com/wix/Detox}.} end-to-end tests. Detox is a popular choice for React Native testing, mostly for its speed and reliability. Apart from test logs, it is able to capture screenshots and videos of the running tests, which can provide a greater insight into why tests are failing.
+Multiple end-to-end testing frameworks for React Native exist. Receipts Scanner uses Detox\footnote{Detox on GitHub: \url{https://github.com/wix/Detox}.} end-to-end tests. Detox is a popular choice for React Native testing, mostly for its speed and reliability. Apart from test logs, it can capture screenshots and videos of the running tests, providing greater insight into why tests are failing.
 
-A more recent project, Cavy\footnote{\url{https://cavy.app/}}, takes a different approach from Detox. It does not use any native code, all functionality is achieved with pure JavaScript. The setup is therefore easier but the functionality is limited. 
+A more recent project, Cavy\footnote{\url{https://cavy.app/}}, takes a different approach from Detox. It does not use any native code. All functionality is achieved with pure JavaScript. The setup is, therefore, more straightforward, but the functionality is limited.
 
-Whereas Detox is able to locate elements by text or label, Cavy needs that each component that is being tested is wrapped with a special function. This creates a noise in the code.
+Whereas Detox can locate elements by text or label, Cavy needs each component that is being tested to be wrapped with a special function. This creates noise in the code
 
-The oldest testing framework of the ones mentioned is Appium\footnote{\url{http://appium.io/}}. Similar to Selenium WebDriver\footnote{Selenium is a software for automated testing of web applications.}, it uses WebDriver protocol\footnote{WebDriver protocol is used to control the browser.}. It could be used for testing both Android and Windows version of the Receipts Scanner.
+The oldest testing framework of the ones mentioned is Appium\footnote{\url{http://appium.io/}}. Similar to Selenium WebDriver\footnote{Selenium is software for automated testing of web applications.}, it uses WebDriver protocol\footnote{WebDriver protocol is used to control the browser.}. It could be used for testing both the Android and the Windows version of Receipts Scanner.
 
-Appium tests are referred to as \textit{black-box tests}. Black-box testing ignores the internal mechanism of a system and focuses solely on the outputs generated in response to selected inputs and execution conditions \cite{Gao2003Testing}. In practise this means, that when a certain element is expected to be visible, Appium polls until the element becomes visible or until timeout occurs. This usually leads to flaky and undeterministic tests.
+Appium tests are referred to as \textit{black-box} tests. Black-box testing ignores the internal mechanism of a system and focuses solely on the outputs generated in response to selected inputs and execution conditions \cite{Gao2003Testing}. In practise this means, that when a certain element is expected to be visible, Appium polls until the element becomes visible or until timeout occurs. This usually leads to flaky and nondeterministic tests.
 
 Detox has been created to address this issue. Detox tests are so-called \textit{gray-box} tests, which means that the tests are aware of the internal state of the application. Detox automatically waits until all asynchronous operations (such as querying a server or animations) end, and only then is the assertion triggered.
 
 \subsection{Mocking native modules}
 In unit, component and snapshot tests, the native modules need to be mocked. The testing framework Jest can run only JavaScript code.
 
-Visual tests require Storybook to be running. If the Storybook is running on Android device, no mocking is necessary. If Storybook for React is used for visual testing, the modules that do not have web support need to be mocked as well.
+Visual tests require Storybook to be running. If the Storybook is running on Android device, no mocking is necessary. If Storybook for Web is used for visual testing, the modules that do not have web support need to be mocked as well.
 
 The components can be divided into two categories: pure and connected. Pure components are components that display data based on their properties. Connected components connect to the database, make API calls and depend on native modules. They pass the data to pure components. In general, stories should be written for pure components, therefore no mocking of native modules should be needed.
 
 \section{Continuous integration}
+\label{sec:continuous_integration}
 Continuous integration is a practise of frequently merging code changes into a central repository. The changes are validated by creating a build and running automated tests. \cite{Fowler2006Continuous}
 
 Receipts scanner takes advantage of GitHub Actions. Every time new code is pushed to the main branch of the GitHub repository, three workflows are run. A workflow consists of multiple jobs that run in parallel. Each job consists of multiple sequential steps.
@@ -668,7 +659,7 @@ The Receipt Scanner needs to two kinds of data: textual data, which are data abo
 \subsection{Textual data}
 For textual receipt information, document-oriented databases are a perfect fit, because they make it easy to store data in the same format and shape as they are used in the application. 
 
-The document-oriented database is a type of NoSQL\footnote{NoSQL database is a database that does not employ the relational model of data \cite{DigitalOcean2019Database}} database that stores data in the form of documents. All data of a given object (for example receipt) can be stored in one document. The documents are stored mostly in JSON\footnote{JavaScript Object Notation}, BSON\footnote{Binary JSON;}, XML\footnote{Extensible Markup Language} or YAML\footnote{YAML is a human-readable data-serialization language.} format. Unlike SQL databases, document-orient databases do not have a schema and are therefore more flexible. 
+The document-oriented database is a type of NoSQL\footnote{NoSQL database is a database that does not employ the relational model of data \cite{DigitalOcean2019Database}} database that stores data in the form of documents. All data of a given object (for example receipt) can be stored in one document. The documents are stored mostly in JSON, BSON\footnote{Binary JSON;}, XML\footnote{Extensible Markup Language} or YAML\footnote{YAML is a human-readable data-serialization language.} format. Unlike SQL databases, document-orient databases do not have a schema and are therefore more flexible. 
 The documents are stored in collections. Documents can also contain subcollections of documents.
 Two very popular document-oriented databases are MongoDB\footnote{\url{https://www.mongodb.com/}.} and Google Firestore\footnote{\url{https://firebase.google.com/products/firestore}}. MongoDB uses BSON to store documents, Firestore uses JSON. Both databases support data types such as strings, numbers, arrays and timestamps. 
 % https://www.tutorialspoint.com/mongodb/mongodb_datatype.htm
@@ -735,7 +726,7 @@ Another constraint for choosing the model was its size. Google Cloud Run, which 
 
 The used fastText model was pretrained on over 16 billion words from Wikipedia 2017, Statmt.org news and UMBC news \cite{Mikolov2018Advances}. It contains only English word vectors, but fastText provides also models for other languages\footnote{Word vectors for 157 languages:\\ \url{https://fasttext.cc/docs/en/crawl-vectors.html}.}, which could be converted using the Magnitude converter\footnote{Magnitude converter:\\ \url{https://github.com/plasticityai/magnitude\#file-format-and-converter}.} and used in a localized Receipts Scanner, e.g. with a support for Czech language.
 
-Figure \ref{fig:models_comparison} shows results from various word embeddings models. First two columns are generated by Google's word2vec, which was trained on 1 billion words from Google News. The third column is the mentioned fastText. The fourth column is fastText with subwords information. In subwords model, each word is represented as a bag of character \textit{n}-grams. Taking the
+Table \ref{table:models_comparison} shows results from various word embeddings models. First two columns are generated by Google's word2vec, which was trained on 1 billion words from Google News. The third column is the mentioned fastText. The fourth column is fastText with subwords information. In subwords model, each word is represented as a bag of character \textit{n}-grams. Taking the
 word \textit{where} and $n = 3$ as an example, it will be
 represented by the character \textit{n}-grams:
 \[
@@ -765,7 +756,7 @@ pork loin chop & \emoji{motor-scooter} motor scooter & \emoji{hot-dog} hot dog &
         \bottomrule
     \end{tabular}
     \caption{Comparison of pretrained word embeddings models.}
-    \label{fig:models_comparison}
+    \label{table:models_comparison}
 \end{table}
 
 \subsection{Image processing}
@@ -1000,9 +991,9 @@ Figure \ref{fig:dark_mode_android} shows the user interface with dark mode enabl
       \centering
       \includegraphics[width=\subfigsize\textwidth]{figures/screens/android/dark/items}
       \caption{A screen with individual receipt items.}
-      \label{fig:dark_mode_android}
     \end{subfigure}
     \caption{User interface of Receipts Scanner on Android with enabled dark mode.}
+    \label{fig:dark_mode_android}
 \end{figure}
 
 \begin{figure}
@@ -1042,8 +1033,8 @@ This chapter provides an overview of the functionality available in the Receipts
 \begin{itemize}
     \item Authentication
         \begin{itemize}
-            \item Sign in / sign up with email
-            \item Sign in / sign up with Google \Dash only on Android
+            \item Sign-in/registration with email
+            \item Sign-in/registration with Google \Dash only on Android
             \item Email format validation
             \item Password length validation
             \item Preview of password in plain text on toggle 
@@ -1195,6 +1186,7 @@ explicitne zminit, ze jsem splnil zadani
 \appendix %% Start the appendices.
 
 \chapter{Appendix}
+\section{Attachments}
 Files inserted into the archive in the Information System of Masaryk
 University:
 \begin{itemize}
@@ -1211,5 +1203,15 @@ The latest application source code can be found on GitHub:
 \begin{itemize}
 \item \url{https://github.com/petr7555/bachelors_thesis_accounting_ocr}
 \end{itemize}
+
+\section{Version control system commit messages}
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=\textwidth]{figures/other/Emoji_commits}
+    \end{center}
+    \caption{Meaning of emojis in commit messages.}
+    \label{fig:emoji_commits}
+\end{figure}
 
 \end{document}
