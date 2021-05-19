@@ -343,8 +343,9 @@ In case a native module is not available on a given platform, there are four ava
     In Receipts Scanner, this approach has been taken with Google Sign In\footnote{Authentication using Google, further described in Section \ref{phantom:google_sign_in}.}, which is not available on Windows.
     
     \item \textbf{Mocking the module.}
-    TODO co je mocking
-    This approach has been applied in Receipts Scanner on NetInfo module, which provides information about the internet connection. Currently, it is not possible to use NetInfo on Windows\footnote{GitHub issue: \url{https://github.com/react-native-netinfo/react-native-netinfo/issues/306}.}. Therefore it has been temporarily mocked always to return information about the device being online.
+    In the context of this thesis, mocking means substituting an object or a whole module with a simpler implementation. The simpler object is called a mock.
+    
+    The approach of mocking a module has been applied in Receipts Scanner on NetInfo module, which provides information about the internet connection. Currently, it is not possible to use NetInfo on Windows\footnote{GitHub issue: \url{https://github.com/react-native-netinfo/react-native-netinfo/issues/306}.}. Therefore it has been temporarily mocked always to return information about the device being online.
     
     \item \textbf{Replacing the module.} In case a different module that provides similar functionality is available, it can be used instead. If such a module does not exist, it can be implemented.
     
@@ -457,11 +458,11 @@ The logging in Receipts Scanner happens via methods of a \texttt{LOG} object. Th
 All logs are sent to the console in development mode. \texttt{WARN} and \texttt{ERROR} level messages are sent into Sentry\footnote{\url{https://sentry.io/}}, both in development and release mode. Sentry is a third party service that collects logs, errors, and events sent through the network. This enables monitoring of the application behaviour on users' devices.
 
 \section{Testing}
-The Receipts Scanner uses five TODO kinds of tests: unit tests, component tests, snapshot tests, visual regression tests and end-to-end tests.
-Apart from visual tests, all tests use a JavaScript testing framework Jest\footnote{\url{https://jestjs.io/}}.
+The Receipts Scanner uses five types of tests: unit tests, component tests, snapshot tests, visual regression tests and end-to-end tests.
+Apart from visual tests, all tests use a JavaScript testing framework Jest\footnote{\url{https://jestjs.io/}} that is included by default in new React Native applications. The tests run in a Node.js\footnote{Node.js is a JavaScript runtime. See \url{https://nodejs.org/}.} environment that mimics the environment of a React Native application.
 
 \subsection{Unit tests}
-Unit tests test individual functions. Their main goal is to assure that the utility functions such as RGB to HEX color conversion or receipt filtering work.
+Unit tests cover a single piece of functionality, usually individual functions. In Receipts Scanner, their main goal is to assure that the utility functions such as RGB to HEX color conversion or receipt filtering work.
 
 \subsection{Component tests}
 Component tests test individual React components. An example could be a test for a \textit{Receipts List} component. Let us assume that the component calls an API and displays the returned receipts. The test would mock the API call by returning a fixed list of receipts and then assert that those receipts are visible.
@@ -481,9 +482,12 @@ During subsequent runs, the newly rendered markup is compared to the saved one. 
 
 It is possible to create snapshot tests with Jest and react-test-renderer by rendering the component to JSON and comparing it to the previously rendered version\footnote{See snapshot testing with Jest: \url{https://jestjs.io/docs/snapshot-testing}.}. This process can be automated with Storybook. Using a Storybook addon StoryShots\footnote{\url{https://www.npmjs.com/package/@storybook/addon-storyshots}}, all stories in the project are turned into snapshot tests. This is a very efficient and inexpensive way of testing because the stories most of the time already exist.
 
-Snapshot testing catches only changes in markup. This does not include any style changes. If the CSS or an image change, the snapshot tests will still pass. 
+Snapshot testing catches only changes in markup. If, for example, an image on a given URL changes, the snapshot tests will still pass. 
 
-On the other hand, changing markup does not necessarily mean that the result is different. It is often the case that even though the markup has changed, the page looks the same as before, and the tests report false positives. For these reasons, snapshot tests can be quite brittle.
+On the other hand, changing markup does not necessarily mean that the result is different. It is often the case that even though the markup has changed, the page looks the same as before, and the tests report false positives. It can be hard to tell whether the change is intended, especially when dealing with large snapshots.
+
+\paragraph{Mocking}
+In general, stories should be written for pure components, therefore no mocking of native modules should be needed.
 
 \subsection{Visual testing}
 \label{sec:visual_testing}
@@ -545,16 +549,17 @@ Whereas Detox can locate elements by text or label, Cavy needs each component th
 
 The oldest testing framework of the ones mentioned is Appium\footnote{\url{http://appium.io/}}. Similar to Selenium WebDriver\footnote{Selenium is software for automated testing of web applications.}, it uses WebDriver protocol\footnote{WebDriver protocol is used to control the browser.}. It could be used for testing both the Android and the Windows version of Receipts Scanner.
 
-Appium tests are referred to as \textit{black-box} tests. Black-box testing ignores the internal mechanism of a system and focuses solely on the outputs generated in response to selected inputs and execution conditions \cite{Gao2003Testing}. In practise this means, that when a certain element is expected to be visible, Appium polls until the element becomes visible or until timeout occurs. This usually leads to flaky and nondeterministic tests.
+Appium tests are referred to as \textit{black-box} tests. Black-box testing ignores the internal mechanism of a system and focuses solely on the outputs generated in response to selected inputs and execution conditions \cite{Gao2003Testing}. In practise this means, that when a certain element is expected to be visible, Appium polls until the element becomes visible or until a timeout occurs. This usually leads to flaky and non-deterministic tests.
 
 Detox has been created to address this issue. Detox tests are so-called \textit{gray-box} tests, which means that the tests are aware of the internal state of the application. Detox automatically waits until all asynchronous operations (such as querying a server or animations) end, and only then is the assertion triggered.
 
-\subsection{Mocking native modules}
+\subsection{Mocking native modules in tests}
 In unit, component and snapshot tests, the native modules need to be mocked. The testing framework Jest can run only JavaScript code.
 
 Visual tests require Storybook to be running. If the Storybook is running on Android device, no mocking is necessary. If Storybook for Web is used for visual testing, the modules that do not have web support need to be mocked as well.
 
-The components can be divided into two categories: pure and connected. Pure components are components that display data based on their properties. Connected components connect to the database, make API calls and depend on native modules. They pass the data to pure components. In general, stories should be written for pure components, therefore no mocking of native modules should be needed.
+The need for mocking can be alleviated by separating the view part of the application from the business logic.
+The components can be divided into two categories: pure and connected. Pure components are components that display data based on their properties. Connected components connect to the database, make API calls and depend on native modules. They pass the data to pure components.
 
 \section{Continuous integration}
 \label{sec:continuous_integration}
