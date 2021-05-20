@@ -138,6 +138,8 @@
 % END of 'control inline code background dimensions'
 
 % write thousand comma separator in numbers by wrapping them inside \num{}
+% do so also in math mode
+% applies only for numbers >= 10,000
 \usepackage{siunitx}
 \sisetup{group-separator={,}}
 
@@ -183,6 +185,10 @@
 \def\Ldash{\dosh\empty{\hbox{\emdash}\nobreak}}
 \def\Rdash{\dosh\nobreak\emdash}
 
+% for defining and introducing new terms
+% e.g. \definition{JSON} is a...
+\newcommand{\definition}[1]{\textit{#1}}
+
 
 
 
@@ -192,13 +198,13 @@
 \addcontentsline{toc}{chapter}{Introduction}
 During everyday life, people take part in transactions. Be it grocery shopping or refuelling of a car. Despite more and more goods being offered online, offline transactions still form an important part of the overall purchases. Proof of such transactions is, in most cases, a receipt. This proof is necessary when complaining or returning goods. However, it can get tough to keep track of all the receipts, and people can be rejected when asking for a refund simply because they either did not keep their receipt or put it among all the other receipts and are unable to find it. The receipt can also get damaged in such a way that it is not readable anymore. 
 
-The goal of my thesis is to develop an application that would serve as a user's digital receipt database. It would allow the user to take a photo of a receipt and by using optical character recognition it would extract the textual information from the photo. This extracted information would be used to prefill the receipt record. The receipt records should be editable and searchable, e.g. by the merchant name or items bought. The application should be available on Android and Windows.
+The goal of my thesis is to develop an application that would serve as a user's digital receipt database. It would allow the user to take a photo of a receipt and by using optical character recognition it would extract the textual information from the photo. This extracted information would be used to pre-fill the receipt record. The receipt records should be editable and searchable, e.g. by the merchant name or items bought. The application should be available on Android and Windows.
 
 In the first chapter, I provide a brief overview of techniques used for data extraction from images.
 
 In the second chapter, I describe currently available applications that are trying to solve this task, their main features and drawbacks.
 
-The next chapter is concerned with choosing the right technology for developing a cross-platform application. This chapter also provides an overview of the chosen framework – React Native.
+The next chapter is concerned with choosing the right technology for developing a cross-platform application. This chapter also provides an overview of the chosen framework \Dash React Native.
 
 An essential part of the thesis is testing and continuous integration. The types of testing that were used to ensure the high quality and reliability of the application are described in the fourth chapter.
 
@@ -219,7 +225,7 @@ The main feature I will focus on is the automatic information extraction from th
 
 An open-source\footnote{Open-source software is software whose source code is released with permission to use, copy, distribute and modify \cite{GartnerOpenSource}. It is usually free to use. It is often developed collaboratively on platforms such as GitHub.} alternative to the mentioned applications is Receipt Manager\footnote{Receipt Manager on GitHub: \url{https://github.com/ReceiptManager}.}.
 It uses Tesseract\footnote{Tesseract is a library and a command line program for extracting textual data from images. Tesseract on GitHub: \url{https://github.com/tesseract-ocr/tesseract}.} for text recognition from the image and a fixed set of rules to extract the information. The main idea of this project is that it does not rely on any third-party services.
-It is available on iOS, Android and the Web. All these clients connect to a server on which the data extraction runs. It is deployed separately as a Docker container.
+It is available on iOS, Android and the Web. All these clients connect to a server on which the data extraction runs. It is deployed separately as a Docker\footnote{TODO} container.
 
 \chapter{Image data extraction}
 On a high level, the data extraction from the photo of a receipt involves two steps: optical character recognition and data extraction from text.
@@ -231,7 +237,7 @@ It works by pre-processing the image\footnote{Image pre-processing refers to a s
 The code can be assigned based on template matching. An image of an unknown character is compared to a set of images of known characters. The code of the most similar character is chosen. The similarity can be computed as a difference between the pixel's grayscale value in the unknown character and a pixel's grayscale value in the known character \cite{Ziegaus2016TemplateMatching}.
 This approach works well\cite{Ziegaus2016TemplateMatching} for receipts because the characters are printed and are therefore almost the same, except for minor deficiencies in printing. Receipts also usually use the same or a very similar font.
 
-Another approach is to extract the most relevant information from the character image. This is called feature extraction. An example of such a feature could be the density of dark pixels in a given part of the image. These features are used as inputs for machine learning models such as K-Nearest Neighbour and Support Vector Machines. \cite{Singh2011Feature}
+Another approach is to extract the most relevant information from the character image. This is called feature extraction. An example of such a feature could be the density of dark pixels in a given part of the image. These features are used as inputs for machine learning models such as K-Nearest Neighbors and Support Vector Machines. \cite{Singh2011Feature}
 
 The third approach is to use a Convolutional
 Neural Network. It has the highest computational cost among the three mentioned approaches and requires a large dataset of images to learn on, but it has the best performance. \cite{Shreya2019OCRCNN}
@@ -280,7 +286,7 @@ It is possible to create a desktop application by wrapping the web application i
 Electron is a framework that enables creating desktop applications with JavaScript, HTML, and \textsc{CSS}. These applications can then be run on macOS, Windows, or Linux \cite{WhatIsElectron}. Electron is used, for example, by Visual Studio Code and Slack.
 
 \section{React + PWA + Electron}
-React is a JavaScript library for building user interfaces created by Facebook. It is one of the most used libraries for building web applications. It uses JSX, which is a combination of JavaScript and XML, for example, \code{const element = <h1>Hello {'react'.toUpperCase()}</h1>;}. React is declarative and component-based, which means that complex UIs are composed of multiple simpler, independent and reusable components. The components are parametrized with properties (very often called \textit{props}).
+React is a JavaScript library for building user interfaces created by Facebook. It is one of the most used libraries for building web applications. It uses JSX, which is a combination of JavaScript and XML\footnote{\definition{Extensible Markup Language} is a W3C open standard for describing data using embedded tags. \cite{GartnerXML}}, for example, \code{const element = <h1>Hello {'react'.toUpperCase()}</h1>;}. React is declarative and component-based, which means that complex UIs are composed of multiple simpler, independent and reusable components. The components are parametrized with properties (very often called \textit{props}).
 
 React itself is not a cross-platform framework. However, if we release the constraint of having a native mobile application, it is possible to create a progressive web application (PWA). Most React starter templates provide this functionality. The PWA looks very similar to the native application. It is installed directly from the browser by visiting the website that provides the PWA. PWA can be installed both on mobile and desktop.
 In a similar manner to Capacitor, desktop support is possible by wrapping the React application inside Electron. 
@@ -290,7 +296,7 @@ React Native is a JavaScript framework created by Facebook. It is based on React
 
 Unlike Capacitor, which uses Web Views, React Native is compiled into native code, allowing developers to create applications that look and feel like native applications written in Java/Kotlin (for Android) and Objective-C/Swift (for iOS). It also comes with performance benefits. 
 
-As opposed to React, which uses elements that correspond to HTML elements, e.g. \code{<div>} and \code{<p>}, React Native uses TODO platform-agnostic elements such as \code{<View>} and \code{<Text>}. Those are then translated to native UI elements. It also uses its own abstraction of CSS.
+As opposed to React, which uses elements that correspond to HTML elements, e.g. \code{<div>} and \code{<p>}, React Native uses TO platform-agnostic elements such as \code{<View>} and \code{<Text>}. Those are then translated to native UI elements. It also uses its own abstraction of CSS.
 
 React Native exposes JavaScript interfaces for platform APIs so that the applications can access platform features like the camera or the user’s location.
 
@@ -338,20 +344,25 @@ Most native modules are made for Android and iOS only and cannot be therefore us
 In case a native module is not available on a given platform, there are four available options:
 \begin{enumerate}
     \item \textbf{Omitting the module.} 
+    
     If the functionality provided by the native module is not critical, it might be omitted on a given platform. This is possible by having a different code for each platform. This concept is described in Section \ref{sec:platform_specific_code}.
     
     In Receipts Scanner, this approach has been taken with Google Sign In\footnote{Authentication using Google, further described in Section \ref{phantom:google_sign_in}.}, which is not available on Windows.
     
     \item \textbf{Mocking the module.}
-    In the context of this thesis, mocking means substituting an object or a whole module with a simpler implementation. The simpler object is called a mock.
+    
+    In the context of this thesis, \textit{mocking}\index{mocking} means substituting an object or a whole module with a simpler implementation. The simpler object is called a \textit{mock}.
     
     The approach of mocking a module has been applied in Receipts Scanner on NetInfo module, which provides information about the internet connection. Currently, it is not possible to use NetInfo on Windows\footnote{GitHub issue: \url{https://github.com/react-native-netinfo/react-native-netinfo/issues/306}.}. Therefore it has been temporarily mocked always to return information about the device being online.
     
-    \item \textbf{Replacing the module.} In case a different module that provides similar functionality is available, it can be used instead. If such a module does not exist, it can be implemented.
+    \item \textbf{Replacing the module.} 
+    
+    In case a different module that provides similar functionality is available, it can be used instead. If such a module does not exist, it can be implemented.
     
     Receipts Scanner implements its own\footnote{FilePicker} module to provide the functionality of picking an image from the file system on Windows.
     
     \item \textbf{Adding the missing platform to the module.}
+    
     Most of the modules are open-source projects to which anyone can contribute. React Native is a relatively new ecosystem and relies on community contributions. In general, anyone can add a new platform to an existing library.
 \end{enumerate}
 
@@ -430,11 +441,15 @@ Figure \ref{fig:storybook_rn} shows the component library and the interface of S
 It is possible to install a Storybook server that enables navigation between stories directly in the browser. However, the stories are still displayed only on mobile device. In order to show the stories in the browser, a react-native-web\footnote{\url{https://necolas.github.io/react-native-web/}} library must be used. This library provides the same elementary components that are used to create React Native applications. The difference is that instead of translating those components into Android and iOS native components, it translates them into HTML elements.
 
 \begin{enumerate}
-    \item \textbf{Adding Web support to the whole application.} All react-native components are replaced by react-native-web components by aliasing react-native imports to react-native-web in the bundling\footnote{Bundling is the process of transpiling all source files and assets of the application, usually into one large JavaScript file that can be run across different browsers.} process of the whole application. This makes the whole application run in the browser. The Storybook functionality is, therefore, a side-effect.
+    \item \textbf{Adding Web support to the whole application.}
+    
+    All react-native components are replaced by react-native-web components by aliasing react-native imports to react-native-web in the bundling\footnote{Bundling is the process of transpiling all source files and assets of the application, usually into one large JavaScript file that can be run across different browsers.} process of the whole application. This makes the whole application run in the browser. The Storybook functionality is, therefore, a side-effect.
     
     The Expo\footnote{Expo has been introduced in Section\ref{sec:expo}.} applications can run in the browser by default. They are set up with react-native-web from the beginning. No extra configuration is necessary to have Storybook for React Native running in the browser.
     
-    \item \textbf{Installing Storybook for Web.} It is possible to install Storybook for Web and alias react-native imports to react-native-web in the bundling process of Storybook. This approach is used in Receipts Scanner. Figure \ref{fig:storybook_web} shows the component library and the user interface of Storybook for Web.
+    \item \textbf{Installing Storybook for Web.} 
+    
+    It is possible to install Storybook for Web and alias react-native imports to react-native-web in the bundling process of Storybook. This approach is used in Receipts Scanner. Figure \ref{fig:storybook_web} shows the component library and the user interface of Storybook for Web.
     
     An advantage of this approach is that even though Storybook for React Native is in version 5, the Storybook for Web can use the latest version 6 (as of May 2021). In version 6, all stories in the projects are found automatically without having to list each story explicitly. It also uses a more concise and more intuitive syntax for writing stories.
     
@@ -459,13 +474,16 @@ All logs are sent to the console in development mode. \texttt{WARN} and \texttt{
 
 \section{Testing}
 The Receipts Scanner uses five types of tests: unit tests, component tests, snapshot tests, visual regression tests and end-to-end tests.
-Apart from visual tests, all tests use a JavaScript testing framework Jest\footnote{\url{https://jestjs.io/}} that is included by default in new React Native applications. The tests run in a Node.js\footnote{Node.js is a JavaScript runtime. See \url{https://nodejs.org/}.} environment that mimics the environment of a React Native application.
+Apart from visual tests, all tests use a JavaScript testing framework Jest\footnote{\url{https://jestjs.io/}} that is included by default in new React Native applications. The tests run in a Node.js\footnote{Node.js is a JavaScript runtime. See \url{https://nodejs.org/}.} environment that mimics the environment of a React Native application. 
 
 \subsection{Unit tests}
 Unit tests cover a single piece of functionality, usually individual functions. In Receipts Scanner, their main goal is to assure that the utility functions such as RGB to HEX color conversion or receipt filtering work.
 
+\subsubsection{Mocking}
+When the tested function or object has any dependencies, they are often mocked out.
+
 \subsection{Component tests}
-Component tests test individual React components. An example could be a test for a \textit{Receipts List} component. Let us assume that the component calls an API and displays the returned receipts. The test would mock the API call by returning a fixed list of receipts and then assert that those receipts are visible.
+Component tests test individual React components. An example could be a test for a \textit{Receipts List} component. Let us assume that the component calls an API and displays the returned receipts. The test would mock the API call by returning a fixed list of receipts and then assert that those receipts are visible. 
 
 In React Native, there is an option to choose between two libraries for component tests: react-test-renderer and React Native Testing Library. 
 
@@ -474,6 +492,11 @@ react-test-renderer renders components to pure JavaScript objects without depend
 It is possible to get the rendered component as a JSON\footnote{JavaScript Object Notation is a lightweight data-interchange format \cite{Ecma2017JSON}.} and use it for snapshot testing. Snapshot testing is described in Section \ref{sec:snapshot_testing}.
 
 The issue of testing with react-test-renderer is that the tests rely on implementation details of the components. React Native Testing Library solves this problem by providing utility functions on top of react-test-renderer \cite{ReactNativeTestingLibrary} for locating elements, e.g. by the visible text or accessibility label so that tests resemble how users interact with the application. It is inspired by React Testing Library \cite{ReactNativeTestingLibrary}, which is a widely used testing library for React.
+
+React Native Testing Library also adds a \texttt{fireEvent} method that can simulate \textit{press}, \textit{scroll} and \textit{text changed} events. Therefore both the rendering of the element and interaction with it can be tested.
+
+\subsubsection{Mocking}
+Because the components are rendered with react-test-renderer into pure JavaScript objects without depending on a native mobile environment, any native modules need to be mocked.
 
 \subsection{Snapshot testing}
 \label{sec:snapshot_testing}
@@ -486,8 +509,8 @@ Snapshot testing catches only changes in markup. If, for example, an image on a 
 
 On the other hand, changing markup does not necessarily mean that the result is different. It is often the case that even though the markup has changed, the page looks the same as before, and the tests report false positives. It can be hard to tell whether the change is intended, especially when dealing with large snapshots.
 
-\paragraph{Mocking}
-In general, stories should be written for pure components, therefore no mocking of native modules should be needed.
+\subsubsection{Mocking}
+Because the StoryShots addon uses react-test-renderer internally to render the components and save their snapshot, any native modules need to be mocked.
 
 \subsection{Visual testing}
 \label{sec:visual_testing}
@@ -496,7 +519,7 @@ Visual testing addresses the issues of snapshot testing mentioned earlier. It is
 Visual testing compares screenshots of newly rendered components with the old screenshots, also called reference images.
 When visual tests run for the first time, a set of screenshots is made. During subsequent runs, those screenshots are compared to the stored ones. Possible differences are highlighted. There are various tools that can highlight the differences between images. Those tools can be independent of tools used to take the screenshots.
 
-A widely used tool for visual testing in React community is Chromatic\footnote{See \url{https://www.chromatic.com/}.}. It creates screenshots of the Storybook stories. It is not possible to use Chromatic with Storybook for React Native. Receipts Scanner repository uses Storybook for Web too by utilizing react-native-web. The Chromatic is therefore setup for testing components with Storybook for Web.
+A widely used tool for visual testing in React community is Chromatic\footnote{See \url{https://www.chromatic.com/}.}. It creates screenshots of the Storybook stories. It is not possible to use Chromatic with Storybook for React Native. Receipts Scanner repository uses Storybook for Web too by utilizing react-native-web. The Chromatic is therefore set up for testing components with Storybook for Web.
 
 Chromatic runs in the continuous integration (CI) pipeline\footnote{A series of steps executed when changes are pushed to the remote project repository. Described in Section \ref{sec:continuous_integration}.}. The changes need to be reviewed on the Chromatic website created for the given CI run. Chromatic also publishes the Storybook as a website.
 
@@ -535,6 +558,12 @@ Naturally, it is not good to use all three solutions for visual testing together
 
 Similarly to snapshot tests, the visual tests are created automatically from stories. The visual testing is therefore very convenient.
 
+\subsubsection{Mocking}
+Visual tests require Storybook to be running. If the Storybook is running on an Android device, no mocking is necessary. If Storybook for Web is used, native modules that do not have web support need to be mocked.
+
+The need for mocking can be alleviated by separating the view part of the application from the business logic.
+The components can be divided into two categories: pure and connected. Pure components are components that display data based on their properties. Connected components connect to the database, make API calls and depend on native modules. They pass the data to pure components. In general, stories are written for pure components. Therefore no mocking of native modules is needed.
+
 \subsection{End-to-end testing}
 \label{sec:end_to_end_testing}
 End-to-end tests are used to test user interaction with the application from the beginning to the end. 
@@ -553,19 +582,14 @@ Appium tests are referred to as \textit{black-box} tests. Black-box testing igno
 
 Detox has been created to address this issue. Detox tests are so-called \textit{gray-box} tests, which means that the tests are aware of the internal state of the application. Detox automatically waits until all asynchronous operations (such as querying a server or animations) end, and only then is the assertion triggered.
 
-\subsection{Mocking native modules in tests}
-In unit, component and snapshot tests, the native modules need to be mocked. The testing framework Jest can run only JavaScript code.
-
-Visual tests require Storybook to be running. If the Storybook is running on Android device, no mocking is necessary. If Storybook for Web is used for visual testing, the modules that do not have web support need to be mocked as well.
-
-The need for mocking can be alleviated by separating the view part of the application from the business logic.
-The components can be divided into two categories: pure and connected. Pure components are components that display data based on their properties. Connected components connect to the database, make API calls and depend on native modules. They pass the data to pure components.
+\subsubsection{Mocking}
+Because the Detox tests run on the device (Android or iOS), the native modules need not be mocked. It is still possible to mock external dependencies to make the tests faster and more stable.
 
 \section{Continuous integration}
 \label{sec:continuous_integration}
 Continuous integration is a practise of frequently merging code changes into a central repository. The changes are validated by creating a build and running automated tests. \cite{Fowler2006Continuous}
 
-Receipts scanner takes advantage of GitHub Actions. Every time new code is pushed to the main branch of the GitHub repository, three workflows are run. A workflow consists of multiple jobs that run in parallel. Each job consists of multiple sequential steps.
+Receipts scanner takes advantage of GitHub Actions\footnote{\url{https://github.com/features/actions}}. Every time new code is pushed to the main branch of the GitHub repository, three workflows are run. A workflow consists of multiple jobs that run in parallel. Each job consists of multiple sequential steps.
 
 During the first workflow,
 \begin{itemize}
@@ -578,15 +602,58 @@ During the first workflow,
 
 The second workflow runs end-to-end tests on an emulated Android device.
 
-The third workflow runs tests of the Python API. The Python API deployment logic is not contained in the workflows. Instead, a repository hook is setup in the Google Console\footnote{A user interface to manage services provided by Google.} to deploy the latest version of the Python API.
+The third workflow runs tests of the Python API\footnote{Python API is described in Section \ref{sec:python_api}.}. The workflows do not contain the Python API deployment logic. Instead, a repository hook is set up in the Google Cloud Platform Console\footnote{A user interface to manage services provided by Google.} to deploy the latest version of the Python API.
 
 \chapter{Implementation}
 
-\section{Authentication}
-\textit{Authentication is the process of verifying an entity’s identity, given its credentials}\cite{Cankaya2011Authentication}.
-For Receipts Scanner, user is the entity that is being authenticated.
+\section{Storage}
+\label{sec:storage}
+The Receipt Scanner needs to store two kinds of data: textual data, i.e. data about the receipts and the users' credentials, and the receipt images.
 
-The authentication in the application serves two purposes. The first one is the ability of connecting saved receipts with the user who created them. The second reason for authentication is to ensure proper database rules. The rules are set in such a way, that only authenticated user is able to create a new \textit{User} document. The user is able to read and modify the \textit{User} document if they are authenticated and if the document belongs to them. The last rule ensures, that each user is able to create, read and modify only their own receipts inside the \textit{Receipts} collection.
+\subsection{Textual data}
+For textual receipt information, document-oriented databases are a perfect fit because they make it easy to store data in the same format and shape as they are used in the application. 
+All data of a given object (for example, receipt) can be stored in one document. The documents are stored mostly in JSON, BSON\footnote{Binary JSON.}, XML or YAML\footnote{\definition{YAML} is a human-readable data-serialization language.} format. Unlike SQL databases, document-orient databases do not have a schema and are therefore more flexible.
+
+The documents are stored in collections. Documents can also contain subcollections of documents.
+
+Two very popular document-oriented databases are MongoDB\footnote{\url{https://www.mongodb.com/}} and Google Firestore\footnote{\url{https://firebase.google.com/products/firestore}}. MongoDB uses BSON to store documents, Firestore uses JSON. Both databases support data types such as strings, numbers, arrays and timestamps\footnote{Supported data types in MongoDB: \url{https://docs.mongodb.com/manual/reference/bson-types/}.
+Supported data types in Google Firestore: \url{https://firebase.google.com/docs/firestore/manage-data/data-types}.}.
+
+Although document-oriented databases do not have a schema, it is beneficial to have a fixed data model so that the shape of the stored data is predictable.
+The data model for Receipts Scanner is shown in Figure \ref{fig:data_model_firestore}. It shows how the data are structured into two collections, \texttt{Users} and \texttt{Receipts}. Because all user data are child nodes of a given user document, it is easy to restrict access to other documents based on the path to that document. The authentication and access rules are described in Section \ref{ref:authentication}.
+
+Although the item forms a separate entity, it is not a document but only an object in the array of items of the receipt.
+
+Other notable fields are \texttt{urlOriginal} and \texttt{urlProcessed}, which specify the URL address of the original receipt photo and a processed photo, respectively. 
+
+    \begin{figure}
+        \begin{center}
+            \includegraphics[width=\textwidth]{figures/other/data_model_firestore}
+        \end{center}
+        \caption{Data model of Receipts Scanner}
+        \label{fig:data_model_firestore}
+    \end{figure}
+
+\subsection{Image data}
+Although storing images directly in the document-oriented database would be possible\footnote{In MongoDB, it is possible to store BSON documents up to 16 MB. Larger files can be split into parts of 255 kB using GridFS \cite{GridFS}}, this solution is not optimal.
+
+For receipt images, the most cost-effective storage is object storage. \definition{Object storage} is storage optimized for storing BLOBs (Binary Large Objects). BLOB is a collection of binary data stored as a single entity. It can be, for example, an image, audio or video. 
+
+The images are stored inside \texttt{Users/<user\_id>/Receipts/} directory. This folder structure enables restricting access to images based on the value of \texttt{<user\_id>}.
+
+I have chosen Google Firestore to store the textual data and Google Storage to store the photos of receipts. These two cloud-based services are available under a platform called Firebase. The Firebase platform also provides authentication and analytics services to Receipts Scanner.
+
+\phantomsection
+\label{phantom:firebase_adapter}
+Firebase is supported on iOS, Android and the Web. An unofficial library named React Native Firebase\footnote{\url{https://rnfirebase.io/}} provides the same services on React Native for Android and iOS. However, it does not support React Native Windows. Therefore Receipts Scanner uses Firebase for Web on Windows and React Native Firebase on Android. To be able to write the same code that could be run both on Android and Windows, an adapter \texttt{firebase.ts} was created. It imports both libraries, and, based on the platform the application is currently running on, it exports the proper objects. The rest of the code that needs to work with Firebase imports the objects from \texttt{firebase.ts} instead of importing them directly from Firebase for Web or React Native Firebase.
+
+In theory, the Receipts Scanner could use Firebase for Web both on Android and Windows, but I would expect React Native Firebase to be more suitable and faster since it uses native APIs. React Native Firebase could also get support for React Native Windows in the future.
+
+\section{Authentication}
+\label{ref:authentication}
+\textit{"Authentication is the process of verifying an entity’s identity, given its credentials."} \cite{Cankaya2011Authentication} In Receipts Scanner, users are being authenticated.
+
+The authentication in the application serves two purposes. The first one is the ability to connect saved receipts with the user who created them. The second reason for authentication is to ensure proper database rules. The rules are set so that only authenticated user can create a new \textit{User} document\footnote{Documents and data model of Receipts Scanner have been introduced in Section \ref{sec:storage}.}. The user can read and modify the \textit{User} document if they are authenticated and if the document belongs to them. The last rule ensures that each user can create, read and modify only their receipts inside the \textit{Receipts} collection and not receipts of other users.
 
 \begin{figure}
 \centering
@@ -606,11 +673,12 @@ The authentication in the application serves two purposes. The first one is the 
 \caption{Login screen.}
 \end{figure}
 
-When the user first launches the application, a login screen is displayed. The Login screen is depicted in Figure \ref{fig:login_screen}. It consists of two text input fields and three buttons. The first input field is for email and the second is for password. It is possible to display the entered password in a clear-text form by pressing the eye icon next to the password input. Based on the user's preference they can choose one of the two supported authentication mechanisms:
+When the user first launches the application, a login screen is displayed. The login screen is depicted in Figure \ref{fig:login_screen}. It consists of two text input fields and three buttons. The first input field is for email, and the second is for password. It is possible to display the entered password in plain text form by pressing the eye icon next to the password input. Based on the user's preference, they can choose one of the two supported authentication mechanisms:
+
 \begin{enumerate}
     \item \textbf{Authentication with email and password}
     
-    Figure \ref{fig:sign_in_flow} shows how the process of a sign-in using email and password looks. The form offers a real-time validation, so the user is instantly notified in case they have entered an invalid email or a password. The validation is show in Figure \ref{fig:login_validation}.
+    Figure \ref{fig:sign_in_flow} shows how the process of a sign-in with email and password looks. The form offers a real-time validation, so the user is instantly notified if they have entered an invalid email or a password. The validation is shown in Figure \ref{fig:login_validation}.
     
     \begin{figure}
         \begin{center}
@@ -620,7 +688,7 @@ When the user first launches the application, a login screen is displayed. The L
         \label{fig:sign_in_flow}
     \end{figure}
     
-    Figure \ref{fig:sign_up_flow} shows how the process of a sign-up using email and password looks.
+    Figure \ref{fig:sign_up_flow} shows the process of a sign-up with email and password.
     
     \begin{figure}
         \begin{center}
@@ -635,7 +703,7 @@ When the user first launches the application, a login screen is displayed. The L
     \phantomsection
     \label{phantom:google_sign_in}
     Figure \ref{fig:google_auth_flow} shows authentication flow using Google Sign In\footnote{Google Sign In on GitHub: \url{https://github.com/react-native-google-signin/google-signin}.} native module.
-    Authentication with Google is not available on the Windows version of an application, because the Google Sign In library does not support React Native Windows yet\footnote{GitHub issue that tracks adding of support of Google Sign In for Windows: \url{https://github.com/microsoft/react-native-windows/issues/6531}}.
+    Authentication with Google is not available in the Windows version of Receipts Scanner because the Google Sign In library does not support React Native Windows yet\footnote{GitHub issue that tracks adding of support of Google Sign In for Windows: \url{https://github.com/microsoft/react-native-windows/issues/6531}}.
     
     \begin{figure}
         \begin{center}
@@ -646,9 +714,8 @@ When the user first launches the application, a login screen is displayed. The L
     \end{figure}
 \end{enumerate}
 
-A common property of all three mentioned workflows is that the user's session is persisted even if the application is restarted.
-
-If a user wanted to use a different account they could sign out on the Settings screen, which is depicted in Figure \ref{fig:settings_screen}. Clicking the \textit{Sign out} button ends the session and redirects the user back to the Login screen.
+What all three workflows have in common is that the user's session is persisted even if the application is restarted.
+If a user wanted to use a different account, they could sign out in the settings screen, depicted in Figure \ref{fig:settings_screen}. Clicking the \textit{Sign out} button ends the session and redirects the user back to the login screen.
 
 \begin{figure}
     \begin{center}
@@ -658,88 +725,93 @@ If a user wanted to use a different account they could sign out on the Settings 
     \label{fig:settings_screen}
 \end{figure}
 
-\section{Storage}
-The Receipt Scanner needs to two kinds of data: textual data, which are data about the receipts and the users' credentials, and the receipt images. 
+\section{Adding a receipt}
+The main functionality offered by Receipts Scanner is adding a receipt and storing it in the user's collection of receipts.
+This process is visualized in Figure \ref{fig:add_receipt_android}.
+It starts by the user selecting an already existing photo of a receipt from a gallery or by taking a new photo with the phone camera. The photo can be cropped to remove the background. It can also be rotated. The rotation does not have any effect on the result of OCR. It affects only how the photo will be shown to the user in their receipts collection.
 
-\subsection{Textual data}
-For textual receipt information, document-oriented databases are a perfect fit, because they make it easy to store data in the same format and shape as they are used in the application. 
-
-The document-oriented database is a type of NoSQL\footnote{NoSQL database is a database that does not employ the relational model of data \cite{DigitalOcean2019Database}} database that stores data in the form of documents. All data of a given object (for example receipt) can be stored in one document. The documents are stored mostly in JSON, BSON\footnote{Binary JSON;}, XML\footnote{Extensible Markup Language} or YAML\footnote{YAML is a human-readable data-serialization language.} format. Unlike SQL databases, document-orient databases do not have a schema and are therefore more flexible. 
-The documents are stored in collections. Documents can also contain subcollections of documents.
-Two very popular document-oriented databases are MongoDB\footnote{\url{https://www.mongodb.com/}.} and Google Firestore\footnote{\url{https://firebase.google.com/products/firestore}}. MongoDB uses BSON to store documents, Firestore uses JSON. Both databases support data types such as strings, numbers, arrays and timestamps. 
-% https://www.tutorialspoint.com/mongodb/mongodb_datatype.htm
-Although document-oriented databases do not have a schema, it is very useful to have a fixed data model, so that the shape of the stored data is predictable. 
-The data model for Receipts Scanner is shown in Figure \ref{fig:data_model_firestore}. It shows how the data are structured into two collections, \texttt{Users} and \texttt{Receipts}. Because all user data are child nodes of a given user document, it is easy to restrict access to other documents based on the path to that document.
-
-Although the item forms a separate entity, it is not a document, but only an object in the array of items of the receipt.
-
-Other notable fields are \texttt{urlOriginal} and \texttt{urlProcessed}, which specify the URL address of the original receipt photo and a processed photo, respectively. 
-
-    \begin{figure}
-        \begin{center}
-            \includegraphics[width=\textwidth]{figures/other/data_model_firestore}
-        \end{center}
-        \caption{Data model of Receipts Scanner}
-        \label{fig:data_model_firestore}
-    \end{figure}
-
-\subsection{Image data}
-Although storing images directly in the document-oriented database would be possible\footnote{In MongoDB, it is possible to store BSON documents up to 16 MB. Larger files can be split into parts of 255 kB using GridFS \cite{GridFS}}, this solution is not optimal.
-
-For receipt images, the most cost-effective storage is an object storage. An object storage is a storage optimized for storing BLOBs (Binary Large OBjects). BLOB is a collection of binary data stored as a single entity. It can be for example an image, audio or video. 
-
-The images are stored inside \texttt{Users/<user\_id>/Receipts/} directory. This folder structure enables restricting access to images based on the value of \texttt{<user\_id>}.
-
-I have chosen Google Firestore to store the textual data and Google Storage to store the photos of receipts. These two cloud-based services are available under a platform called Firebase. The Firebase platform provides also the authentication and analytics services to Receipts Scanner.
-
-\phantomsection
-\label{phantom:firebase_adapter}
-Firebase is supported on iOS, Android and the Web. An unofficial library called React Native Firebase\footnote{\url{https://rnfirebase.io/}} provides the same services on React Native for Android and iOS. However, it does not support React Native Windows. Therefore Receipts Scanner uses Firebase for Web on Windows and React Native Firebase on Android. To be able to write the same code that could be run both on Android and Windows, an adapter `firebase.ts` was created. It imports both libraries and based on the platform the application is currently running on exports the right objects. Rest of the code that needs to work with Firebase imports the objects from `firebase.ts` instead of importing either from Firebase for Web or React Native Firebase directly.
-
-In theory, the Receipts Scanner could use Firebase for Web on both Android and Windows, but I would expect React Native Firebase to be more suitable and faster, since it uses native APIs. React Native Firebase could also get support for React Native Windows in the future.
-
-\section{Python API}
-The Python API serves two purposes: to process an image of a receipt and to categorize receipt items.
-
-It provides three endpoints\footnote{The detailed documentation of endpoints is available at \url{https://documenter.getpostman.com/view/9355808/TzJsfdUK}.}:
+Next, three sequences of processes happen asynchronously:
 
 \begin{itemize}
-    \item \texttt{GET /} \Dash Returns a health check string. Used to make sure that the service is running.
+    \item The image of the receipts is sent to Form Recognizer API. The returned data (structured text information extracted from the image) is sent to the Python API \texttt{/category} endpoint, where emojis are added to all items that have been recognized on the receipt.
     
-    \item \texttt{POST /category} \Dash Expects a JSON containing an item name, possibly consisting of multiple words. It returns a category of that item.
+    Form Recognizer and Python API are described in Sections \ref{sec:form_recognizer} and \ref{sec:python_api}, respectively.
     
-    \item \texttt{POST /process-image} \Dash Expects a form-data containing an image. It returns the processed version of that image.
+    \item The image is uploaded to Firebase Storage.
+
+    \item The image is sent to the Python API \texttt{/process-image} endpoint. The endpoint returns a processed grayscale image that is then uploaded to Firebase Storage.
+\end{itemize}
+
+At the end, the receipt document is added to the user's receipt collection in Google Firestore, and the edit form is shown. 
+
+The benefit of the asynchronicity of those processes is that the whole process is much faster than if it happened synchronously. Adding a receipt takes under 8 seconds on average\footnote{Based on measurements of 10 different receipts.}.
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=\textwidth]{figures/diagrams/Add_receipt_Android}
+    \end{center}
+    \caption{Activity diagram of a user adding a new receipt.}
+    \label{fig:add_receipt_android}
+\end{figure}
+
+\subsection{Uploading image from Windows}
+On Android, the image capture and selection from the gallery is provided by library react-native-image-crop-picker\footnote{\url{https://github.com/ivpusic/react-native-image-crop-picker}}. However, this library does not support Windows. A library react-native-document-picker\footnote{\url{https://github.com/rnmods/react-native-document-picker}} used to provide a file selection feature for Windows but is incompatible with the current version of React Native for Windows. 
+
+For this reason, a native C++ module \texttt{FilePicker} was implemented. It allows to pick an image from the Windows Explorer and returns an object containing the path to the image, MIME type\footnote{MIME (Multipurpose Internet Mail Extensions) type identifies the format of data transmitted on the internet.} and the image data encoded as Base64\footnote{\definition{Base64} is an encoding that encodes binary data into ASCII text.}. This module is then used in the JavaScript code. However, the image upload functionality is not complete on Windows because Firebase Storage for Web uses Web APIs that are not available in React Native running on Windows. An option to overcome this issue would be finding cloud storage that supports the upload of Base64 strings, preferably without any library, using only REST API.
+
+The \texttt{FilePicker} module could be eventually released as a separate package, so that it could be used by other React Native developers.
+
+\section{Form Recognizer}
+\label{sec:form_recognizer}
+\definition{Form} Recognizer is a cloud service by Microsoft for extracting structured information from documents \cite{WhatIsFormRecognizer}. It provides a pre-built model that is suitable for recognizing English receipts \cite{FormRecognizerPrebuiltReceiptModel}. It can be accessed through a JavaScript client library\footnote{\url{https://docs.microsoft.com/en-us/javascript/api/overview/azure/ai-form-recognizer-readme?view=azure-node-latest\#recognize-receipts}}. However, this library is built for Node.js runtime, which is different from the React Native runtime. In most cases, React Native uses JavaScriptCore, which is the JavaScript engine that powers Safari \cite{JavaScriptRNEnvironment}.
+
+Receipts Scanner implements a service \texttt{FormRecognizerClient} with the same interface as the one from the official library, but it relies solely on API calls to the Form Recognizer API. The method to extract the information from the receipt is modelled as a long-running operation, which means that the initial request returns a URL to which the subsequent requests for the result should be made.
+
+After \texttt{FormRecognizerClient} is created, its \texttt{beginRecognizeContent} method is called with the image that should be processed with the OCR service. The method returns an instance of a \texttt{Poller}. The \texttt{Poller} provides a method \texttt{pollUntilDone} that repeatedly sends requests to the Form Recognizer API until the result is available.
+
+\section{Python API}
+\label{sec:python_api}
+The Python API is a service that runs separately from Receipts Scanner. It serves two purposes: to process an image of a receipt and to categorize receipt items.
+
+It provides three endpoints\footnote{Detailed documentation of the endpoints is available at \url{https://documenter.getpostman.com/view/9355808/TzJsfdUK}.}:
+
+\begin{itemize}
+    \item \texttt{GET /} \Dash Returns a health check string. It is used to make sure that the service is running.
+    
+    \item \texttt{POST /category} \Dash Expects a JSON containing an item name, possibly consisting of multiple words. It returns a category of that item and an associated emoji.
+    
+    \item \texttt{POST /process-image} \Dash Expects a form-data containing an image. It returns a JSON containing the processed version of the image as a Base64 string and the image MIME type.
 \end{itemize}
 
 \subsection{Item categorization}
-In order to make the application more visually attractive and to improve the user experience, each item on the receipt is assigned an emoji. The emoji is chosen base on the words that appear in the item name. If the user is not content with the automatically assigned category, they can remove it in the receipt edit form.
+In order to make the application more visually attractive and to improve the user experience, each item on the receipt is assigned an emoji. The emoji is chosen based on the words that appear in the item name. If the user is not content with the automatically assigned emoji, they can remove it in the receipt edit form.
 
 When a user adds a new receipt, the items on the receipt are sent to the Python API \texttt{/category} endpoint. The service contains a dictionary of category names as keys and emojis as values. Each item name is compared to all dictionary keys by using method \texttt{most\_similar\_to\_given} and the key that is most similar to the item name is returned, together with the emoji.
 
-The method \texttt{most\_similar\_to\_given} is provided by the Magnitude library\cite{PatelEtal2018Magnitude}. Magnitude is a tool for utilizing and processing word embeddings. Word embeddings are typically real-valued vectors that encode the meaning of a word, such that the vectors that are close in the vector space are similar in their meaning \cite{Jurafsky2020Speech}. Magnitude is a faster and memory efficient alternative to tools like Gensim\footnote{\url{https://radimrehurek.com/gensim/}}. 
+The method \texttt{most\_similar\_to\_given} is provided by the Magnitude library\cite{PatelEtal2018Magnitude}. Magnitude is a tool for utilizing and processing word embeddings. Word embeddings are typically real-valued vectors that encode the meaning of a word, such that the vectors that are close in the vector space are similar in their meaning \cite{Jurafsky2020Speech}. Magnitude is a fast and memory-efficient alternative to tools like Gensim\footnote{\url{https://radimrehurek.com/gensim/}}.
 
 It uses its own vector storage file format \texttt{.magnitude}.
-Popular embedding models such as Google's word2vec, Stanford's GloVe and Facebook's fastText have been pre-converted to the \texttt{.magnitude} format for immediate download and usage\footnote{Pre-converted models for immediate download: \url{https://github.com/plasticityai/magnitude\#pre-converted-magnitude-formats-of-popular-embeddings-models}.}. Furthermore, each word embeddings model is available in three variants: light, medium and heavy. The difference is that medium and heavy models have advanced support for out-of-vocabulary keys\footnote{Words that do not appear in the model's vocabulary.}. The heavy model also features faster approximate k-nearest neighbors.
+Popular embedding models such as Google's word2vec, Stanford's GloVe and Facebook's fastText have been pre-converted to the \texttt{.magnitude} format for download and usage\footnote{Pre-converted Magnitude models for download: \url{https://github.com/plasticityai/magnitude\#pre-converted-magnitude-formats-of-popular-embeddings-models}.}. Furthermore, each word embeddings model is available in three variants: light, medium and heavy. The difference is that medium and heavy models have advanced support for out-of-vocabulary keys\footnote{Words that do not appear in the model's vocabulary.}. The heavy model also features faster approximate K-Nearest Neighbors\footnote{A supervised machine learning algorithm for classification and regression problems.}.
 
 Magnitude implements functions for looking up
-vector representations for misspelled or out-of-vocabulary words. This means it can handle abbreviations, which often appear on receipts, and whole sentences reasonably well.
+vector representations for misspeled or out-of-vocabulary words. This means that it can handle abbreviations, which often appear on receipts, and whole sentences reasonably well.
 
 The interface of the library is agnostic to the underlying model.
-In Receipt Scanner, the fastText model is used – in particular its medium variant, as only the exact similarity search is performed, so there is no need for faster approximate k-NN. The light variant handles item names that contain multiple words poorly.
+In Receipt Scanner, the fastText model is used \Dash more specifically, its medium variant, as only the exact similarity search is performed, so there is no need for faster approximate K-Nearest Neighbors. The light variant is not used because it handles item names that contain multiple words poorly.
 
-Another constraint for choosing the model was its size. Google Cloud Run, which is a cloud service where the model is running, does not allow containers larger than 8 GB. The Google's medium word2vec model is 4.9 GB large, as compared to fastText, which is only 1.6 GB large. The container with word2vec did not fit into the 8 GB limit.
+Another constraint for choosing the model was its size. Google Cloud Run, a cloud service where the model is running, does not allow containers larger than 8 GB. Google's medium word2vec model is 4.9 GB large compared to fastText, which is only 1.6 GB large. The container with word2vec did not fit into the 8 GB limit.
 
-The used fastText model was pretrained on over 16 billion words from Wikipedia 2017, Statmt.org news and UMBC news \cite{Mikolov2018Advances}. It contains only English word vectors, but fastText provides also models for other languages\footnote{Word vectors for 157 languages:\\ \url{https://fasttext.cc/docs/en/crawl-vectors.html}.}, which could be converted using the Magnitude converter\footnote{Magnitude converter:\\ \url{https://github.com/plasticityai/magnitude\#file-format-and-converter}.} and used in a localized Receipts Scanner, e.g. with a support for Czech language.
+The used fastText model was pre-trained on over 16 billion words from Wikipedia 2017, Statmt.org news and UMBC news \cite{Mikolov2018Advances}. It contains only English word vectors. However, fastText provides models for other languages\footnote{Word vectors for 157 languages:\\ \url{https://fasttext.cc/docs/en/crawl-vectors.html}.}, which could be converted using the Magnitude converter\footnote{\url{https://github.com/plasticityai/magnitude\#file-format-and-converter}} and used in a localized Receipts Scanner, e.g. with support for the Czech language.
 
-Table \ref{table:models_comparison} shows results from various word embeddings models. First two columns are generated by Google's word2vec, which was trained on 1 billion words from Google News. The third column is the mentioned fastText. The fourth column is fastText with subwords information. In subwords model, each word is represented as a bag of character \textit{n}-grams. Taking the
+Table \ref{table:models_comparison} shows results from various word embeddings models. The first two columns are produced by Google's word2vec, which was trained on 100 billion words from Google News \cite{Google2013Word2Vec}. The third column is fastText. The fourth column is fastText with subwords information. In the subwords model, each word is represented as a bag of character \textit{n}-grams. Taking the
 word \textit{where} and $n = 3$ as an example, it will be
-represented by the character \textit{n}-grams:
+represented by the following character \textit{n}-grams:
 \[
 <\text{wh, whe, her, ere, re}>
 \]
-and the special sequence $<\text{where}>$. Less-than sign $<$ and greater-than sign $>$ are special boundary symbols. \cite{BojanowskiEtal2017Enriching}
+and the special sequence $<\text{where}>$. The less-than sign $<$ and the greater-than sign $>$ are special boundary symbols. \cite{BojanowskiEtal2017Enriching}
 
-The results show that the case matters, e.i. \textit{CHUPA LOLLIPOPS} vs \textit{Chupa lollipops}, and how more concrete terms are mapped to more general terms, e.i. \textit{salmon} and \textit{cola} are categorized as \textit{fish} and \textit{cold beverage} respectively.
+The results show that the case matters, e.i. \textit{CHUPA LOLLIPOPS} and \textit{Chupa lollipops} are categorized differently, and how more concrete terms are mapped to more general terms, e.i. \textit{salmon} and \textit{cola} are categorized as \textit{fish} and \textit{cold beverage} respectively.
 
 \begin{table}
     \begin{tabular}{>{\bfseries}L{0.2\textwidth}L{0.2\textwidth}L{0.2\textwidth}L{0.2\textwidth}L{0.2\textwidth}}
@@ -765,225 +837,196 @@ pork loin chop & \emoji{motor-scooter} motor scooter & \emoji{hot-dog} hot dog &
 \end{table}
 
 \subsection{Image processing}
-The image processing happens independently of the OCR. The image sent to the Form Recognizer API is the original image because Form Recognizer uses its own image processing techniques and provides better results on original images.
+The image processing happens independently of the OCR. The image sent to the Form Recognizer API is the original image because it uses its own image processing techniques and provides better results on original images.
 
-The purpose of image processing happening in the Receipts Scanner is to provide a cleaner preview of the receipt for the user. The result is a cropped picture with black text on a white background. The whole process consists of the following steps:
+The purpose of image processing in the Receipts Scanner is to provide a cleaner preview of the receipt for the user. The result is a cropped picture with black text on a white background. The whole process consists of the following steps:
 
-\textbf{1) Loading image:} The image is loaded in a grayscale.
+\begin{enumerate}
+    \item \textbf{Image loading} 
+    
+    The image is loaded in a grayscale.
+    
+    \item \textbf{Noise removal} 
 
-\paragraph{2) Noise removal:} Gaussian blur is applied to reduce the Gaussian noise in the image. It is the most common type of noise in an image \cite{Shreya2019OCRCNN}. The blur is achieved by convolving the image with a Gaussian function.
+    Gaussian blur is applied to reduce the Gaussian noise in the image. It is the most common type of noise in an image \cite{Shreya2019OCRCNN}. The blur is achieved by convolving the image with a Gaussian function.
+    
+    \begin{equation}
+    G(x,y) = \frac{1}{2\pi\sigma^2}e^{-\frac{x^2+y^2}{2\sigma^2}}\text{,}
+    \end{equation}
+    
+    where $x$ and $y$ are the distances from the origin in the horizontal and vertical axis, respectively. $\sigma$ is the standard deviation of the Gaussian distribution. \cite{Shreya2019OCRCNN}
+    
+    A result of applying Gaussian blur is shown in Figure \ref{fig:gaussian_blur}.
+    
+    \begin{figure}
+        \centering
+        \begin{subfigure}[t]{\half\textwidth}
+          \centering
+          \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/before_blur}
+          \caption{Before Gaussian blur.}
+        \end{subfigure}
+        \begin{subfigure}[t]{\half\textwidth}
+          \centering
+          \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/after_blur}
+          \caption{After Gaussian blur.}
+        \end{subfigure}
+        \caption{Comparison of an image before and after Gaussian blur has been applied.}
+        \label{fig:gaussian_blur}
+    \end{figure}
+    
+    \item \textbf{Binary thresholding}
+    
+    It is beneficial to convert the images to binary images to detect the edges and contours better. Binary thresholding sets pixel value to the maximum value \Dash usually 255 (white) \Dash if its value is greater than the threshold. Otherwise, the pixel value is set to 0 (black).
+    
+    \begin{equation}
+    \label{eqn:binary_tresholding}
+    dst(x,y) = \begin{cases}
+                \texttt{maxval} & \text{if }src(x,y) > \texttt{thresh}\\
+                    0 & \text{otherwise}
+              \end{cases}
+    \end{equation}
+    
+    In equation \ref{eqn:binary_tresholding} $src(x,y)$ is a value of a source pixel on coordinates $x$ and $y$ and $dst(x,y)$ is a value of destination, i.e. resulting pixel, on coordinates $x$ and $y$.
+    
+    The threshold value can be either fixed, e.g. 127, or computed from the image. Finding the right value for the fixed thresholding is challenging, and each image might have a different optimal threshold value.
+    
+    Otsu's thresholding calculates the threshold value dynamically from the histogram of each image, such that the found threshold maximizes the between-class variance \cite{Gonzalez2008Digital}. Classes are black and white pixels.
+    
+    Figure \ref{fig:binary_threshold} shows a result of applying fixed binarization with a threshold value of 127. The edges of the receipt in this image would not be correctly recognized because the threshold value is too small.
+    
+    Figure \ref{fig:otsu_threshold} shows a result of applying Otsu's thresholding, which automatically found a threshold value of 151. The edges are clearly visible.
+    
+    \begin{figure}
+        \centering
+        \begin{subfigure}[t]{\half\textwidth}
+          \centering
+          \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/binary_threshold}
+          \caption{Binarized image with fixed threshold of 127.}
+          \label{fig:binary_threshold}
+        \end{subfigure}
+        \begin{subfigure}[t]{\half\textwidth}
+          \centering
+          \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/otsu_threshold}
+          \caption{Binarized image with threshold of 151 found by Otsu's method.}
+          \label{fig:otsu_threshold}
+        \end{subfigure}
+        \caption{Comparison of a fixed and Otsu's thresholding.}
+        \label{fig:threshold_comparison}
+    \end{figure}
 
-\begin{equation}
-G(x,y) = \frac{1}{2\pi\sigma^2}e^{-\frac{x^2+y^2}{2\sigma^2}}\text{,}
-\end{equation}
+    \item \textbf{Dilation}
 
-where $x$ and $y$ are the distances from the origin in the horizontal and vertical axis, respectively. $\sigma$ is the standard deviation of the Gaussian distribution. \cite{Shreya2019OCRCNN}
+    In order to determine the edges of the receipt more easily, the image is dilated. Dilation increases the size of the grid lines.
+    
+    Before performing dilation, the image has to be inverted. Otherwise, an opposite effect, erosion, would be achieved. It is necessary to invert the image back before contour detection, which is described in the next step.
+    
+    A kernel slides through the image the same way as in 2D convolution. A pixel is considered white if at least one pixel in the original image under the kernel is white.
+    
+    A result of applying dilation is shown in Figure \ref{fig:dilation}.
+    
+    \begin{figure}
+        \centering
+        \begin{subfigure}[t]{\half\textwidth}
+          \centering
+          \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/before_dilation}
+          \caption{Before dilation.}
+        \end{subfigure}
+        \begin{subfigure}[t]{\half\textwidth}
+          \centering
+          \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/after_dilation}
+          \caption{After dilation.}
+        \end{subfigure}
+        \caption{Comparison of an image before and after dilation has been applied.}
+        \label{fig:dilation}
+    \end{figure}
 
-A result of applying Gaussian blur is shown in Figure \ref{fig:gaussian_blur}.
+    \item \textbf{Finding the corners of a receipt}
+    
+    As the next step, all external contours in the image are found. Contour is a curve joining points of the same color and intensity. The contour with the largest area is most probably the contour of a receipt. Four points that represent the corners of the receipt are then found in the contour and returned. A result of this step is visualized in Figure \ref{fig:points_and_edges}.
 
-\begin{figure}
-    \centering
-    \begin{subfigure}[t]{\half\textwidth}
-      \centering
-      \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/before_blur}
-      \caption{Before Gaussian blur.}
-    \end{subfigure}
-    \begin{subfigure}[t]{\half\textwidth}
-      \centering
-      \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/after_blur}
-      \caption{After Gaussian blur.}
-    \end{subfigure}
-    \caption{Comparison of an image before and after Gaussian blur has been applied.}
-    \label{fig:gaussian_blur}
-\end{figure}
+    However, if the contour area is smaller than 30\% of the overall image, the next step, \textit{Cropping and warping}, is skipped.
+    
+    \begin{figure}
+        \begin{center}
+            \includegraphics[width=\half\textwidth]{figures/image_processing/points_and_edges}
+        \end{center}
+        \caption{Binarized photo with recognized corners.}
+        \label{fig:points_and_edges}
+    \end{figure}
 
-\paragraph{3) Binary thresholding:} For better accuracy on detection of the edges and contours, it is beneficial to convert the images to binary images. Binary tresholding sets pixel value to the maximum value, which is usually 255 (white), if its value is greater than the threshold, otherwise the pixel value is set to 0 (black).
+    \item \textbf{Preparing underlying picture}
 
-\begin{equation}
-\label{eqn:binary_tresholding}
-dst(x,y) = \begin{cases}
-            \texttt{maxval} & \text{if }src(x,y) > \texttt{thresh}\\
-                0 & \text{otherwise}
-          \end{cases}
-\end{equation}
+    The previous steps were used to find the corners of a receipt. Although Otsu's thresholding made the edges of the white receipt clearly distinguishable from the dark background, the text of the receipt became unreadable.
+    
+    TODO A different scenario would be for receipt scans. Since scans usually do not have any background, Otsu's thresholding maximizes the contrast between the paper and the text instead of the contrast between the paper and the background.
+    
+    For receipt photos, adaptive thresholding is a better choice. This is also caused by shades in the photos, which are not present in scans.
+    
+    With adaptive thresholding, the threshold value for each pixel is based on a small region around it. This method gives better results for images with varying illumination. \cite{OpenCVThresholding}
+    
+    OpenCV library provides two methods of computing the adaptive threshold. It can be computed as the mean of the neighborhood area minus a constant $C$ or as a Gaussian-weighted sum of the neighborhood values minus the constant $C$. Empirically, the Gaussian method with $C = 2$ produced the best results.
+    
+    Before the adaptive thresholding is applied, the original image is blurred using Gaussian blur. This improves the result significantly, as can be seen in Figure \ref{fig:adaptive_thresholding}.
+    
+    \begin{figure}
+        \centering
+        \begin{subfigure}[t]{\half\textwidth}
+          \centering
+          \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/adaptive_thresholding_no_blur}
+          \caption{Adaptive thresholding without Gaussian blur.}
+        \end{subfigure}
+        \begin{subfigure}[t]{\half\textwidth}
+          \centering
+          \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/adaptive_thresholding}
+          \caption{Adaptive thresholding after Gaussian blur.}
+        \end{subfigure}
+        \caption{Comparison of an adaptive thresholding with and without Gaussian blur being applied first.}
+        \label{fig:adaptive_thresholding}
+    \end{figure}
 
-In equation \ref{eqn:binary_tresholding} $src(x,y)$ is a value of a source pixel on coordinates $x$ and $y$ and $dst(x,y)$ is a value of destination, i.e. resulting pixel, on coordinates $x$ and $y$.
+    \item \textbf{Cropping and warping}
 
-The threshold value can either be fixed, e.g. 127, or it can be computed from the image. Finding the right value for the fixed thresholding is difficult and each image might have a different optimal threshold value. 
-
-Otsu's thresholding calculates the threshold value dynamically from the histogram of each image, such that the found threshold maximizes the between-class variance \cite{Gonzalez2008Digital}. Classes are black and white pixels.
-
-Figure \ref{fig:binary_threshold} shows a result of applying fixed binarization with threshold value of 127. The edges of a receipt would not be correctly recognized, because the value is too small for this photo of a receipt. 
-
-Figure \ref{fig:otsu_threshold} shows a result of applying Otsu's thresholding, which automatically found a threshold value of 151. The edges are clearly visible.
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[t]{\half\textwidth}
-      \centering
-      \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/binary_threshold}
-      \caption{Binarized image with fixed threshold of 127.}
-      \label{fig:binary_threshold}
-    \end{subfigure}
-    \begin{subfigure}[t]{\half\textwidth}
-      \centering
-      \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/otsu_threshold}
-      \caption{Binarized image with threshold of 151 found by Otsu's method.}
-      \label{fig:otsu_threshold}
-    \end{subfigure}
-    \caption{Comparison of a fixed and Otsu's thresholding.}
-    \label{fig:threshold_comparison}
-\end{figure}
-
-\paragraph{4) Dilation:} In order to determine edges of the receipt more easily, the image is dilated. Dilation increases the size of the grid lines.
-
-Before performing dilation, the image has to be inverted, otherwise an opposite effect, erosion, would be achieved. It is necessary to invert the image back before contour detection, which is described in the next step. 
-
-A kernel slides through the image, the same way as in 2D convolution. A pixel will be considered white if at least one pixel in the original image under the kernel is white.
-
-A result of applying dilation is shown in Figure \ref{fig:dilation}.
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[t]{\half\textwidth}
-      \centering
-      \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/before_dilation}
-      \caption{Before dilation.}
-    \end{subfigure}
-    \begin{subfigure}[t]{\half\textwidth}
-      \centering
-      \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/after_dilation}
-      \caption{After dilation.}
-    \end{subfigure}
-    \caption{Comparison of an image before and after dilation has been applied.}
-    \label{fig:dilation}
-\end{figure}
-
-\paragraph{5) Finding the corners of a receipt:} As a next step, all external contours in the image are found. Contour is a curve joining points of the same color and intensity. The contour with the largest area is most probably the contour of a receipt. Four points that represent the corners of the receipt are then found in the contour and returned. A result of this step is visualized in Figure \ref{fig:points_and_edges}.
-
-However, if the area of the contour is smaller than 30\% of the overall image, the next step, \textit{Cropping and warping}, will be skipped.
-
-\begin{figure}
-    \begin{center}
-        \includegraphics[width=\half\textwidth]{figures/image_processing/points_and_edges}
-    \end{center}
-    \caption{Binarized photo with recognized corners.}
-    \label{fig:points_and_edges}
-\end{figure}
-
-\paragraph{6) Preparing underlying picture} The previous steps were used to find the corners of a receipt. Although Otsu's thresholding made the edges of the white receipt clearly distinguishable from the dark background, the text of the receipt became unreadable. 
-
-A different scenario would be for receipt scans. Since scans usually do not have any background, Otsu's thresholding results in a larger contrast between the paper and text as opposed to a contrast between the paper and the background.
-
-For receipt photos, adaptive thresholding is a better choice. This is also caused by the presence of shades in the photos, which are not present in scans.
-
-With adaptive thresholding, the threshold value for each pixel is based on a small region around it. This method gives better results for images with varying illumination. \cite{OpenCVThresholding}
-
-OpenCV library provides two methods of computing the adaptive threshold. It can be computed as the mean of the neighbourhood area minus a constant $C$ or as a Gaussian-weighted sum of the neighbourhood values minus the constant $C$. Empirically, Gaussian method with $C = 2$ produced the best results.
-
-Before the adaptive thresholding is applied, the original image is blurred using Gaussian blur. This improves the result significantly as can be seen in Figure \ref{fig:adaptive_thresholding}.
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[t]{\half\textwidth}
-      \centering
-      \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/adaptive_thresholding_no_blur}
-      \caption{Adaptive thresholding without Gaussian blur.}
-    \end{subfigure}
-    \begin{subfigure}[t]{\half\textwidth}
-      \centering
-      \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/adaptive_thresholding}
-      \caption{Adaptive thresholding after Gaussian blur.}
-    \end{subfigure}
-    \caption{Comparison of an adaptive thresholding with and without Gaussian blur being applied first.}
-    \label{fig:adaptive_thresholding}
-\end{figure}
-
-\paragraph{7) Cropping and warping:} Lastly, a perspective transformation (warping) is applied to the underlying photo produced by the previous step.
-The found quadrilateral, represented by four corners, is warped into a rectangle of a similar size. This step also crops the receipt from the background. 
-
-A comparison of the original image and the final processed image is shown in Figure \ref{fig:original_vs_processed}. The processed image is cropped and warped.
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[t]{\half\textwidth}
-      \centering
-      \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/original_image}
-      \caption{Original image.}
-    \end{subfigure}
-    \begin{subfigure}[t]{\half\textwidth}
-      \centering
-      \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/processed_image}
-      \caption{A processed image after adaptive binarization and perspective transformation.}
-    \end{subfigure}
-    \caption{Comparison of a fixed and Otsu's thresholding.}
-    \label{fig:original_vs_processed}
-\end{figure}
-
-% Perspective transformation transforms the source image using a transformation matrix $M$:
-% \begin{equation}
-% dst(x,y) = src\left(\frac{M_{11}x+M_{12}y+M_{13}}{M_{31}x+M_{32}y+M_{33}},\frac{M_{21}x+M_{22}y+M_{23}}{M_{31}x+M_{32}y+M_{33}}\right)\text{.}
-% \end{equation}
-
-% $M$ is a $3\times3$ transformation matrix, computed as follows:
+    Lastly, a perspective transformation (warping) is applied to the underlying photo produced by the previous step.
+    The found quadrilateral, represented by four corners, is warped into a rectangle of a similar size. This step also crops the receipt from the background. 
+    
+    \end{enumerate}
+    
+    A comparison of the original image and the final processed image is shown in Figure \ref{fig:original_vs_processed}.
+    
+    \begin{figure}
+        \centering
+        \begin{subfigure}[t]{\half\textwidth}
+          \centering
+          \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/original_image}
+          \caption{Original image.}
+        \end{subfigure}
+        \begin{subfigure}[t]{\half\textwidth}
+          \centering
+          \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/processed_image}
+          \caption{A processed image after adaptive binarization and perspective transformation.}
+        \end{subfigure}
+        \caption{Comparison of a fixed and Otsu's thresholding.}
+        \label{fig:original_vs_processed}
+    \end{figure}
 
 \subsection{Deployment}
 The Python API is a Flask\footnote{\url{https://flask.palletsprojects.com/en/1.1.x/}} server. 
-It is deployed after each push to the master branch.
-First, a Docker image that contains the source files, external dependencies and the Magnitude word embeddings model is built using Google Cloud Build. The built image is saved into Google Container Registry. Google Cloud Run then start a container from that image.
-It the image was not built successfully or the service failed to start, the previously deployed service will stay available.
+It is automatically deployed after each push to the master branch.
+First, Google Cloud Build\footnote{\url{https://cloud.google.com/build}} builds a Docker image that contains the source files, external dependencies and the Magnitude word embeddings model. The built image is saved into Google Container Registry\footnote{\url{https://cloud.google.com/container-registry}}. Google Cloud Run\footnote{\url{https://cloud.google.com/run}} then runs the image in a container.
+If the image is not built successfully or the Python API service fails to start, the previously deployed service stays available.
 
-API tests are run during the CI pipeline after the new service is deployed.  
-
-\section{Form Recognizer}
-Form Recognizer provides a pre-built model that is suitable for recognizing English receipts. It can be accessed through a JavaScript client library\footnote{\url{https://docs.microsoft.com/en-us/javascript/api/overview/azure/ai-form-recognizer-readme?view=azure-node-latest\#recognize-receipts}}. However, this library is built for Node.js runtime, which is different from the React Native runtime. In most cases, React Native uses JavaScriptCore, which is the JavaScript engine that powers Safari \cite{JavaScriptRNEnvironment}.
-
-Receipts Scanner implements a service \texttt{FormRecognizerClient} with the same interface as the one from the official library, but it relies solely on API calls to the Form Recognizer API. The method to extract the information from the receipt is modeled as long-running operation, which means that the initial request returns a URL to which the subsequent requests for the result should be made.
-
-After \texttt{FormRecognizerClient} is created, its \texttt{beginRecognizeContent} method is called with the image that should be processed with the OCR service. The method returns an instance of a \texttt{Poller}. The \texttt{Poller} provides a method \texttt{pollUntilDone} that repeatedly sends requests to the Form Recognizer API until the result is available.
-
-\section{Adding a receipt}
-The main functionality offered by Receipts Scanner is adding a receipt and storing it in user's collection of receipts.
-This process is visualized in Figure \ref{fig:add_receipt_android}.
-It starts by user selecting an already existing photo of a receipt from a gallery or taking a new photo with the phone camera. The photo can be cropped to remove the background. It can also be rotated. The rotation does not have any effect on the result of OCR, it affects only how the photo will be shown to the user in their receipts collection.
-
-Next, three sequences of processes happen asynchronously.
-
-The first sequence consists of sending the receipt to Form Recognizer API. The returned data is sent to Python API's \texttt{/category} endpoint where emojis are added to all items that have been recongized on the receipt.
-
-In parallel to this, the image is uploaded to Firebase Storage.
-
-The third sequence starts by sending the image to the \texttt{/process-image} endpoint. The endpoint returns a processed grayscale image that is then uploaded to Firebase Storage.
-
-At the end, the receipt document is added to the user's receipt collection in Firebase Firestore and the edit form is shown. 
-
-The benefit of the asynchonicity of those processes is that the whole process of adding a receipt takes under 8 seconds on average\footnote{Based on measurements of 10 different receipts.}.
-
-\begin{figure}
-    \begin{center}
-        \includegraphics[width=\textwidth]{figures/diagrams/Add_receipt_Android}
-    \end{center}
-    \caption{Activity diagram of a user adding a new receipt.}
-    \label{fig:add_receipt_android}
-\end{figure}
-
-\subsection{Uploading photo from Windows}
-On Android, the image capture and selection from gallery is provided by library react-native-image-crop-picker\footnote{\url{https://github.com/ivpusic/react-native-image-crop-picker}}. However, this library does not support Windows. A library react-native-document-picker\footnote{\url{https://github.com/rnmods/react-native-document-picker}} used to provide file selection feature for Windows but is incompatible with current version of React Native for Windows. 
-
-For this reason, a native C++ module FilePicker was implemented. It allows to pick an image from the Windows Explorer and returns an object containing path to the image, mime type and the image data encoded as Base64. This module is then used in the JavaScript code. However, the image upload functionality is not complete on Windows, because Firebase Storage for Web uses Web APIs that are not available in React Native running on Windows. An option to overcome this issue would be to find a storage that supports upload of Base64 strings, preferably without any library, using only REST API.
-
-The FilePicker module could be eventually released as a separate package, so that it could be used by other React Native developers.
+The newly deployed Python API service is tested with tests that run in the repository CI pipeline.
 
 \section{Styles}
-Throughout Receipts Scanner, apart from black and white, two main colors are used. The primary color is malachite, \texttt{\#078331} \testclr[HTML]{078331} and the secondary is \texttt{\#310783} \testclr[HTML]{310783}. The primary color was chosen to resemble the color of banknotes. The secondary color is one of the three colors of malachite's triadic colors\footnote{The color triad was generated using color-hex tool available at \url{https://www.color-hex.com/color/078331}.}. 
-The colors are chosen with respect to the contrast ration between each other as well as the contrast ration between those two colors and black and white. This is especially important in the dark mode.
+Apart from black and white, the Receipts Scanner user interface uses two main colors. The primary color is malachite, \texttt{\#078331} \testclr[HTML]{078331} and the secondary is \texttt{\#310783} \testclr[HTML]{310783}. The primary color has been chosen to resemble the color of banknotes. The secondary color is one of the three colors of malachite's triadic colors\footnote{The color triad was generated using color-hex tool available at \url{https://www.color-hex.com/color/078331}.}. 
+The colors are chosen with respect to the contrast ratio between each other as well as the contrast ratio between those two colors and black and white. This is especially important in the dark mode.
 
-Most of the elements are styled with these two colors to ensure a simple and consistent look of the user interface. 
+Most of the elements are styled with these two colors to ensure a clean and consistent user interface look.
 
 \subsection{Dark mode}
-Receipts scanner switches automatically into dark mode based on the user's device settings. Dark mode in general is a very popular feature among users. It helps reduce digital eye strain and saves battery on devices with OLED\footnote{Unlike LCD screens that illuminate using a back panel that always lights up completely, in OLED displays, each pixel is individually lit.} screen.
+Receipts scanner switches automatically into the dark mode based on the user's device settings. The dark mode is a popular feature among users. It helps reduce digital eye strain and saves battery on devices with OLED\footnote{Unlike LCD screens that illuminate using a back panel that always lights up completely, in OLED displays, each pixel is individually lit.} screen.
 
-Figure \ref{fig:dark_mode_android} shows the user interface with dark mode enabled on an Android device. Figure \ref{fig:dark_mode_windows} shows the application in dark mode on Windows.
+Figure \ref{fig:dark_mode_android} shows the user interface with the dark mode enabled on an Android device. Figure \ref{fig:dark_mode_windows} shows the application in dark mode on Windows.
 
 \begin{figure}
     \centering
@@ -1017,23 +1060,23 @@ Figure \ref{fig:dark_mode_android} shows the user interface with dark mode enabl
     \caption{User interface of Receipts Scanner on Windows with enabled dark mode.}
 \end{figure}
 
-\section{Up to date}
-The receipts are always up to date. Any change in the receipt database for a given user is almost instantly reflected on all other devices where that user is logged in. This means that a user can scan a receipt on the mobile and fill the receipt information from the PC. If they decide to delete the receipt, the receipt disappears from the other device as well.
+\section{Real-time user interface}
+The receipts are always up to date. Any change in the receipt database for a given user is almost instantly reflected on all other devices where that user is logged in. This means that a user can scan a receipt on the mobile and fill in the receipt information from the PC. If they decide to delete the receipt, the receipt disappears from the other device as well.
 This functionality is possible thanks to Google Firebase.
 
 \section{Offline support}
-The application works partially offline. If a user is offline and makes any changes to an already existing receipt (edits a receipt, adds a receipt item, deletes a receipt), this change is reflected in the application UI on the device where the changes were made. Once the user connects to the internet, the changes propagate to the database and other devices of the user. The offline changes are persisted even if the application is turned off. This functionality is possible thanks to Google Firebase.
+The application works partially offline. Suppose a user is offline and makes any changes to an already existing receipt (edits a receipt, adds a receipt item, deletes a receipt). In that case, the change is reflected in the application UI on the device where the changes were made. Once the user connects to the internet, the changes propagate to the database and other user's devices. The offline changes are persisted even if the application is turned off. This functionality is provided by the Google Firebase library.
 
-The receipt scanning functionality is not possible in a offline mode. If a user tries to scan a receipt without an internet connection, an alert modal window is shown to them.
+The receipt scanning functionality is not possible in an offline mode. If a user tries to scan a receipt without an internet connection, an alert modal window is shown to them.
 
-Ideally, the image would be stored locally and its thumbnail would be shown among other receipts, but with a status of ‘being processed’. After the device got connected to the internet again, the image would be uploaded and the user could complete the pre-filled form. +
+Ideally, the image would be stored locally, and its thumbnail would be shown among other receipts with a status of \textit{being processed}. After the device connected to the internet again, the image would be sent to Form Recognizer, which would return the extracted data, and the user could complete the pre-filled form.
 
-Another approach would be to use a local model, that would extract the receipt data. This way the user could complete the complete journey of adding a receipt at once and the new receipt and its photo would be sent to the APIs later on. 
+Another approach would be to use a local model instead of Form Recognizer that would extract the receipt data. This way, the user could complete the complete journey of adding a receipt at once, and the receipt data and the image would be sent to the APIs later on.
 
-Microsoft Form Recognizer does not provide an option to export the model, even if it was a custom one. Therefore a different OCR and information extraction approach would be needed. Furthermore, if the offline model was too large, it should be an opt-in feature of Receipts Scanner.
+Microsoft Form Recognizer does not provide an option to export the model, even if it was a custom one. Therefore a different OCR and data extraction approach would be needed. Furthermore, if the offline model was too large, it should be an opt-in feature of Receipts Scanner.
 
 \section{Features}
-This chapter provides an overview of the functionality available in the Receipts Scanner. Unless stated differently, the same feature is available on both platforms, i.e. Android and Windows.
+This section provides an overview of the functionality available in the Receipts Scanner. Unless stated differently, the feature is available on both platforms, i.e. Android and Windows.
 
 \begin{itemize}
     \item Authentication
@@ -1046,11 +1089,11 @@ This chapter provides an overview of the functionality available in the Receipts
         \end{itemize}
     \item Adding of receipt \Dash only on Android
         \begin{itemize}
-            \item Selecting the receipt from gallery
-            \item Taking a picture of the receipt directly from application
+            \item Picking the receipt image from gallery
+            \item Taking a photo of the receipt
             \item Receipt image cropping and rotation
-            \item Automatic data extraction from the photo of a receipt and form pre-filling
-            \item Automatic adding of emojis to each receipt item
+            \item Automatic data extraction from the photo that pre-fills the form
+            \item Automatic insertion of emoji to each receipt item
         \end{itemize}
     \item Receipt preview
         \begin{itemize}
@@ -1063,14 +1106,13 @@ This chapter provides an overview of the functionality available in the Receipts
         \begin{itemize}
             \item Editing of purchase date, merchant name, merchant address, merchant phone number, total price, subtotal, tax, tip and currency.
             \item Form fields validation
-            \item Ability to move between form fields and submit form using keyboard only
-            \item Receipt item adding
-            \item Receipt item editing
-            \item Receipt item deletion
+            \item Fluent navigation between form fields and submitting of form using keyboard only
+            \item Ability to add, edit and delete a receipt item
         \end{itemize}
-    \item Searching through receipts by merchant name, merchant address and individual receipt items
+    \item Searching through receipts by merchant name, merchant address and individual names of receipt items
     \item Receipt deletion
     \item Dark mode that reflects system settings
+    \item Real-time changes
     \item Partial offline support
     \item Internet connectivity notification \Dash mocked on Windows
     \item Export of receipts data and images
@@ -1078,24 +1120,42 @@ This chapter provides an overview of the functionality available in the Receipts
 \end{itemize}
 
 \chapter{Financial sustainability}
-The Receipts Scanner uses paid third-party services, namely Microsoft Form Recognizer for OCR, Google Cloud Build, Google Container Registry and Google Cloud Run for deployment of Python API container and Google Firebase for document database and image storage. The Firebase Authentication is free.
+The Receipts Scanner uses paid third-party services, namely:
+\begin{itemize}
+    \item Microsoft Form Recognizer for OCR and data extraction
+    
+    \item Google Cloud Build, Google Container Registry and Google Cloud Run for the deployment of Python API container
+    
+    \item Google Firebase for document database and image storage.
+\end{itemize}
 
-It would be necessary to run the application for a period of time to figure out the usage statistics, such as the average number of receipts a user uploads. Since those statistics are not available yet, I will provide an estimate of the operational costs.
+The Firebase Authentication is free.
+
+It would be necessary to run the application for some time to figure out the usage statistics, such as the average number of receipts a user uploads. Since those statistics are not available yet, I will provide an \textit{estimate} of the operational costs.
 
 Let us assume that the application has \num{1000} active users, where each user makes one scan per day on average.
-The price for Microsoft Form Recognizer is \$0.01 per scan \cite{FormRecognizerPricing}. This means the total cost of this service would be $\num{1000}\cdot30\cdot\$0.01 = \$300.00$.
+The price for Microsoft Form Recognizer is \$0.01 per scan \cite{FormRecognizerPricing}. This means the total cost of this service would be $\num{10000}\cdot30\cdot\$0.01 = \$300.00$.
 
 The size of an uploaded image is around 500 KB, the processed image is smaller, around 100 KB large. The price of storing the textual data is negligible compared to other costs and would be lost in the approximations. Cloud Firestore is a very cheap storage \cite{CloudFirestorePricing} and its free tier provides storage for 1 GB, which is about \num{400000} average-sized receipts\footnote{The size of a stored receipt, \num{2500} KB, was computed using the \textit{firestore-size} library available at \url{https://github.com/alekslario/firestore-size}.}.
 
-Whereas the number of scans is linearly proportional to the number of users, the numbers of stored receipts grows quadratically. It can be written recurrently as: 
+Whereas the number of scans is linearly proportional to the number of users, the numbers of stored receipts grows quadratically. It can be expressed recurrently as: 
 \begin{equation}
-r(n) = r(n-1) + cn
+    s(t) = \begin{cases}
+        s(t-1) + rut & \text{if }t\geq1\\
+        0 & \text{otherwise}
+    \end{cases}
 \end{equation}
-or as a function of $n$:
+or as a function of $t$:
 \begin{equation}
-r(n) = \frac{c}{2}n(n + 1)\text{,}
+\label{eqn:stored_receipts}
+s(t) = \frac{ru}{2}t(t + 1)\text{,}
 \end{equation}
-where $n$ is a point in time (e.g. month) and $c$ is the number of receipts per user per chosen time period, in this case month. Since we assume one receipt per user per day, $c = 30$. A graph of this function is shown in Figure \ref{fig:receipts_by_users}
+where $t$ is a point in time (e.g. month), $r$ is the number of receipts per user per chosen time period (in this case month) and $u$ is the number of new users at the end of the chosen time period (i.e. at the end of a month). Since we assume one receipt per user per day, $r = 30$. Assuming \num{1000} new users per month, $u = \num{1000}$. 
+Substitution of the values into the equation \ref{eqn:stored_receipts} gives
+\begin{equation}
+s(t) = \num{15000}t(t + 1)\text{.}
+\end{equation}
+A graph of this function is shown in Figure \ref{fig:receipts_by_users}.
 
 \begin{figure}
     \begin{center}
@@ -1105,18 +1165,18 @@ where $n$ is a point in time (e.g. month) and $c$ is the number of receipts per 
     \label{fig:receipts_by_users}
 \end{figure}
 
-The images of receipts are stored on Google Cloud Storage. The price is \$0.026 per GB \cite{CloudStoragePricing}. For the first month, the cost would be $\num{1000}\cdot30\cdot(600\text{ KB} / 1\text{ GB})\cdot\$0.026 = \$0.468$.
+The images of receipts are stored in Google Cloud Storage. The price is \$0.026 per GB \cite{CloudStoragePricing}. For the first month, the cost would be $\num{1000}\cdot30\cdot(600\text{ KB} / 1\text{ GB})\cdot\$0.026 = \$0.468$.
 For the second, assuming \num{1000} new users, it would be \$1.404.
 
-The Google Container Registry is charged the same way as Google Cloud Storage \cite{ContainerRegistryPricing}, depending on the size of all stored containers. Only a few last containers need to be stored. Older containers can be deleted\footnote{Google provides an automated way of deleting old containers available at \url{https://github.com/sethvargo/gcr-cleaner}.}. This means that the price for stored containers will be fixed. The size of one Python API container is 2.7 GB. The price of storing 5 last containers would be $5\cdot2.7\cdot\$0.02 = \$0.27$ per month. 
+The Google Container Registry is charged the same way as Google Cloud Storage \cite{ContainerRegistryPricing}, depending on the size of all stored containers. Even though storing only the newest container would suffice, it is good to keep a few previous containers as well. It is then possible to go back to these containers, should the newest one have any errors. Older containers can be deleted\footnote{Google provides an automated way of deleting old containers available at \url{https://github.com/sethvargo/gcr-cleaner}.}. This means that the price for the stored containers will be fixed. The size of one Python API container is 2.7 GB. The price of storing the five latest containers would be $5\cdot2.7\cdot\$0.02 = \$0.27$ per month. 
 
-Google Cloud Run provides autoscaling, which means that the number of provisioned instances depends on the number of incoming request. If a minimum number of instances is set to 0, the service goes idle each time the requests are not coming. The service is set up to use 2 CPUs and 6 GB of memory. For each receipt, one request is made to process the image and one to assign categories to items, therefore $\num{1000}\cdot30\cdot2 = \num{60000}$ requests per month. Assuming that each request comes after the previous ended and \num{1000} ms per request, the service will be used only for \num{120000} vCPU-seconds\footnote{vCPU-seconds are computed as $\textit{number of CPUs} \times \textit{time in seconds the service is running}$.}. This is included in the free plan. Memory consumption would be \num{480000} GiB-seconds\footnote{GiB-seconds are computed as $\textit{size in GiB} \times \textit{time in seconds the service is running}.$}, which slightly exceeds the free plan \cite{CloudRunPricing}, incurring \$0.3 of additional costs. 
-If a minimum number of instances was set to 1 in order to prevent a cold-start, the cost would be \$66.00 per month.
+Google Cloud Run provides autoscaling, which means that the number of provisioned instances depends on the number of incoming requests. If a minimum number of instances is set to zero, the service goes idle each time the requests are not coming. The service is set up to use 2 CPUs and 6 GB of memory. For each receipt, one request is made to process the image and one to assign categories to items, therefore $\num{1000}\cdot30\cdot2 = \num{60000}$ requests per month. Assuming that each request comes after the previous request ended and that each request takes \num{1000} ms, the service will be used only for \num{120000} vCPU-seconds\footnote{vCPU-seconds are computed as $\textit{number of CPUs} \times \textit{time in seconds the service is running}$.}. This is included in the free plan. Memory consumption would be \num{480000} GiB-seconds\footnote{GiB-seconds are computed as $\textit{size in GiB} \times \textit{time in seconds the service is running}.$}, which slightly exceeds the free plan \cite{CloudRunPricing}, incurring \$0.3 of additional costs. 
+If a minimum number of instances was set to one in order to prevent a cold start, the cost would be \$66.00 per month.
 
-Building a container using Google Cloud Build takes approximately 9 minutes. The price is \$0.016 per build-minute \cite{CloudBuildPricing}. Assuming 3 builds per day due to code changes pushed to master branch, the cost per month is $3\cdot9\cdot\$0.016\cdot30 = \$12.96$.
+Building a container using Google Cloud Build takes approximately 9 minutes. The price is \$0.016 per build-minute \cite{CloudBuildPricing}. Assuming three builds per day due to code changes pushed to the master branch, the cost per month is $3\cdot9\cdot\$0.016\cdot30 = \$12.96$.
 
-The total operational cost per month with \num{1000} users would be \$314.00, i.e \$0.314 per user.
-From Figure \ref{fig:operational_costs} is apparent that most of these costs are due to the OCR service. This is why also other application offer this feature only after paying a fee. Smart Receipts charges \$0.10 per one OCR scan.
+The total operational cost per month with \num{1000} users would be \$314.00, i.e. \$0.314 per user.
+From Figure 4, it is apparent that most of these costs are due to the OCR service. For this reason, other applications offer the feature of automatic data extraction only after paying a fee. Smart Receipts charges \$0.1 per one OCR scan (as of April 2021).
 
 \begin{figure}
     \begin{center}
@@ -1126,7 +1186,7 @@ From Figure \ref{fig:operational_costs} is apparent that most of these costs are
     \label{fig:operational_costs}
 \end{figure}
 
-The Receipts Scanner would therefore need to have its own OCR service or become monetized. I think that in-app advertising, such as AdMob\footnote{Mobile app monetization from Google}, would not generate enough revenue. A subscription-based model would be in my opinion a more viable option. The third option would be a combination of the two previous approaches \Dash a limited number of scans and visible advertisement for non-subscribed users and an unlimited number of scans and removed advertisement for the subscribed ones.
+The Receipts Scanner would therefore need to have its own OCR service or become monetized. In my opinion, in-app advertising, such as AdMob\footnote{Mobile app monetization from Google}, would not generate enough revenue. A subscription-based model seems like a more viable option. The third option would be combining the two previous approaches: a limited number of scans and visible advertisement for non-subscribed users, and an unlimited number of scans and removed advertisement for the subscribed ones.
 
 \chapter{Evaluation}
 The application has not been been given to real users yet. Therefore there is no available feedback concerning usability, performance and the overall user experience.
