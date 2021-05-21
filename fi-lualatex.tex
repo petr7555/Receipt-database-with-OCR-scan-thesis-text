@@ -1189,27 +1189,27 @@ From Figure 4, it is apparent that most of these costs are due to the OCR servic
 The Receipts Scanner would therefore need to have its own OCR service or become monetized. In my opinion, in-app advertising, such as AdMob\footnote{Mobile app monetization from Google}, would not generate enough revenue. A subscription-based model seems like a more viable option. The third option would be combining the two previous approaches: a limited number of scans and visible advertisement for non-subscribed users, and an unlimited number of scans and removed advertisement for the subscribed ones.
 
 \chapter{Evaluation}
-The application has not been been given to real users yet. Therefore there is no available feedback concerning usability, performance and the overall user experience.
+The application has not been given to real users yet. Therefore there is no available feedback concerning usability, performance and the overall user experience.
 
-The Form Recognizer API used for OCR and data extraction from an image is a third party service and as such measuring its performance would provide little value compared to the rest of the thesis. It would become more important if the current data extraction was not sufficient, which would be best found by users in practise. 
+The Form Recognizer API used for OCR and data extraction from an image is a third-party service, and as such, measuring its performance would provide little value compared to the rest of the thesis. It would become more important if the current data extraction was insufficient, which would be best found by users in practice.
 
-Quantifying how well Form Recognizer extracts the data from the photo would require a labeled set of receipts. One such set is available as part of the ICDAR2019 Competition on Scanned Receipt OCR
-and Information Extraction \cite{Huang2019ICDAR}. It provides \num{1000} labeled receipt scans\footnote{A corrected set of the original images is available on GitHub: \url{https://github.com/zzzDavid/ICDAR-2019-SROIE}.} as well as an evaluation technique. However, the labels from this dataset contain only \textit{company}, \textit{date}, \textit{address} and \textit{total}. Form Recognizer is able to recognize other information, such as phone number and individual items, too. Furthermore, the main use case in Receipts Scanner is recognition of photographed receipts, not receipt scans. Therefore a different dataset would be needed.
+Quantifying how well Form Recognizer extracts the data from the photo would require a labelled set of receipts. One such set is available as part of the ICDAR2019 Competition on Scanned Receipt OCR
+and Information Extraction \cite{Huang2019ICDAR}. It provides \num{1000} labelled receipt scans\footnote{A corrected set of the original images is available on GitHub: \url{https://github.com/zzzDavid/ICDAR-2019-SROIE}.} as well as an evaluation technique. However, the labels from this dataset contain only \textit{company}, \textit{date}, \textit{address} and \textit{total}. Form Recognizer can recognize other information, such as phone number and individual items, too. Furthermore, the main use case in Receipts Scanner is recognition of photographed receipts, not receipt scans. Therefore a different dataset would be needed.
 
-To evaluate the performance of item categorization and image processing, a questionnaire has been given to 28 people. It consisted of two parts.
+A questionnaire was given to 28 people. It consisted of two parts: evaluation of automatically assigned emojis and comparison of the processed image to the original image regarding readability.
 
-\section{Emojis}
-The purpose of this section is to evaluate how accurately the emoji chosen by the categorization service inside Python API fits to the text. The text is the name of a receipt item recognized by Form Recognizer, consisting of one or more words.
+\section{Emoji assignment}
+This section aims to evaluate how accurately the emoji chosen by the categorization service inside Python API fits the text. The text is the name of a receipt item recognized by Form Recognizer, consisting of one or more words.
 
-Receipts contain very often abbreviations and names of brands. The categorization service cannot handle those items in a meaningful manner. The assigned emojis in this case are rather arbitrary. An example to illustrate this is \textit{P/DY VEGAN STRAW PROT TUB 1KG} classified as \textit{\emoji{teddy-bear} teddy bear} or \textit{DR PEPPER ZERO} classified as \textit{\emoji{key} key}. Another difficult area is restaurant receipts, which often contain peculiar names of dishes.
+Receipts contain very often abbreviations and names of brands. The categorization service cannot handle those items in a meaningful manner. The assigned emojis in this case are rather arbitrary. An example to illustrate this is \textit{P/DY VEGAN STRAW PROT TUB 1KG} classified as \textit{\emoji{teddy-bear} teddy bear} or \textit{DR PEPPER ZERO} classified as \textit{\emoji{key} key}. TODO Another difficult area is restaurant receipts, which often contain peculiar names of dishes.
 
-70 items\footnote{All items from the survey have been inserted into the archive in the Information System of Masaryk University \ref{appendix:questionnaire_materials}.} have been selected from the data extracted by Form Recognizer on various receipts, excluding items that were incorrectly classified as a receipt item and items that the respondents would be unfamiliar with. Duplicates and similar items have not been included in this set either.
+Seventy items\footnote{All items from the survey are inserted in the archive in the Information System of Masaryk University \ref{appendix:questionnaire_materials}.} have been selected from the data extracted by Form Recognizer on various receipts, excluding items incorrectly classified as a receipt item and items with which the respondents would be unfamiliar. Duplicates and similar items have not been included in this set either.
 
 For each item and its assigned emoji, the task was to choose whether the emoji is \textit{Not accurate}, \textit{Mildly accurate} or \textit{Accurate}.
 
-As can be seen in Fugure \ref{fig:quality_of_emojis}, in majority of cases, i.e. 53.8\%,the chosen emoji was not accurate. Only in 20.8\% of cases was the emoji considered accurate.
+As can be seen in Figure \ref{fig:quality_of_emojis}, in the majority of cases, i.e. 53.8\%, the chosen emoji was not accurate. Only in 20.8\% of cases was the emoji considered accurate.
 
-This feature of Receipts Scanner is meant to bring an element of fun into the application and as such its functionality is not critical. 
+This feature of Receipts Scanner is meant to bring an element of fun into the application, and as such, its functionality is not critical. 
 
 \begin{figure}
     \begin{center}
@@ -1219,15 +1219,15 @@ This feature of Receipts Scanner is meant to bring an element of fun into the ap
     \label{fig:quality_of_emojis}
 \end{figure}
 
-\section{Images}
-The purpose of this section is to evaluate whether the processed image provides any benefits over the original image.
+\section{Image processing}
+The purpose of this section is to evaluate whether the processed images provide any benefits over the original images.
 
-30 receipt photos have been processed using Receipts Scanner. The original and processed images have been placed side by side\footnote{All images from the survey have been inserted into the archive in the Information System of Masaryk University \ref{appendix:questionnaire_materials}.}. The task was to choose which image was more readable. As presented in Figure \ref{fig:which_image_is_more_readable}, respondents found 54.5\% of the processed images more readable than the original image. 
+Thirty receipt photos have been processed using Receipts Scanner. The original and processed images have been placed side by side\footnote{All images from the survey are inserted into the archive in the Information System of Masaryk University \ref{appendix:questionnaire_materials}.}. The task was to choose which image was more readable. As presented in Figure \ref{fig:which_image_is_more_readable}, respondents found 54.5\% of the processed images more readable than the original image.
 
-16 receipts were from the ExpressExpense \cite{ExpressExpense2019Receipt} dataset and 14 were taken with modern phone cameras for the purpose of this survey.
-All new images and one image from the ExpressExpense dataset have been found to be more readable in the processed form by the majority of respondents. Two ExpressExpense images had equal number of votes for each option. The common feature of ExpressExpense receipts is that they have lower quality than the newly taken photos. These results show that the image processing provides a more readable form of the original image if the original image is of sufficiently good quality. 
+Sixteen receipts were from the ExpressExpense \cite{ExpressExpense2019Receipt} dataset, and fourteen were taken with modern phone cameras for the purpose of this survey.
+All new images and one image from the ExpressExpense dataset were considered more readable in the processed form by most respondents. Two ExpressExpense images had an equal number of votes for each option. The common feature of ExpressExpense receipts is that they have lower quality than the newly taken photos. These results show that the image processing provides a more readable form of the original image if the original image is of sufficiently good quality.
 
-The image processing feature of Receipts Scanner will therefore definitely provide a value to users, as most modern smartphones are able to take images of high quality. For the individual cases when it provides worse or even unreadable images, the original image is still available to the users.
+Therefore, the image processing feature of Receipts Scanner will definitely provide value to users, as most modern smartphones can take images of high quality. For the individual cases when the image processing produces worse or even unreadable images, the original image is still available to the users.
 
 \begin{figure}
     \begin{center}
