@@ -187,7 +187,10 @@
 
 % for defining and introducing new terms
 % e.g. \definition{JSON} is a...
-\newcommand{\definition}[1]{\textit{#1}}
+% eventually decided to keep the same style
+% very few definitions are annotated with this
+%\newcommand{\definition}[1]{\textit{#1}}
+\newcommand{\definition}[1]{{#1}}
 
 
 
@@ -225,17 +228,17 @@ The main feature I will focus on is the automatic information extraction from th
 
 An open-source\footnote{Open-source software is software whose source code is released with permission to use, copy, distribute and modify \cite{GartnerOpenSource}. It is usually free to use. It is often developed collaboratively on platforms such as GitHub.} alternative to the mentioned applications is Receipt Manager\footnote{Receipt Manager on GitHub: \url{https://github.com/ReceiptManager}.}.
 It uses Tesseract\footnote{Tesseract is a library and a command line program for extracting textual data from images. Tesseract on GitHub: \url{https://github.com/tesseract-ocr/tesseract}.} for text recognition from the image and a fixed set of rules to extract the information. The main idea of this project is that it does not rely on any third-party services.
-It is available on iOS, Android and the Web. All these clients connect to a server on which the data extraction runs. It is deployed separately as a Docker\footnote{TODO} container.
+It is available on iOS, Android and the Web. All these clients connect to a server on which the data extraction runs. It is deployed separately as a Docker container\footnote{Docker containers are Docker container images run by Docker Engine. Docker container image is a standalone, executable package of software that includes everything needed to run an application. It will always run the same, regardless of the computing environment. \cite{DockerContainer} See \url{https://www.docker.com/}.}.
 
 \chapter{Image data extraction}
 On a high level, the data extraction from the photo of a receipt involves two steps: optical character recognition and data extraction from text.
 
-\section{Optical character recognition}\index{OCR}
+\section{Optical character recognition}
 First, the raw textual data need to be extracted. This is done using Optical Character Recognition (OCR). OCR is the process of translating images of handwritten, typewritten, or printed text into a format understood by machines.
 It works by pre-processing the image\footnote{Image pre-processing refers to a set of techniques (e.g. noise reduction), that are applied to the image to make it more suitable for the subsequent steps.} and segmenting the text into lines, then words and eventually into individual characters to which a code, such as ASCII, is assigned. \cite{Shreya2019OCRCNN}
 
 The code can be assigned based on template matching. An image of an unknown character is compared to a set of images of known characters. The code of the most similar character is chosen. The similarity can be computed as a difference between the pixel's grayscale value in the unknown character and a pixel's grayscale value in the known character \cite{Ziegaus2016TemplateMatching}.
-This approach works well\cite{Ziegaus2016TemplateMatching} for receipts because the characters are printed and are therefore almost the same, except for minor deficiencies in printing. Receipts also usually use the same or a very similar font.
+This approach works well\footnote{The template matching technique reached a recognition rate of 97.36\% in \cite{Ziegaus2016TemplateMatching}.} for receipts because the characters are printed and are thus almost the same, except for minor deficiencies in printing. Receipts also usually use the same or a very similar font.
 
 Another approach is to extract the most relevant information from the character image. This is called feature extraction. An example of such a feature could be the density of dark pixels in a given part of the image. These features are used as inputs for machine learning models such as K-Nearest Neighbors and Support Vector Machines. \cite{Singh2011Feature}
 
@@ -254,21 +257,21 @@ All methods can take advantage of the actual text position. The merchant name is
 \chapter{Choice of platforms}
 \label{chap:choice_of_platforms}
 According to Pew Research Center \cite{PewResearchCenter2021Mobile}, as of 2021, 85\% of adults in the United States own a smartphone. There is no dispute about smartphone being a ubiquitous device in people's lives. 
-Most smartphones have a decent camera that allows taking photos of receipts in sufficient quality. Therefore most of the focus has been on developing a mobile app.
-The next question that needs to be answered is whether to target Android, iOS or both. According to IDC's market research \cite{Idc2021Smartphone}, in 2020, 84.1\% of smartphones were equipped with Android and 15.9\% with iOS. The development of iOS applications requires a Mac\footnote{Mac, also known as Macintosh, is a family of personal computers sold by Apple. Current models include MacBook Pro and iMac.} and Xcode\footnote{Xcode is software by Apple for developing applications for Apple products. See \url{https://developer.apple.com/xcode/}.}. Some workarounds exist around this limitation, but most of them rely on using a Mac in the cloud. At the beginning of the writing of the thesis, I did not have access to Mac. In order to be able to target more devices and given the mentioned limitation, I chose to develop an Android application.
+Most smartphones have a decent camera that allows taking photos of receipts in sufficient quality. Hence, most of the focus has been on developing a mobile application.
+The next question that needs to be answered is whether to target Android, iOS or both. According to IDC's market research \cite{Idc2021Smartphone}, in 2020, 84.1\% of smartphones were equipped with Android and 15.9\% with iOS. The development of iOS applications requires a Mac\footnote{Mac, also known as Macintosh, is a family of personal computers sold by Apple. Current models include MacBook Pro and iMac.} and Xcode\footnote{Xcode is software by Apple for developing applications for Apple products.\\See \url{https://developer.apple.com/xcode/}.}. Some workarounds exist around this limitation, but most of them rely on using a Mac in the cloud. At the beginning of the writing of the thesis, I did not have access to Mac. In order to be able to target more devices and given the mentioned limitation, I chose to develop an Android application.
 
 Although smartphones are convenient for taking the photo of the receipt right after the purchase, some users might prefer a desktop application to view and search the receipts.
 According to Statcounter \cite{Statcounter2021Desktop}, Windows\footnote{Group of operating systems developed by Microsoft.} operating system makes for 75.55\% of desktop operating systems, macOS\footnote{Desktop operating system developed by Apple.} comes second with 16.5\%\footnote{Data have been collected based on website views.}.
 For the same reasons (ability to cover more devices and having Windows PC), I chose Windows as the supported desktop operating system.
 
 \chapter{Choice of technology}
-As established in the previous Chapter \ref{chap:choice_of_platforms}, the targeted platforms are Android and Windows. The traditional approach would be to implement a separate application for each platform, for Android using Java or Kotlin, and for Windows using Universal Windows Platform (UWP) or Windows Presentation Foundation (WPF). This approach suffers from the apparent disadvantage of writing the code twice. The functionality of the application differs only slightly on Android and Windows, so the preferred solution is to have a cross-platform application. A cross-platform application is an application that can run on multiple platforms without a need for having a separate code base for each.
+As established in the previous Chapter~\ref{chap:choice_of_platforms}, the targeted platforms are Android and Windows. The traditional approach would be to implement a separate application for each platform, for Android using Java or Kotlin, and for Windows using Universal Windows Platform (UWP) or Windows Presentation Foundation (WPF). This approach suffers from the apparent disadvantage of writing the code twice. The functionality of the application differs only slightly on Android and Windows, so the preferred solution is to have a cross-platform application. A cross-platform application is an application that can run on multiple platforms without a need for having a separate code base for each.
 
 There are many available frameworks that aid cross-platform development.
 
 \section{Xamarin}
 \textit{``Xamarin is an open-source platform for building modern and performant applications for iOS, Android, and Windows with .NET.''} \cite{WhatIsXamarin} With Xamarin, the business logic and backend code are written in C\# and fully shared.
-Xamarin.Forms extends this code reuse to the user interface (UI). The user interface is defined using XAML\footnote{eXtensible Application Markup Language is a markup language based on XML used to define user interfaces \cite{Hermes2019Building}}. It targets iOS, Android, and Windows.
+Xamarin.Forms extends this code reuse to the user interface (UI). The user interface is defined using XAML\footnote{eXtensible Application Markup Language is a markup language based on XML used to define user interfaces \cite{Hermes2019Building}.}. It targets iOS, Android, and Windows.
 
 \section{.NET Multi-platform App UI}
 .NET MAUI is an evolution of Xamarin.Forms. It targets Android, iOS, Windows and macOS. It is still in a preview version\footnote{Roadmap of.NET MAUI: \url{https://github.com/dotnet/maui/wiki/Roadmap}.}.
@@ -277,7 +280,7 @@ Xamarin.Forms extends this code reuse to the user interface (UI). The user inter
 \textit{``Flutter is Google’s UI toolkit for building beautiful, natively compiled applications for mobile, web, and desktop from a single codebase.''} \cite{FlutterHomepage} It uses Dart programming language. The desktop support is available as a beta release \cite{FlutterDesktopSupport}.
 
 \section{Capacitor}
-Capacitor is an open-source native runtime for building Web Native\footnote{A Web application that accesses native APIs \cite{WebNative}.} apps. It enables development of cross-platform iOS, Android, and Progressive Web Apps \cite{CapacitorHomepage}. Capacitor is developed by Ionic. The application is built using web technologies (JavaScript\footnote{JavaScript is a scripting language targeted specifically to the Internet \cite{GartnerJavaScript}.}, HTML\footnote{Hypertext Markup Language is a document-formatting language used to create Web pages \cite{GartnerHTML}.}, and CSS\footnote{Cascading Style Sheets add style (e.g., fonts, colors, spacing) to Web documents\cite{W3CCSS}.}) and rendered using Web View. Web View resembles a full-screen browser, but it is not limited to browser APIs. It can call native APIs such as sensors and storage.
+Capacitor is an open-source native runtime for building Web Native\footnote{A Web application that accesses native APIs \cite{WebNative}.} apps. It enables development of cross-platform iOS, Android, and Progressive Web Apps \cite{CapacitorHomepage}. Capacitor is developed by Ionic. The application is built using web technologies (JavaScript\footnote{JavaScript is a scripting language targeted specifically to the Internet \cite{GartnerJavaScript}.}, HTML\footnote{Hypertext Markup Language is a document-formatting language used to create Web pages \cite{GartnerHTML}.}, and CSS\footnote{Cascading Style Sheets add style (e.g., fonts, colors, spacing) to Web documents \cite{W3CCSS}.}) and rendered using Web View. Web View resembles a full-screen browser, but it is not limited to browser APIs. It can call native APIs such as sensors and storage.
 
 It is possible to create a desktop application by wrapping the web application inside Electron. Capacitor has built-in support for Electron.
 
@@ -286,9 +289,9 @@ It is possible to create a desktop application by wrapping the web application i
 Electron is a framework that enables creating desktop applications with JavaScript, HTML, and \textsc{CSS}. These applications can then be run on macOS, Windows, or Linux \cite{WhatIsElectron}. Electron is used, for example, by Visual Studio Code and Slack.
 
 \section{React + PWA + Electron}
-React is a JavaScript library for building user interfaces created by Facebook. It is one of the most used libraries for building web applications. It uses JSX, which is a combination of JavaScript and XML\footnote{\definition{Extensible Markup Language} is a W3C open standard for describing data using embedded tags. \cite{GartnerXML}}, for example, \code{const element = <h1>Hello {'react'.toUpperCase()}</h1>;}. React is declarative and component-based, which means that complex UIs are composed of multiple simpler, independent and reusable components. The components are parametrized with properties (very often called \textit{props}).
+React is a JavaScript library for building user interfaces created by Facebook. It is one of the most used libraries for building web applications. It uses JSX, which is a combination of JavaScript and XML\footnote{\definition{Extensible Markup Language} is a W3C open standard for describing data using embedded tags \cite{GartnerXML}.}, for example, \code{const element = <h1>Hello {'react'.toUpperCase()}</h1>;}. React is declarative and component-based, which means that complex UIs are composed of multiple simpler, independent and reusable components. The components are parametrized with properties (very often called \textit{props}).
 
-React itself is not a cross-platform framework. However, if we release the constraint of having a native mobile application, it is possible to create a progressive web application (PWA). Most React starter templates provide this functionality. The PWA looks very similar to the native application. It is installed directly from the browser by visiting the website that provides the PWA. PWA can be installed both on mobile and desktop.
+React itself is not a cross-platform framework. However, if we release the constraint of having a native mobile application, it is possible to create a progressive web application (PWA). Most React starter templates provide this functionality. The PWA looks very similar to the native application. It is installed directly from a browser by visiting the website that provides the PWA. PWA can be installed both on mobile and desktop.
 In a similar manner to Capacitor, desktop support is possible by wrapping the React application inside Electron. 
 
 \section{React Native}
@@ -304,7 +307,7 @@ By default, React Native can run on iOS and Android. To run on Windows, React Na
 
 React Native's motto \textit{Learn once, write anywhere.} means that when a developer learns the concepts and syntax of React Native, they should be able to write programs for any platform (that React Native supports). This motto is not to be confused with \textit{Write once, run anywhere.}, which would promise that the same code would be able to run on any platform. However, during the time, and with lots of community efforts, React Native has developed into a framework whose users usually report around 90\% code reuse, which means that only 10\% of code needs to be platform-specific. 
 
-React Native provides easy ways to write platform-specific code that does not affect other platforms. This concept is described in Section \ref{sec:platform_specific_code}.
+React Native provides easy ways to write platform-specific code that does not affect other platforms. This concept is described in Section~\ref{sec:platform_specific_code}.
 
 I chose to develop Receipts Scanner in React Native for its previously mentioned benefits, i.e. native controls, performance, a wide range of supported platforms and also due to my familiarity with React.
 
@@ -317,7 +320,7 @@ Developing applications with React Native is often repetitive, and the same setu
 
 \subsection{Ignite}
 The most used boilerplate for React Native is Ignite\footnote{Ignite on GitHub: \url{https://github.com/infinitered/ignite}.}.
-Ignite is a CLI and an application boilerplate at the same time. It is opinionated, meaning that it enforces specific project structure and libraries. Navigation, application state management, Storybook component library\footnote{Described in Section \ref{sec:component_library}.}, Detox end-to-end tests\footnote{Described in Section \ref{sec:end_to_end_testing}.} and Reactotron\footnote{Described in Section \ref{phantom:reactotron}.} (for inspecting the application) are already set up. The CLI can be used for generating new components and screens.
+Ignite is a CLI and an application boilerplate at the same time. It is opinionated, meaning that it enforces specific project structure and libraries. Navigation, application state management, Storybook component library\footnote{Described in Section~\ref{sec:component_library}.}, Detox end-to-end tests\footnote{Described in Section~\ref{sec:end_to_end_testing}.} and Reactotron\footnote{Described in Section~\ref{phantom:reactotron}.} (for inspecting the application) are already set up. The CLI can be used for generating new components and screens.
 
 \subsection{Expo}
 \label{sec:expo}
@@ -328,7 +331,7 @@ It is not possible to add a React Native for Windows to the Expo project. For th
 
 Expo will likely support React Native for Windows in the future\footnote{Feature request to support React Native for Windows in Expo: \url{https://expo.canny.io/feature-requests/p/support-for-react-native-windows-apps}.}.
 
-In the meantime, the Expo built for the Web could be run on Windows using Electron\footnote{Expo has been introduced in Section \ref{sec:electron}.}.
+In the meantime, the Expo built for the Web could be run on Windows using Electron\footnote{Expo has been introduced in Section~\ref{sec:electron}.}.
 
 \section{Native Modules}
 Native modules provide access to the native platform API that is not available by default in JavaScript \cite{RNNativeModulesIntro}, for example, an API to select a picture on the device. Other reasons for using native modules are taking advantage of existing native libraries or running multi-threaded code.
@@ -345,21 +348,21 @@ In case a native module is not available on a given platform, there are four ava
 \begin{enumerate}
     \item \textbf{Omitting the module.} 
     
-    If the functionality provided by the native module is not critical, it might be omitted on a given platform. This is possible by having a different code for each platform. This concept is described in Section \ref{sec:platform_specific_code}.
+    If the functionality provided by the native module is not critical, it might be omitted on a given platform. This is possible by having a different code for each platform. This concept is described in Section~\ref{sec:platform_specific_code}.
     
-    In Receipts Scanner, this approach has been taken with Google Sign In\footnote{Authentication using Google, further described in Section \ref{phantom:google_sign_in}.}, which is not available on Windows.
+    In Receipts Scanner, this approach has been taken with Google Sign In\footnote{Authentication using Google, further described in Section~\ref{phantom:google_sign_in}.}, which is not available on Windows.
     
     \item \textbf{Mocking the module.}
     
-    In the context of this thesis, \textit{mocking}\index{mocking} means substituting an object or a whole module with a simpler implementation. The simpler object is called a \textit{mock}.
+    In the context of this thesis, mocking means substituting an object or a whole module with a simpler implementation. The simpler object is called a mock.
     
-    The approach of mocking a module has been applied in Receipts Scanner on NetInfo module, which provides information about the internet connection. Currently, it is not possible to use NetInfo on Windows\footnote{GitHub issue: \url{https://github.com/react-native-netinfo/react-native-netinfo/issues/306}.}. Therefore it has been temporarily mocked always to return information about the device being online.
+    The approach of mocking a module has been applied in Receipts Scanner on NetInfo module, which provides information about the internet connection. Currently, it is not possible to use NetInfo on Windows\footnote{GitHub issue:\\\url{https://github.com/react-native-netinfo/react-native-netinfo/issues/306}.}. Consequently, it has been temporarily mocked on Windows always to return information about the device being online.
     
     \item \textbf{Replacing the module.} 
     
     In case a different module that provides similar functionality is available, it can be used instead. If such a module does not exist, it can be implemented.
     
-    Receipts Scanner implements its own\footnote{FilePicker} module to provide the functionality of picking an image from the file system on Windows.
+    Receipts Scanner implements its own \textit{FilePicker} module to provide the functionality of picking an image from the file system on Windows.
     
     \item \textbf{Adding the missing platform to the module.}
     
@@ -390,7 +393,7 @@ In Receipts Scanner, the \texttt{Platform} module's functionality is used, for e
     \item to allow scanning of a receipt only on Android,
     \item to use different styles for each platform,
     \item to use Google Sign In only on Android,
-    \item in Firebase adapter\footnote{Described in Section \ref{phantom:firebase_adapter}.} to use a different Firebase library for each platform,
+    \item in Firebase adapter\footnote{Described in Section~\ref{phantom:firebase_adapter}.} to use a different Firebase library for each platform,
     \item to use a different \texttt{Modal}\footnote{A component that appears on top overlaying other components. The background is usually grayed out.} component for each platform.
 \end{itemize}
 Most of these were driven by libraries not having support for React Native Windows.
@@ -425,7 +428,7 @@ Figure \ref{fig:storybook_rn} shows the component library and the interface of S
     \begin{subfigure}[t]{\half\textwidth}
       \centering
       \includegraphics[width=\subfigsize\textwidth]{figures/other/storybook_rn_menu}
-      \caption{Menu of components.}
+      \caption{Components menu.}
       \label{fig:storybook_rn_menu}
     \end{subfigure}
     \begin{subfigure}[t]{\half\textwidth}
@@ -434,18 +437,19 @@ Figure \ref{fig:storybook_rn} shows the component library and the interface of S
       \caption{Detail of \textit{Confirmation Dialog} component.}
       \label{fig:storybook_rn_confirm_delete_component}
     \end{subfigure}
-    \caption{Storybook for React Native.}
+    \caption{Storybook for React Native running on a device.}
     \label{fig:storybook_rn}
 \end{figure}
 
-It is possible to install a Storybook server that enables navigation between stories directly in the browser. However, the stories are still displayed only on mobile device. In order to show the stories in the browser, a react-native-web\footnote{\url{https://necolas.github.io/react-native-web/}} library must be used. This library provides the same elementary components that are used to create React Native applications. The difference is that instead of translating those components into Android and iOS native components, it translates them into HTML elements.
+It is possible to install a Storybook server that enables navigation between stories from a browser. However, the stories are still displayed only on mobile device. In order to show the stories in the browser, a react-native-web\footnote{\url{https://necolas.github.io/react-native-web/}} library must be used. This library provides the same elementary components that are used to create React Native applications. The difference is that instead of translating those components into Android and iOS native components, it translates them into HTML elements.
+There are two options for running the Storybook in a browser:
 
 \begin{enumerate}
     \item \textbf{Adding Web support to the whole application.}
     
-    All react-native components are replaced by react-native-web components by aliasing react-native imports to react-native-web in the bundling\footnote{Bundling is the process of transpiling all source files and assets of the application, usually into one large JavaScript file that can be run across different browsers.} process of the whole application. This makes the whole application run in the browser. The Storybook functionality is, therefore, a side-effect.
+    All react-native components are replaced by react-native-web components by aliasing react-native imports to react-native-web in the bundling\footnote{Bundling is the process of transpiling all source files and assets of the application, usually into one large JavaScript file that can be run across different browsers.} process of the whole application. This makes the whole application run in a browser. The Storybook functionality is, therefore, a side-effect.
     
-    The Expo\footnote{Expo has been introduced in Section\ref{sec:expo}.} applications can run in the browser by default. They are set up with react-native-web from the beginning. No extra configuration is necessary to have Storybook for React Native running in the browser.
+    The Expo\footnote{Expo has been introduced in Section~\ref{sec:expo}.} applications can run in a browser by default. They are set up with react-native-web from the beginning. No extra configuration is necessary to have Storybook for React Native running in the browser.
     
     \item \textbf{Installing Storybook for Web.} 
     
@@ -453,7 +457,7 @@ It is possible to install a Storybook server that enables navigation between sto
     
     An advantage of this approach is that even though Storybook for React Native is in version 5, the Storybook for Web can use the latest version 6 (as of May 2021). In version 6, all stories in the projects are found automatically without having to list each story explicitly. It also uses a more concise and more intuitive syntax for writing stories.
     
-    Another advantage is that the Storybook for Web can be used with other libraries for web development, such as Chromatic for visual testing, which is described in Section \ref{sec:visual_testing}. Storybook for Web can be built into static files and served as an application independent of the React Native application.
+    Another advantage is that the Storybook for Web can be used with other libraries for web development, such as Chromatic for visual testing, which is described in Section~\ref{sec:visual_testing}. Storybook for Web can be built into static files and served as an application independent of the React Native application.
     
     The main disadvantage is that there are two separate Storybooks in the project. A small amount of extra code needs to be written for each story to make it visible in both Storybooks. 
     
@@ -463,7 +467,7 @@ It is possible to install a Storybook server that enables navigation between sto
     \begin{center}
         \includegraphics[width=\textwidth]{figures/other/storybook_web}
     \end{center}
-    \caption{Storybook for Web in the browser.}
+    \caption{Storybook for Web running in a browser.}
     \label{fig:storybook_web}
 \end{figure}
 
@@ -487,13 +491,13 @@ Component tests test individual React components. An example could be a test for
 
 In React Native, there is an option to choose between two libraries for component tests: react-test-renderer and React Native Testing Library. 
 
-react-test-renderer renders components to pure JavaScript objects without depending on the DOM\footnote{Document Object Model} or a native mobile environment \cite{ReactTestRenderer}. It provides methods for locating elements, for example, by component type (e.g. \texttt{Text}) or properties (e.g. finding a button with \texttt{title} value equal to \textit{Submit}).
+react-test-renderer renders components to pure JavaScript objects without depending on the DOM\footnote{Document Object Model.} or a native mobile environment \cite{ReactTestRenderer}. It provides methods for locating elements, for example, by component type (e.g. \texttt{Text}) or properties (e.g. finding a button with \texttt{title} value equal to \textit{Submit}).
 
-It is possible to get the rendered component as a JSON\footnote{JavaScript Object Notation is a lightweight data-interchange format \cite{Ecma2017JSON}.} and use it for snapshot testing. Snapshot testing is described in Section \ref{sec:snapshot_testing}.
+It is possible to get the rendered component as a JSON\footnote{JavaScript Object Notation is a lightweight data-interchange format \cite{Ecma2017JSON}.} and use it for snapshot testing. Snapshot testing is described in Section~\ref{sec:snapshot_testing}.
 
 The issue of testing with react-test-renderer is that the tests rely on implementation details of the components. React Native Testing Library solves this problem by providing utility functions on top of react-test-renderer \cite{ReactNativeTestingLibrary} for locating elements, e.g. by the visible text or accessibility label so that tests resemble how users interact with the application. It is inspired by React Testing Library \cite{ReactNativeTestingLibrary}, which is a widely used testing library for React.
 
-React Native Testing Library also adds a \texttt{fireEvent} method that can simulate \textit{press}, \textit{scroll} and \textit{text changed} events. Therefore both the rendering of the element and interaction with it can be tested.
+React Native Testing Library also adds a \texttt{fireEvent} method that can simulate \textit{press}, \textit{scroll} and \textit{text changed} events. Thus, both the rendering of the element and interaction with it can be tested.
 
 \subsubsection{Mocking}
 Because the components are rendered with react-test-renderer into pure JavaScript objects without depending on a native mobile environment, any native modules need to be mocked.
@@ -519,9 +523,9 @@ Visual testing addresses the issues of snapshot testing mentioned earlier. It is
 Visual testing compares screenshots of newly rendered components with the old screenshots, also called reference images.
 When visual tests run for the first time, a set of screenshots is made. During subsequent runs, those screenshots are compared to the stored ones. Possible differences are highlighted. There are various tools that can highlight the differences between images. Those tools can be independent of tools used to take the screenshots.
 
-A widely used tool for visual testing in React community is Chromatic\footnote{See \url{https://www.chromatic.com/}.}. It creates screenshots of the Storybook stories. It is not possible to use Chromatic with Storybook for React Native. Receipts Scanner repository uses Storybook for Web too by utilizing react-native-web. The Chromatic is therefore set up for testing components with Storybook for Web.
+A widely used tool for visual testing in React community is Chromatic\footnote{\url{https://www.chromatic.com/}}. It creates screenshots of the Storybook stories. It is not possible to use Chromatic with Storybook for React Native. Nonetheless, Receipts Scanner repository uses Storybook for Web too, by utilizing react-native-web. The Chromatic is therefore set up for testing components with Storybook for Web.
 
-Chromatic runs in the continuous integration (CI) pipeline\footnote{A series of steps executed when changes are pushed to the remote project repository. Described in Section \ref{sec:continuous_integration}.}. The changes need to be reviewed on the Chromatic website created for the given CI run. Chromatic also publishes the Storybook as a website.
+Chromatic runs in the continuous integration (CI) pipeline\footnote{A series of steps executed when changes are pushed to the remote project repository. Described in Section~\ref{sec:continuous_integration}.}. The changes need to be reviewed on the Chromatic website created for the given CI run. Chromatic also publishes the Storybook as a website.
 
 Figure \ref{fig:chromatic_diff} shows how the review process of a visual change in Chromatic UI looks. Both the visual change and the change in the markup are visible.
 
@@ -529,7 +533,7 @@ Figure \ref{fig:chromatic_diff} shows how the review process of a visual change 
     \begin{center}
         \includegraphics[width=\textwidth]{figures/other/chromatic_diff}
     \end{center}
-    \caption{Chromatic screen for reviewing visual change of the \texttt{ScanButtonRaw} component. The Scan icon moved up.}
+    \caption{Chromatic user interface for reviewing visual change of a component. The scan icon moved up.}
     \label{fig:chromatic_diff}
 \end{figure}
 
@@ -541,7 +545,7 @@ Loki creates images that highlight the visual change. A visual change of a \text
     \begin{center}
         \includegraphics[width=0.3\textwidth]{figures/other/loki_diff}
     \end{center}
-    \caption{Image generated by Loki indicating a visual change to the \texttt{ScanButtonRaw} component. The Scan icon moved up.}
+    \caption{Image generated by Loki indicating a visual change to the component. The scan icon moved up.}
     \label{fig:loki_diff}
 \end{figure}
 
@@ -562,7 +566,7 @@ Similarly to snapshot tests, the visual tests are created automatically from sto
 Visual tests require Storybook to be running. If the Storybook is running on an Android device, no mocking is necessary. If Storybook for Web is used, native modules that do not have web support need to be mocked.
 
 The need for mocking can be alleviated by separating the view part of the application from the business logic.
-The components can be divided into two categories: pure and connected. Pure components are components that display data based on their properties. Connected components connect to the database, make API calls and depend on native modules. They pass the data to pure components. In general, stories are written for pure components. Therefore no mocking of native modules is needed.
+The components can be divided into two categories: pure and connected. Pure components are components that display data based on their properties. Connected components connect to the database, make API calls and depend on native modules. They pass the data to pure components. In general, stories are written for pure components. This way, no mocking of native modules is needed.
 
 \subsection{End-to-end testing}
 \label{sec:end_to_end_testing}
@@ -572,7 +576,7 @@ An example of an end-to-end test would be testing the sign-in functionality, i.e
 
 Multiple end-to-end testing frameworks for React Native exist. Receipts Scanner uses Detox\footnote{Detox on GitHub: \url{https://github.com/wix/Detox}.} end-to-end tests. Detox is a popular choice for React Native testing, mostly for its speed and reliability. Apart from test logs, it can capture screenshots and videos of the running tests, providing greater insight into why tests are failing.
 
-A more recent project, Cavy\footnote{\url{https://cavy.app/}}, takes a different approach from Detox. It does not use any native code. All functionality is achieved with pure JavaScript. The setup is, therefore, more straightforward, but the functionality is limited.
+A more recent project, Cavy\footnote{\url{https://cavy.app/}}, takes a different approach from Detox. It does not use any native code. All functionality is achieved with pure JavaScript. This makes the setup more straightforward, but the functionality is limited.
 
 Whereas Detox can locate elements by text or label, Cavy needs each component that is being tested to be wrapped with a special function. This creates noise in the code
 
@@ -602,7 +606,7 @@ During the first workflow,
 
 The second workflow runs end-to-end tests on an emulated Android device.
 
-The third workflow runs tests of the Python API\footnote{Python API is described in Section \ref{sec:python_api}.}. The workflows do not contain the Python API deployment logic. Instead, a repository hook is set up in the Google Cloud Platform Console\footnote{A user interface to manage services provided by Google.} to deploy the latest version of the Python API.
+The third workflow runs tests of the Python API\footnote{Python API is described in Section~\ref{sec:python_api}.}. The workflows do not contain the Python API deployment logic. Instead, a repository hook is set up in the Google Cloud Platform Console\footnote{A user interface to manage services provided by Google.} to deploy the latest version of the Python API.
 
 \chapter{Implementation}
 
@@ -612,15 +616,14 @@ The Receipt Scanner needs to store two kinds of data: textual data, i.e. data ab
 
 \subsection{Textual data}
 For textual receipt information, document-oriented databases are a perfect fit because they make it easy to store data in the same format and shape as they are used in the application. 
-All data of a given object (for example, receipt) can be stored in one document. The documents are stored mostly in JSON, BSON\footnote{Binary JSON.}, XML or YAML\footnote{\definition{YAML} is a human-readable data-serialization language.} format. Unlike SQL databases, document-orient databases do not have a schema and are therefore more flexible.
+All data of a given object (for example, receipt) can be stored in one document. The documents are stored mostly in JSON, BSON\footnote{Binary JSON.}, XML or YAML\footnote{\definition{YAML} is a human-readable data-serialization language.} format. Unlike SQL databases, document-orient databases do not have a schema. This makes them more flexible.
 
 The documents are stored in collections. Documents can also contain subcollections of documents.
 
-Two very popular document-oriented databases are MongoDB\footnote{\url{https://www.mongodb.com/}} and Google Firestore\footnote{\url{https://firebase.google.com/products/firestore}}. MongoDB uses BSON to store documents, Firestore uses JSON. Both databases support data types such as strings, numbers, arrays and timestamps\footnote{Supported data types in MongoDB: \url{https://docs.mongodb.com/manual/reference/bson-types/}.
-Supported data types in Google Firestore: \url{https://firebase.google.com/docs/firestore/manage-data/data-types}.}.
+Two very popular document-oriented databases are MongoDB\footnote{\url{https://www.mongodb.com/}} and Google Firestore\footnote{\url{https://firebase.google.com/products/firestore}}. MongoDB uses BSON to store documents, Firestore uses JSON. Both databases support data types such as strings, numbers, arrays and timestamps\footnote{Supported data types in MongoDB: \url{https://docs.mongodb.com/manual/reference/bson-types/}.\\Supported data types in Google Firestore: \url{https://firebase.google.com/docs/firestore/manage-data/data-types}.}.
 
 Although document-oriented databases do not have a schema, it is beneficial to have a fixed data model so that the shape of the stored data is predictable.
-The data model for Receipts Scanner is shown in Figure \ref{fig:data_model_firestore}. It shows how the data are structured into two collections, \texttt{Users} and \texttt{Receipts}. Because all user data are child nodes of a given user document, it is easy to restrict access to other documents based on the path to that document. The authentication and access rules are described in Section \ref{ref:authentication}.
+The data model for Receipts Scanner is shown in Figure \ref{fig:data_model_firestore}. It shows how the data are structured into two collections, \texttt{Users} and \texttt{Receipts}. Because all user data are child nodes of a given user document, it is easy to restrict access to other documents based on the path to that document. The authentication and access rules are described in Section~\ref{ref:authentication}.
 
 Although the item forms a separate entity, it is not a document but only an object in the array of items of the receipt.
 
@@ -630,12 +633,12 @@ Other notable fields are \texttt{urlOriginal} and \texttt{urlProcessed}, which s
         \begin{center}
             \includegraphics[width=\textwidth]{figures/other/data_model_firestore}
         \end{center}
-        \caption{Data model of Receipts Scanner}
+        \caption{Data model of Receipts Scanner.}
         \label{fig:data_model_firestore}
     \end{figure}
 
 \subsection{Image data}
-Although storing images directly in the document-oriented database would be possible\footnote{In MongoDB, it is possible to store BSON documents up to 16 MB. Larger files can be split into parts of 255 kB using GridFS \cite{GridFS}}, this solution is not optimal.
+Although storing images directly in the document-oriented database would be possible\footnote{In MongoDB, it is possible to store BSON documents up to 16 MB. Larger files can be split into parts of 255 kB using GridFS \cite{GridFS}.}, this solution is not optimal.
 
 For receipt images, the most cost-effective storage is object storage. \definition{Object storage} is storage optimized for storing BLOBs (Binary Large Objects). BLOB is a collection of binary data stored as a single entity. It can be, for example, an image, audio or video. 
 
@@ -645,15 +648,15 @@ I have chosen Google Firestore to store the textual data and Google Storage to s
 
 \phantomsection
 \label{phantom:firebase_adapter}
-Firebase is supported on iOS, Android and the Web. An unofficial library named React Native Firebase\footnote{\url{https://rnfirebase.io/}} provides the same services on React Native for Android and iOS. However, it does not support React Native Windows. Therefore Receipts Scanner uses Firebase for Web on Windows and React Native Firebase on Android. To be able to write the same code that could be run both on Android and Windows, an adapter \texttt{firebase.ts} was created. It imports both libraries, and, based on the platform the application is currently running on, it exports the proper objects. The rest of the code that needs to work with Firebase imports the objects from \texttt{firebase.ts} instead of importing them directly from Firebase for Web or React Native Firebase.
+Firebase is supported on iOS, Android and the Web. An unofficial library named React Native Firebase\footnote{\url{https://rnfirebase.io/}} provides the same services on React Native for Android and iOS. However, it does not support React Native Windows. Consequently, Receipts Scanner uses Firebase for Web on Windows and React Native Firebase on Android. To be able to write the same code that could be run both on Android and Windows, an adapter \texttt{firebase.ts} was created. It imports both libraries, and, based on the platform the application is currently running on, it exports the proper objects. The rest of the code that needs to work with Firebase imports the objects from \texttt{firebase.ts} instead of importing them directly from Firebase for Web or React Native Firebase.
 
 In theory, the Receipts Scanner could use Firebase for Web both on Android and Windows, but I would expect React Native Firebase to be more suitable and faster since it uses native APIs. React Native Firebase could also get support for React Native Windows in the future.
 
 \section{Authentication}
 \label{ref:authentication}
-\textit{"Authentication is the process of verifying an entity’s identity, given its credentials."} \cite{Cankaya2011Authentication} In Receipts Scanner, users are being authenticated.
+\textit{``Authentication is the process of verifying an entity’s identity, given its credentials.''} \cite{Cankaya2011Authentication} In Receipts Scanner, users are being authenticated.
 
-The authentication in the application serves two purposes. The first one is the ability to connect saved receipts with the user who created them. The second reason for authentication is to ensure proper database rules. The rules are set so that only authenticated user can create a new \textit{User} document\footnote{Documents and data model of Receipts Scanner have been introduced in Section \ref{sec:storage}.}. The user can read and modify the \textit{User} document if they are authenticated and if the document belongs to them. The last rule ensures that each user can create, read and modify only their receipts inside the \textit{Receipts} collection and not receipts of other users.
+The authentication in the application serves two purposes. The first one is the ability to connect saved receipts with the user who created them. The second reason for authentication is to ensure proper database rules. The rules are set so that only authenticated user can create a new \textit{User} document\footnote{Documents and data model of Receipts Scanner have been introduced in Section~\ref{sec:storage}.}. The user can read and modify the \textit{User} document if they are authenticated and if the document belongs to them. The last rule ensures that each user can create, read and modify only their receipts inside the \textit{Receipts} collection and not receipts of other users.
 
 \begin{figure}
 \centering
@@ -680,38 +683,15 @@ When the user first launches the application, a login screen is displayed. The l
     
     Figure \ref{fig:sign_in_flow} shows how the process of a sign-in with email and password looks. The form offers a real-time validation, so the user is instantly notified if they have entered an invalid email or a password. The validation is shown in Figure \ref{fig:login_validation}.
     
-    \begin{figure}
-        \begin{center}
-            \includegraphics[width=\textwidth]{figures/diagrams/Sign_in_flow}
-        \end{center}
-        \caption{Activity diagram of a user signing in.}
-        \label{fig:sign_in_flow}
-    \end{figure}
-    
-    Figure \ref{fig:sign_up_flow} shows the process of a sign-up with email and password.
-    
-    \begin{figure}
-        \begin{center}
-            \includegraphics[width=\textwidth]{figures/diagrams/Sign_up_flow}
-        \end{center}
-        \caption{Activity diagram of a user signing up.}
-        \label{fig:sign_up_flow}
-    \end{figure}
+    Figure \ref{fig:sign_up_flow} shows the process of a registration with email and password.
     
     \item \textbf{Authentication with a Google account}
     
     \phantomsection
     \label{phantom:google_sign_in}
-    Figure \ref{fig:google_auth_flow} shows authentication flow using Google Sign In\footnote{Google Sign In on GitHub: \url{https://github.com/react-native-google-signin/google-signin}.} native module.
-    Authentication with Google is not available in the Windows version of Receipts Scanner because the Google Sign In library does not support React Native Windows yet\footnote{GitHub issue that tracks adding of support of Google Sign In for Windows: \url{https://github.com/microsoft/react-native-windows/issues/6531}}.
-    
-    \begin{figure}
-        \begin{center}
-            \includegraphics[width=0.9\textwidth]{figures/diagrams/Google_auth_flow}
-        \end{center}
-        \caption{Activity diagram of a user authenticating with a Google account.}
-        \label{fig:google_auth_flow}
-    \end{figure}
+    Figure \ref{fig:google_auth_flow} shows authentication flow using Google Sign In\footnote{Google Sign In on GitHub:\\\url{https://github.com/react-native-google-signin/google-signin}.} native module.
+    Authentication with Google is not available in the Windows version of Receipts Scanner because the Google Sign In library does not support React Native Windows yet\footnote{GitHub issue that tracks adding of support of Google Sign In for Windows: \url{https://github.com/microsoft/react-native-windows/issues/6531}.}.
+
 \end{enumerate}
 
 What all three workflows have in common is that the user's session is persisted even if the application is restarted.
@@ -721,7 +701,7 @@ If a user wanted to use a different account, they could sign out in the settings
     \begin{center}
         \includegraphics[width=\half\textwidth]{figures/screens/android/light/settings_screen}
     \end{center}
-    \caption{Settings screen with \textit{Sign out} button.}
+    \caption{Settings screen.}
     \label{fig:settings_screen}
 \end{figure}
 
@@ -748,18 +728,18 @@ The benefit of the asynchronicity of those processes is that the whole process i
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=\textwidth]{figures/diagrams/Add_receipt_Android}
+        \includegraphics[width=\textwidth]{figures/diagrams/add_receipt_android}
     \end{center}
-    \caption{Activity diagram of a user adding a new receipt.}
+    \caption{Activity diagram of adding a new receipt.}
     \label{fig:add_receipt_android}
 \end{figure}
 
 \subsection{Uploading image from Windows}
 On Android, the image capture and selection from the gallery is provided by library react-native-image-crop-picker\footnote{\url{https://github.com/ivpusic/react-native-image-crop-picker}}. However, this library does not support Windows. A library react-native-document-picker\footnote{\url{https://github.com/rnmods/react-native-document-picker}} used to provide a file selection feature for Windows but is incompatible with the current version of React Native for Windows. 
 
-For this reason, a native C++ module \texttt{FilePicker} was implemented. It allows to pick an image from the Windows Explorer and returns an object containing the path to the image, MIME type\footnote{MIME (Multipurpose Internet Mail Extensions) type identifies the format of data transmitted on the internet.} and the image data encoded as Base64\footnote{\definition{Base64} is an encoding that encodes binary data into ASCII text.}. This module is then used in the JavaScript code. However, the image upload functionality is not complete on Windows because Firebase Storage for Web uses Web APIs that are not available in React Native running on Windows. An option to overcome this issue would be finding cloud storage that supports the upload of Base64 strings, preferably without any library, using only REST API.
+For this reason, a native C++ module \textit{FilePicker} was implemented. It allows to pick an image from the Windows Explorer and returns an object containing the path to the image, MIME type\footnote{MIME (Multipurpose Internet Mail Extensions) type identifies the format of data transmitted on the internet.} and the image data encoded as Base64\footnote{\definition{Base64} is an encoding that encodes binary data into ASCII text.}. This module is then used in the JavaScript code. However, the image upload functionality is not complete on Windows because Firebase Storage for Web uses Web APIs that are not available in React Native running on Windows. An option to overcome this issue would be finding cloud storage that supports the upload of Base64 strings, preferably without any library, using only REST API.
 
-The \texttt{FilePicker} module could be eventually released as a separate package, so that it could be used by other React Native developers.
+The \textit{FilePicker} module could be eventually released as a separate package, so that it could be used by other React Native developers.
 
 \section{Form Recognizer}
 \label{sec:form_recognizer}
@@ -788,10 +768,10 @@ In order to make the application more visually attractive and to improve the use
 
 When a user adds a new receipt, the items on the receipt are sent to the Python API \texttt{/category} endpoint. The service contains a dictionary of category names as keys and emojis as values. Each item name is compared to all dictionary keys by using method \texttt{most\_similar\_to\_given} and the key that is most similar to the item name is returned, together with the emoji.
 
-The method \texttt{most\_similar\_to\_given} is provided by the Magnitude library\cite{PatelEtal2018Magnitude}. Magnitude is a tool for utilizing and processing word embeddings. Word embeddings are typically real-valued vectors that encode the meaning of a word, such that the vectors that are close in the vector space are similar in their meaning \cite{Jurafsky2020Speech}. Magnitude is a fast and memory-efficient alternative to tools like Gensim\footnote{\url{https://radimrehurek.com/gensim/}}.
+The method \texttt{most\_similar\_to\_given} is provided by the Magnitude library \cite{PatelEtal2018Magnitude}. Magnitude is a tool for utilizing and processing word embeddings. Word embeddings are typically real-valued vectors that encode the meaning of a word, such that the vectors that are close in the vector space are similar in their meaning \cite{Jurafsky2020Speech}. Magnitude is a fast and memory-efficient alternative to tools like Gensim\footnote{\url{https://radimrehurek.com/gensim/}}.
 
 It uses its own vector storage file format \texttt{.magnitude}.
-Popular embedding models such as Google's word2vec, Stanford's GloVe and Facebook's fastText have been pre-converted to the \texttt{.magnitude} format for download and usage\footnote{Pre-converted Magnitude models for download: \url{https://github.com/plasticityai/magnitude\#pre-converted-magnitude-formats-of-popular-embeddings-models}.}. Furthermore, each word embeddings model is available in three variants: light, medium and heavy. The difference is that medium and heavy models have advanced support for out-of-vocabulary keys\footnote{Words that do not appear in the model's vocabulary.}. The heavy model also features faster approximate K-Nearest Neighbors\footnote{A supervised machine learning algorithm for classification and regression problems.}.
+Popular embedding models such as Google's word2vec, Stanford's GloVe and Facebook's fastText have been pre-converted to the \texttt{.magnitude} format for download and usage\footnote{Pre-converted Magnitude models for download:\\\url{https://github.com/plasticityai/magnitude\#pre-converted-magnitude-formats-of-popular-embeddings-models}.}. Furthermore, each word embeddings model is available in three variants: light, medium and heavy. The difference is that medium and heavy models have advanced support for out-of-vocabulary keys\footnote{Words that do not appear in the model's vocabulary.}. The heavy model also features faster approximate K-Nearest Neighbors\footnote{A supervised machine learning algorithm for classification and regression problems.}.
 
 Magnitude implements functions for looking up
 vector representations for misspeled or out-of-vocabulary words. This means that it can handle abbreviations, which often appear on receipts, and whole sentences reasonably well.
@@ -814,6 +794,7 @@ and the special sequence $<\text{where}>$. The less-than sign $<$ and the greate
 The results show that the case matters, e.i. \textit{CHUPA LOLLIPOPS} and \textit{Chupa lollipops} are categorized differently, and how more concrete terms are mapped to more general terms, e.i. \textit{salmon} and \textit{cola} are categorized as \textit{fish} and \textit{cold beverage} respectively.
 
 \begin{table}
+    \resizebox{\textwidth}{!}{%
     \begin{tabular}{>{\bfseries}L{0.2\textwidth}L{0.2\textwidth}L{0.2\textwidth}L{0.2\textwidth}L{0.2\textwidth}}
         \toprule
         \textbf{item name} & \textbf{word2vec light} & \textbf{word2vec medium} & \textbf{fastText medium} & \textbf{fastText subwords medium}\\
@@ -832,7 +813,8 @@ T MAT \mbox{CHEDDAR} & \emoji{floppy-disk} floppy disk & \emoji{cheese-wedge} ch
 pork loin chop & \emoji{motor-scooter} motor scooter & \emoji{hot-dog} hot dog & \emoji{pig} pork & \emoji{pig} pork\\
         \bottomrule
     \end{tabular}
-    \caption{Comparison of pretrained word embeddings models.}
+    }
+    \caption{Comparison of pre-trained word embeddings models.}
     \label{table:models_comparison}
 \end{table}
 
@@ -958,7 +940,7 @@ The purpose of image processing in the Receipts Scanner is to provide a cleaner 
 
     The previous steps were used to find the corners of a receipt. Although Otsu's thresholding made the edges of the white receipt clearly distinguishable from the dark background, the text of the receipt became unreadable.
     
-    TODO A different scenario would be for receipt scans. Since scans usually do not have any background, Otsu's thresholding maximizes the contrast between the paper and the text instead of the contrast between the paper and the background.
+    With receipts scans, the situation is different. Since scans usually do not have any background, Otsu's thresholding maximizes the contrast between the paper and the text instead of the contrast between the paper and the background.
     
     For receipt photos, adaptive thresholding is a better choice. This is also caused by shades in the photos, which are not present in scans.
     
@@ -1122,38 +1104,37 @@ This section provides an overview of the functionality available in the Receipts
 \chapter{Financial sustainability}
 The Receipts Scanner uses paid third-party services, namely:
 \begin{itemize}
-    \item Microsoft Form Recognizer for OCR and data extraction
+    \item Microsoft Form Recognizer for OCR and data extraction,
     
-    \item Google Cloud Build, Google Container Registry and Google Cloud Run for the deployment of Python API container
+    \item Google Cloud Build, Google Container Registry and Google Cloud Run for the deployment of Python API container,
     
     \item Google Firebase for document database and image storage.
 \end{itemize}
-
 The Firebase Authentication is free.
 
 It would be necessary to run the application for some time to figure out the usage statistics, such as the average number of receipts a user uploads. Since those statistics are not available yet, I will provide an \textit{estimate} of the operational costs.
 
 Let us assume that the application has \num{1000} active users, where each user makes one scan per day on average.
-The price for Microsoft Form Recognizer is \$0.01 per scan \cite{FormRecognizerPricing}. This means the total cost of this service would be $\num{10000}\cdot30\cdot\$0.01 = \$300.00$.
+The price for Microsoft Form Recognizer is \$0.01 per scan \cite{FormRecognizerPricing}. This means the total cost of this service would be $\num{10000} \cdot 30 \cdot \$0.01 = \$300.00$.
 
-The size of an uploaded image is around 500 KB, the processed image is smaller, around 100 KB large. The price of storing the textual data is negligible compared to other costs and would be lost in the approximations. Cloud Firestore is a very cheap storage \cite{CloudFirestorePricing} and its free tier provides storage for 1 GB, which is about \num{400000} average-sized receipts\footnote{The size of a stored receipt, \num{2500} KB, was computed using the \textit{firestore-size} library available at \url{https://github.com/alekslario/firestore-size}.}.
+The size of an uploaded image is around 500 KB, the processed image is smaller, around 100 KB large. The price of storing the textual data is negligible compared to other costs and would be lost in the approximations. Cloud Firestore is a very cheap storage \cite{CloudFirestorePricing} and its free tier provides storage for 1 GB, which is about \num{400000} average-sized receipts\footnote{The size of a stored receipt, \num{2500} KB, was computed using the firestore-size library available at \url{https://github.com/alekslario/firestore-size}.}.
 
 Whereas the number of scans is linearly proportional to the number of users, the numbers of stored receipts grows quadratically. It can be expressed recurrently as: 
 \begin{equation}
     s(t) = \begin{cases}
-        s(t-1) + rut & \text{if }t\geq1\\
+        s \cdot (t-1) + r \cdot u \cdot t & \text{if }t\geq1\\
         0 & \text{otherwise}
     \end{cases}
 \end{equation}
 or as a function of $t$:
 \begin{equation}
 \label{eqn:stored_receipts}
-s(t) = \frac{ru}{2}t(t + 1)\text{,}
+s(t) = \frac{r \cdot u}{2} \cdot t \cdot (t + 1)\text{,}
 \end{equation}
 where $t$ is a point in time (e.g. month), $r$ is the number of receipts per user per chosen time period (in this case month) and $u$ is the number of new users at the end of the chosen time period (i.e. at the end of a month). Since we assume one receipt per user per day, $r = 30$. Assuming \num{1000} new users per month, $u = \num{1000}$. 
 Substitution of the values into the equation \ref{eqn:stored_receipts} gives
 \begin{equation}
-s(t) = \num{15000}t(t + 1)\text{.}
+s(t) = \num{15000} \cdot t \cdot (t + 1)\text{.}
 \end{equation}
 A graph of this function is shown in Figure \ref{fig:receipts_by_users}.
 
@@ -1165,15 +1146,15 @@ A graph of this function is shown in Figure \ref{fig:receipts_by_users}.
     \label{fig:receipts_by_users}
 \end{figure}
 
-The images of receipts are stored in Google Cloud Storage. The price is \$0.026 per GB \cite{CloudStoragePricing}. For the first month, the cost would be $\num{1000}\cdot30\cdot(600\text{ KB} / 1\text{ GB})\cdot\$0.026 = \$0.468$.
+The images of receipts are stored in Google Cloud Storage. The price is \$0.026 per GB \cite{CloudStoragePricing}. For the first month, the cost would be $\num{1000} \cdot 30 \cdot (600\text{ KB} / 1\text{ GB}) \cdot \$0.026 = \$0.468$.
 For the second, assuming \num{1000} new users, it would be \$1.404.
 
-The Google Container Registry is charged the same way as Google Cloud Storage \cite{ContainerRegistryPricing}, depending on the size of all stored containers. Even though storing only the newest container would suffice, it is good to keep a few previous containers as well. It is then possible to go back to these containers, should the newest one have any errors. Older containers can be deleted\footnote{Google provides an automated way of deleting old containers available at \url{https://github.com/sethvargo/gcr-cleaner}.}. This means that the price for the stored containers will be fixed. The size of one Python API container is 2.7 GB. The price of storing the five latest containers would be $5\cdot2.7\cdot\$0.02 = \$0.27$ per month. 
+The Google Container Registry is charged the same way as Google Cloud Storage \cite{ContainerRegistryPricing}, depending on the size of all stored containers. Even though storing only the newest container would suffice, it is good to keep a few previous containers as well. It is then possible to go back to these containers, should the newest one have any errors. Older containers can be deleted\footnote{Google provides an automated way of deleting old containers available at \url{https://github.com/sethvargo/gcr-cleaner}.}. This means that the price for the stored containers will be fixed. The size of one Python API container is 2.7 GB. The price of storing the five latest containers would be $5 \cdot 2.7 \cdot \$0.02 = \$0.27$ per month. 
 
-Google Cloud Run provides autoscaling, which means that the number of provisioned instances depends on the number of incoming requests. If a minimum number of instances is set to zero, the service goes idle each time the requests are not coming. The service is set up to use 2 CPUs and 6 GB of memory. For each receipt, one request is made to process the image and one to assign categories to items, therefore $\num{1000}\cdot30\cdot2 = \num{60000}$ requests per month. Assuming that each request comes after the previous request ended and that each request takes \num{1000} ms, the service will be used only for \num{120000} vCPU-seconds\footnote{vCPU-seconds are computed as $\textit{number of CPUs} \times \textit{time in seconds the service is running}$.}. This is included in the free plan. Memory consumption would be \num{480000} GiB-seconds\footnote{GiB-seconds are computed as $\textit{size in GiB} \times \textit{time in seconds the service is running}.$}, which slightly exceeds the free plan \cite{CloudRunPricing}, incurring \$0.3 of additional costs. 
+Google Cloud Run provides autoscaling, which means that the number of provisioned instances depends on the number of incoming requests. If a minimum number of instances is set to zero, the service goes idle each time the requests are not coming. The service is set up to use 2 CPUs and 6 GB of memory. For each receipt, one request is made to process the image and one to assign categories to items, resulting in $\num{1000} \cdot 30 \cdot 2 = \num{60000}$ requests per month. Assuming that each request comes after the previous request ended and that each request takes \num{1000} ms, the service will be used only for \num{120000} vCPU-seconds\footnote{vCPU-seconds are calculated as $\textit{number of CPUs} \times \textit{running time of service (sec)}$.}. This is included in the free plan. Memory consumption would be \num{480000} GiB-seconds\footnote{GiB-seconds are calculated as $\textit{size (GiB)} \times \textit{running time of service (sec)}.$}, which slightly exceeds the free plan \cite{CloudRunPricing}, incurring \$0.3 of additional costs. 
 If a minimum number of instances was set to one in order to prevent a cold start, the cost would be \$66.00 per month.
 
-Building a container using Google Cloud Build takes approximately 9 minutes. The price is \$0.016 per build-minute \cite{CloudBuildPricing}. Assuming three builds per day due to code changes pushed to the master branch, the cost per month is $3\cdot9\cdot\$0.016\cdot30 = \$12.96$.
+Building a container using Google Cloud Build takes approximately 9 minutes. The price is \$0.016 per build-minute \cite{CloudBuildPricing}. Assuming three builds per day due to code changes pushed to the master branch, the cost per month is $3 \cdot 9 \cdot \$0.016 \cdot 30 = \$12.96$.
 
 The total operational cost per month with \num{1000} users would be \$314.00, i.e. \$0.314 per user.
 From Figure 4, it is apparent that most of these costs are due to the OCR service. For this reason, other applications offer the feature of automatic data extraction only after paying a fee. Smart Receipts charges \$0.1 per one OCR scan (as of April 2021).
@@ -1186,10 +1167,10 @@ From Figure 4, it is apparent that most of these costs are due to the OCR servic
     \label{fig:operational_costs}
 \end{figure}
 
-The Receipts Scanner would therefore need to have its own OCR service or become monetized. In my opinion, in-app advertising, such as AdMob\footnote{Mobile app monetization from Google}, would not generate enough revenue. A subscription-based model seems like a more viable option. The third option would be combining the two previous approaches: a limited number of scans and visible advertisement for non-subscribed users, and an unlimited number of scans and removed advertisement for the subscribed ones.
+Therefore, the Receipts Scanner would need to have its own OCR service, which would be free, or become monetized. In my opinion, in-app advertising, such as AdMob\footnote{Mobile app monetization from Google.}, would not generate enough revenue. A subscription-based model seems like a more viable option. The third option would be combining the two previous approaches: a limited number of scans and visible advertisement for non-subscribed users, and an unlimited number of scans and removed advertisement for the subscribed ones.
 
 \chapter{Evaluation}
-The application has not been given to real users yet. Therefore there is no available feedback concerning usability, performance and the overall user experience.
+The application has not been given to real users yet. Hence, there is no available feedback concerning usability, performance and the overall user experience.
 
 The Form Recognizer API used for OCR and data extraction from an image is a third-party service, and as such, measuring its performance would provide little value compared to the rest of the thesis. It would become more important if the current data extraction was insufficient, which would be best found by users in practice.
 
@@ -1201,7 +1182,7 @@ A questionnaire was given to 28 people. It consisted of two parts: evaluation of
 \section{Emoji assignment}
 This section aims to evaluate how accurately the emoji chosen by the categorization service inside Python API fits the text. The text is the name of a receipt item recognized by Form Recognizer, consisting of one or more words.
 
-Receipts contain very often abbreviations and names of brands. The categorization service cannot handle those items in a meaningful manner. The assigned emojis in this case are rather arbitrary. An example to illustrate this is \textit{P/DY VEGAN STRAW PROT TUB 1KG} classified as \textit{\emoji{teddy-bear} teddy bear} or \textit{DR PEPPER ZERO} classified as \textit{\emoji{key} key}. TODO Another difficult area is restaurant receipts, which often contain peculiar names of dishes.
+Receipts contain very often abbreviations and names of brands. The categorization service cannot handle those items in a meaningful manner. The assigned emojis in this case are rather arbitrary. An example to illustrate this is \textit{P/DY VEGAN STRAW PROT TUB 1KG} classified as \textit{\emoji{teddy-bear} teddy bear} or \textit{DR PEPPER ZERO} classified as \textit{\emoji{key} key}. Another challenge is assigning emojis to restaurant receipts, which often contain peculiar names of dishes.
 
 Seventy items\footnote{All items from the survey are inserted in the archive in the Information System of Masaryk University \ref{appendix:questionnaire_materials}.} have been selected from the data extracted by Form Recognizer on various receipts, excluding items incorrectly classified as a receipt item and items with which the respondents would be unfamiliar. Duplicates and similar items have not been included in this set either.
 
@@ -1227,7 +1208,7 @@ Thirty receipt photos have been processed using Receipts Scanner. The original a
 Sixteen receipts were from the ExpressExpense \cite{ExpressExpense2019Receipt} dataset, and fourteen were taken with modern phone cameras for the purpose of this survey.
 All new images and one image from the ExpressExpense dataset were considered more readable in the processed form by most respondents. Two ExpressExpense images had an equal number of votes for each option. The common feature of ExpressExpense receipts is that they have lower quality than the newly taken photos. These results show that the image processing provides a more readable form of the original image if the original image is of sufficiently good quality.
 
-Therefore, the image processing feature of Receipts Scanner will definitely provide value to users, as most modern smartphones can take images of high quality. For the individual cases when the image processing produces worse or even unreadable images, the original image is still available to the users.
+Based on the survey results, the image processing feature of Receipts Scanner will provide value to users, as most modern smartphones can take images of high quality. For the individual cases when the image processing produces worse or even unreadable images, the original image is still available to the users.
 
 \begin{figure}
     \begin{center}
@@ -1242,11 +1223,11 @@ lokalizace - form recognizer works only with english receipts, would need to use
 explicitne zminit, ze jsem splnil zadani 
 
 
-% INDEX
-\makeatletter\thesis@blocks@clear\makeatother
-\phantomsection %% Print the index and insert it into the
-\addcontentsline{toc}{chapter}{\indexname} %% table of contents.
-\printindex
+% INDEX - unused
+% \makeatletter\thesis@blocks@clear\makeatother
+% \phantomsection %% Print the index and insert it into the
+% \addcontentsline{toc}{chapter}{\indexname} %% table of contents.
+% \printindex
 
 \appendix %% Start the appendices.
 
@@ -1256,12 +1237,12 @@ Files inserted into the archive in the Information System of Masaryk
 University:
 \begin{itemize}
 % TODO actually add those items
-\item receipts\_scanner.zip \Dash Source code of the application.
-\item thesis.pdf \Dash Text of the thesis in PDF.
-\item questionnaire\_materials.zip \Dash Receipt items and images that have been used in the evaluation survey.
+\item \texttt{receipts\_scanner.zip} \Dash Source code of the application.
+\item \texttt{thesis.pdf} \Dash Text of the thesis in PDF.
+\item \texttt{questionnaire\_materials.zip} \Dash Receipt items and images that have been used in the evaluation survey.
 \label{appendix:questionnaire_materials}
-\item screenshots.zip \Dash Screenshots of Receipts Scanner on Android/Windows in light/dark mode.
-\item receipts\_scanner.apk \Dash Android application package for installation of Receipts Scanner.
+\item \texttt{screenshots.zip} \Dash Screenshots of Receipts Scanner on Android/Windows in light/dark mode.
+\item \texttt{receipts\_scanner.apk} \Dash Android application package for installation of Receipts Scanner.
 \end{itemize}
 
 The latest application source code can be found on GitHub:
@@ -1269,11 +1250,37 @@ The latest application source code can be found on GitHub:
 \item \url{https://github.com/petr7555/bachelors_thesis_accounting_ocr}
 \end{itemize}
 
+\section{Authentication activity diagrams}
+
+    \begin{figure}
+        \begin{center}
+            \includegraphics[width=\textwidth]{figures/diagrams/sign_in_flow}
+        \end{center}
+        \caption{User sign-in activity diagram.}
+        \label{fig:sign_in_flow}
+    \end{figure}
+    
+    \begin{figure}
+        \begin{center}
+            \includegraphics[width=\textwidth]{figures/diagrams/sign_up_flow}
+        \end{center}
+        \caption{User sign-up activity diagram.}
+        \label{fig:sign_up_flow}
+    \end{figure}
+    
+    \begin{figure}
+        \begin{center}
+            \includegraphics[width=0.9\textwidth]{figures/diagrams/google_auth_flow}
+        \end{center}
+        \caption{Google authenticating activity diagram.}
+        \label{fig:google_auth_flow}
+    \end{figure}
+    
 \section{Version control system commit messages}
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=\textwidth]{figures/other/Emoji_commits}
+        \includegraphics[width=\textwidth]{figures/other/emoji_commits}
     \end{center}
     \caption{Meaning of emojis in commit messages.}
     \label{fig:emoji_commits}
