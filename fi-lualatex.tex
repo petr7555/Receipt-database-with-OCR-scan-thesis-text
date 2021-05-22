@@ -7,7 +7,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \documentclass[
-  digital, %% The `digital` option enables the default options for the
+  printed, %% The `digital` option enables the default options for the
            %% digital version of a document. Replace with `printed`
            %% to enable the default options for the printed version
            %% of a document.
@@ -47,25 +47,31 @@
     advisor     = {Ing. Lukáš Grolig},
     title       = {Receipt database with OCR scan},
     % TeXtitle    = {The Proof of $\mathsf{P}=\mathsf{NP}$},
-    keywords    = {machine learning, OCR, React Native},
+    keywords    = {React Native, OCR, mobile development, Android, Windows, testing, continuous integration, natural language processing, word embedding, machine learning, sales receipts, cross-platform development, image processing, OpenCV},
     % TeXkeywords = {keyword1, keyword2, \ldots},
     abstract    = {%
-      This is the abstract of my thesis, which can
-
-      span multiple paragraphs.
+    
+    This thesis aims to develop a mobile and desktop application to store sales receipts in a digitalised form, removing the need to keep the original. The application uses optical character recognition to extract data from a receipt image and pre-fill the database record. It utilises word embeddings to assign emojis to receipt items and image processing techniques to transform the receipt photo into a more readable form.
+      
+    The theoretical part introduces React Native in the context of other cross-platform development frameworks.
+    
+    An emphasis is put on testing and continuous integration as an integral part of creating reliable software.
     },
     thanks      = {%
       I would like to thank my supervisor Ing. Lukáš Grolig for bringing up an incredibly interesting assignment for this thesis. 
       
       Secondly, I would like to acknowledge all my friends, family and colleagues who sent me images of receipts and took part in the survey.
       
-      My deepest gratitude belongs to my girlfriend for her endless support, immense encouragement and countless advice.
+      I would especially like to thank my sister for helping me proofread the thesis.
+      
+      I wish to express my deepest gratitude to my girlfriend for her endless support, encouragement and advice.
     },
     bib         = bibliography.bib,
     %% Uncomment the following line (by removing the %% at the
     %% beginning) and replace `assignment.pdf` with the filename
     %% of your scanned thesis assignment.
-%%    assignment         = assignment.pdf,
+    %% Applicable for 'printed' thesis only.
+    %% assignment         = assignment.pdf,
 }
 \usepackage{makeidx}      %% The `makeidx` package contains
 \makeindex                %% helper commands for index typesetting.
@@ -203,18 +209,24 @@ During everyday life, people take part in transactions. Be it grocery shopping o
 
 The goal of my thesis is to develop an application that would serve as a user's digital receipt database. It would allow the user to take a photo of a receipt and by using optical character recognition it would extract the textual information from the photo. This extracted information would be used to pre-fill the receipt record. The receipt records should be editable and searchable, e.g. by the merchant name or items bought. The application should be available on Android and Windows.
 
-In the first chapter, I provide a brief overview of techniques used for data extraction from images.
+In the first chapter, I describe currently available applications that are trying to solve this task, their main features and drawbacks.
 
-In the second chapter, I describe currently available applications that are trying to solve this task, their main features and drawbacks.
+In the second chapter, I provide an overview of techniques used for data extraction from images.
 
-The next chapter is concerned with choosing the right technology for developing a cross-platform application. This chapter also provides an overview of the chosen framework \Dash React Native.
+The next chapter is concerned with choosing target platforms for which the application should be developed. 
 
-An essential part of the thesis is testing and continuous integration. The types of testing that were used to ensure the high quality and reliability of the application are described in the fourth chapter.
+The fourth chapter introduces available technologies for developing cross-platform applications. It also provides an overview of the chosen framework \Dash React Native \Dash which is further elaborated in the subsequent chapter. 
 
-The fifth chapter describes the functionality of the application. It shows how Microsoft Form Recognizer \cite{WhatIsFormRecognizer} was used to extract the information from a photo of a receipt. This chapter also includes a description of a receipt item categorization using word embeddings. The image processing using the OpenCV\footnote{\url{https://opencv.org/}} library is featured as well.
+An essential part of the thesis is testing and continuous integration. The types of testing that were used to ensure the high quality and reliability of the application are described in the sixth chapter.
+
+The seventh chapter describes the functionality of the application. It shows how Microsoft Form Recognizer \cite{WhatIsFormRecognizer} was used to extract the information from a photo of a receipt. This chapter also includes a description of a receipt item categorization using word embeddings. The image processing  using the OpenCV\footnote{\url{https://opencv.org/}} library is featured as well.
+
+The subsequent chapter
 
 % compared to other applications
-The last chapter provides an evaluation of the application: how well it extracts the data from the photo, how accurate the assigned item categories are and how well it processed the original photo to reduce the noise.
+The penultimate chapter provides an evaluation of the application: how well it extracts the data from the photo, how accurate the assigned item categories are and how well it processed the original photo to reduce the noise.
+
+The last chapter 
 
 The outcome of the thesis is an application named Receipts Scanner. It can be used as a way to conveniently organize receipts and access them both from mobile and desktop. 
 
@@ -240,7 +252,7 @@ It works by pre-processing the image\footnote{Image pre-processing refers to a s
 The code can be assigned based on template matching. An image of an unknown character is compared to a set of images of known characters. The code of the most similar character is chosen. The similarity can be computed as a difference between the pixel's grayscale value in the unknown character and a pixel's grayscale value in the known character \cite{Ziegaus2016TemplateMatching}.
 This approach works well\footnote{The template matching technique reached a recognition rate of 97.36\% in \cite{Ziegaus2016TemplateMatching}.} for receipts because the characters are printed and are thus almost the same, except for minor deficiencies in printing. Receipts also usually use the same or a very similar font.
 
-Another approach is to extract the most relevant information from the character image. This is called feature extraction. An example of such a feature could be the density of dark pixels in a given part of the image. These features are used as inputs for machine learning models such as K-Nearest Neighbors and Support Vector Machines. \cite{Singh2011Feature}
+Another approach is to extract the most relevant information from the character image. This is called feature extraction. An example of such a feature could be the density of dark pixels in a given part of the image. These features are used as inputs for machine learning models such as K-Nearest Neighbors and Support Vector Machines\footnote{Supervised machine learning models for classification and regression problems.}. \cite{Singh2011Feature}
 
 The third approach is to use a Convolutional
 Neural Network. It has the highest computational cost among the three mentioned approaches and requires a large dataset of images to learn on, but it has the best performance. \cite{Shreya2019OCRCNN}
@@ -344,6 +356,7 @@ Native modules can be written directly in the application or added as an externa
 In my opinion, not having a native module's functionality available for a given platform is the most considerable drawback of using React Native.
 Most native modules are made for Android and iOS only and cannot be therefore used on the Web or Windows. The missing Windows support is an obstacle encountered many times during Receipts Scanner development.
 
+\newpage
 In case a native module is not available on a given platform, there are four available options:
 \begin{enumerate}
     \item \textbf{Omitting the module.} 
@@ -423,7 +436,7 @@ Running Storybook on a mobile device is achieved by rendering the Storybook comp
 
 Figure \ref{fig:storybook_rn} shows the component library and the interface of Storybook for React Native.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \begin{subfigure}[t]{\half\textwidth}
       \centering
@@ -463,7 +476,7 @@ There are two options for running the Storybook in a browser:
     
 \end{enumerate}
 
-\begin{figure}
+\begin{figure}[H]
     \begin{center}
         \includegraphics[width=\textwidth]{figures/other/storybook_web}
     \end{center}
@@ -477,6 +490,7 @@ The logging in Receipts Scanner happens via methods of a \texttt{LOG} object. Th
 All logs are sent to the console in development mode. \texttt{WARN} and \texttt{ERROR} level messages are sent into Sentry\footnote{\url{https://sentry.io/}}, both in development and release mode. Sentry is a third party service that collects logs, errors, and events sent through the network. This enables monitoring of the application behaviour on users' devices.
 
 \section{Testing}
+Testing is an integral part of developing a reliable software.
 The Receipts Scanner uses five types of tests: unit tests, component tests, snapshot tests, visual regression tests and end-to-end tests.
 Apart from visual tests, all tests use a JavaScript testing framework Jest\footnote{\url{https://jestjs.io/}} that is included by default in new React Native applications. The tests run in a Node.js\footnote{Node.js is a JavaScript runtime. See \url{https://nodejs.org/}.} environment that mimics the environment of a React Native application. 
 
@@ -658,32 +672,32 @@ In theory, the Receipts Scanner could use Firebase for Web both on Android and W
 
 The authentication in the application serves two purposes. The first one is the ability to connect saved receipts with the user who created them. The second reason for authentication is to ensure proper database rules. The rules are set so that only authenticated user can create a new \textit{User} document\footnote{Documents and data model of Receipts Scanner have been introduced in Section~\ref{sec:storage}.}. The user can read and modify the \textit{User} document if they are authenticated and if the document belongs to them. The last rule ensures that each user can create, read and modify only their receipts inside the \textit{Receipts} collection and not receipts of other users.
 
-\begin{figure}
-\centering
-\begin{subfigure}[t]{\half\textwidth}
-  \centering
-  \includegraphics[width=\subfigsize\textwidth]{figures/screens/android/light/login_screen}
-  \caption{Empty login form.}
-  \label{fig:login_screen}
-\end{subfigure}
-\begin{subfigure}[t]{\half\textwidth}
-  \centering
-  \includegraphics[width=\subfigsize\textwidth]{figures/screens/android/light/login_validation}
-  % mbox -> do not hyphenate
-  \caption{Form with validation \mbox{errors}.}
-  \label{fig:login_validation}
-\end{subfigure}
-\caption{Login screen.}
-\end{figure}
-
 When the user first launches the application, a login screen is displayed. The login screen is depicted in Figure \ref{fig:login_screen}. It consists of two text input fields and three buttons. The first input field is for email, and the second is for password. It is possible to display the entered password in plain text form by pressing the eye icon next to the password input. Based on the user's preference, they can choose one of the two supported authentication mechanisms:
 
 \begin{enumerate}
     \item \textbf{Authentication with email and password}
     
     Figure \ref{fig:sign_in_flow} shows how the process of a sign-in with email and password looks. The form offers a real-time validation, so the user is instantly notified if they have entered an invalid email or a password. The validation is shown in Figure \ref{fig:login_validation}.
-    
+        
     Figure \ref{fig:sign_up_flow} shows the process of a registration with email and password.
+    
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}[t]{\half\textwidth}
+          \centering
+          \includegraphics[width=\subfigsize\textwidth]{figures/screens/android/light/login_screen}
+          \caption{Empty login form.}
+        \end{subfigure}
+        \begin{subfigure}[t]{\half\textwidth}
+          \centering
+          \includegraphics[width=\subfigsize\textwidth]{figures/screens/android/light/login_validation}
+          % \mbox -> do not hyphenate
+          \caption{Form with validation \mbox{errors}.}
+          \label{fig:login_validation}
+        \end{subfigure}
+        \caption{Login screen of Receipts Scanner on Android.}
+        \label{fig:login_screen}
+    \end{figure}
     
     \item \textbf{Authentication with a Google account}
     
@@ -697,11 +711,11 @@ When the user first launches the application, a login screen is displayed. The l
 What all three workflows have in common is that the user's session is persisted even if the application is restarted.
 If a user wanted to use a different account, they could sign out in the settings screen, depicted in Figure \ref{fig:settings_screen}. Clicking the \textit{Sign out} button ends the session and redirects the user back to the login screen.
 
-\begin{figure}
+\begin{figure}[H]
     \begin{center}
         \includegraphics[width=\half\textwidth]{figures/screens/android/light/settings_screen}
     \end{center}
-    \caption{Settings screen.}
+    \caption{Settings screen of Receipts Scanner on Android.}
     \label{fig:settings_screen}
 \end{figure}
 
@@ -783,9 +797,9 @@ Another constraint for choosing the model was its size. Google Cloud Run, a clou
 
 The used fastText model was pre-trained on over 16 billion words from Wikipedia 2017, Statmt.org news and UMBC news \cite{Mikolov2018Advances}. It contains only English word vectors. However, fastText provides models for other languages\footnote{Word vectors for 157 languages:\\ \url{https://fasttext.cc/docs/en/crawl-vectors.html}.}, which could be converted using the Magnitude converter\footnote{\url{https://github.com/plasticityai/magnitude\#file-format-and-converter}} and used in a localized Receipts Scanner, e.g. with support for the Czech language.
 
-Table \ref{table:models_comparison} shows results from various word embeddings models. The first two columns are produced by Google's word2vec, which was trained on 100 billion words from Google News \cite{Google2013Word2Vec}. The third column is fastText. The fourth column is fastText with subwords information. In the subwords model, each word is represented as a bag of character \textit{n}-grams. Taking the
+Table \ref{table:models_comparison} shows results from various word embeddings models. The first two columns are produced by Google's word2vec, which was trained on 100 billion words from Google News \cite{Google2013Word2Vec}. The third column is fastText. The fourth column is fastText with subwords information. In the subwords model, each word is represented as a bag of character $n$-grams. Taking the
 word \textit{where} and $n = 3$ as an example, it will be
-represented by the following character \textit{n}-grams:
+represented by the following character $n$-grams:
 \[
 <\text{wh, whe, her, ere, re}>
 \]
@@ -838,7 +852,7 @@ The purpose of image processing in the Receipts Scanner is to provide a cleaner 
     
     where $x$ and $y$ are the distances from the origin in the horizontal and vertical axis, respectively. $\sigma$ is the standard deviation of the Gaussian distribution. \cite{Shreya2019OCRCNN}
     
-    A result of applying Gaussian blur is shown in Figure \ref{fig:gaussian_blur}.
+    The result of applying Gaussian blur is shown in Figure \ref{fig:gaussian_blur}.
     
     \begin{figure}
         \centering
@@ -852,7 +866,7 @@ The purpose of image processing in the Receipts Scanner is to provide a cleaner 
           \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/after_blur}
           \caption{After Gaussian blur.}
         \end{subfigure}
-        \caption{Comparison of an image before and after Gaussian blur has been applied.}
+        \caption{Comparison of an image before and after Gaussian blur.}
         \label{fig:gaussian_blur}
     \end{figure}
     
@@ -874,9 +888,9 @@ The purpose of image processing in the Receipts Scanner is to provide a cleaner 
     
     Otsu's thresholding calculates the threshold value dynamically from the histogram of each image, such that the found threshold maximizes the between-class variance \cite{Gonzalez2008Digital}. Classes are black and white pixels.
     
-    Figure \ref{fig:binary_threshold} shows a result of applying fixed binarization with a threshold value of 127. The edges of the receipt in this image would not be correctly recognized because the threshold value is too small.
+    Figure \ref{fig:binary_threshold} shows the result of applying fixed binarization with a threshold value of 127. The edges of the receipt in this image would not be correctly recognized because the threshold value is too small.
     
-    Figure \ref{fig:otsu_threshold} shows a result of applying Otsu's thresholding, which automatically found a threshold value of 151. The edges are clearly visible.
+    Figure \ref{fig:otsu_threshold} shows the result of applying Otsu's thresholding, which automatically found a threshold value of 151. The edges are clearly visible.
     
     \begin{figure}
         \centering
@@ -904,9 +918,9 @@ The purpose of image processing in the Receipts Scanner is to provide a cleaner 
     
     A kernel slides through the image the same way as in 2D convolution. A pixel is considered white if at least one pixel in the original image under the kernel is white.
     
-    A result of applying dilation is shown in Figure \ref{fig:dilation}.
+    The result of applying dilation is shown in Figure \ref{fig:dilation}.
     
-    \begin{figure}
+    \begin{figure}[H]
         \centering
         \begin{subfigure}[t]{\half\textwidth}
           \centering
@@ -918,13 +932,13 @@ The purpose of image processing in the Receipts Scanner is to provide a cleaner 
           \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/after_dilation}
           \caption{After dilation.}
         \end{subfigure}
-        \caption{Comparison of an image before and after dilation has been applied.}
+        \caption{Comparison of an image before and after dilation.}
         \label{fig:dilation}
     \end{figure}
 
     \item \textbf{Finding the corners of a receipt}
     
-    As the next step, all external contours in the image are found. Contour is a curve joining points of the same color and intensity. The contour with the largest area is most probably the contour of a receipt. Four points that represent the corners of the receipt are then found in the contour and returned. A result of this step is visualized in Figure \ref{fig:points_and_edges}.
+    As the next step, all external contours in the image are found. Contour is a curve joining points of the same color and intensity. The contour with the largest area is most probably the contour of a receipt. Four points that represent the corners of the receipt are then found in the contour and returned. The idea behind finding the corners is that the bottom-left corner has the smallest $x$ coordinate and the largest $y$ coordinate, the bottom-right corner has the largest $x$ a $y$ coordinates etc. The result of this step is visualized in Figure \ref{fig:points_and_edges}.
 
     However, if the contour area is smaller than 30\% of the overall image, the next step, \textit{Cropping and warping}, is skipped.
     
@@ -932,7 +946,7 @@ The purpose of image processing in the Receipts Scanner is to provide a cleaner 
         \begin{center}
             \includegraphics[width=\half\textwidth]{figures/image_processing/points_and_edges}
         \end{center}
-        \caption{Binarized photo with recognized corners.}
+        \caption{Photo of a receipt with detected corners.}
         \label{fig:points_and_edges}
     \end{figure}
 
@@ -955,14 +969,14 @@ The purpose of image processing in the Receipts Scanner is to provide a cleaner 
         \begin{subfigure}[t]{\half\textwidth}
           \centering
           \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/adaptive_thresholding_no_blur}
-          \caption{Adaptive thresholding without Gaussian blur.}
+          \caption{Without Gaussian blur.}
         \end{subfigure}
         \begin{subfigure}[t]{\half\textwidth}
           \centering
           \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/adaptive_thresholding}
-          \caption{Adaptive thresholding after Gaussian blur.}
+          \caption{With Gaussian blur.}
         \end{subfigure}
-        \caption{Comparison of an adaptive thresholding with and without Gaussian blur being applied first.}
+        \caption{Result of adaptive thresholding applied on an image without and with Gaussian blur.}
         \label{fig:adaptive_thresholding}
     \end{figure}
 
@@ -975,7 +989,7 @@ The purpose of image processing in the Receipts Scanner is to provide a cleaner 
     
     A comparison of the original image and the final processed image is shown in Figure \ref{fig:original_vs_processed}.
     
-    \begin{figure}
+    \begin{figure}[H]
         \centering
         \begin{subfigure}[t]{\half\textwidth}
           \centering
@@ -985,9 +999,9 @@ The purpose of image processing in the Receipts Scanner is to provide a cleaner 
         \begin{subfigure}[t]{\half\textwidth}
           \centering
           \includegraphics[width=\subfigsize\textwidth]{figures/image_processing/processed_image}
-          \caption{A processed image after adaptive binarization and perspective transformation.}
+          \caption{Processed image after adaptive binarization and perspective transformation.}
         \end{subfigure}
-        \caption{Comparison of a fixed and Otsu's thresholding.}
+        \caption{Comparison of the original and the processed image.}
         \label{fig:original_vs_processed}
     \end{figure}
 
@@ -1008,38 +1022,30 @@ Most of the elements are styled with these two colors to ensure a clean and cons
 \subsection{Dark mode}
 Receipts scanner switches automatically into the dark mode based on the user's device settings. The dark mode is a popular feature among users. It helps reduce digital eye strain and saves battery on devices with OLED\footnote{Unlike LCD screens that illuminate using a back panel that always lights up completely, in OLED displays, each pixel is individually lit.} screen.
 
-Figure \ref{fig:dark_mode_android} shows the user interface with the dark mode enabled on an Android device. Figure \ref{fig:dark_mode_windows} shows the application in dark mode on Windows.
+Figure \ref{fig:dark_mode_android} shows the user interface with the dark mode enabled on an Android device. Figure \ref{fig:dark_mode_windows} shows the application in the dark mode on Windows.
 
 \begin{figure}
     \centering
     \begin{subfigure}[t]{\half\textwidth}
       \centering
       \includegraphics[width=\subfigsize\textwidth]{figures/screens/android/dark/receipts_list}
-      \caption{Main application screen showing list of receipts.}
+      \caption{List of receipts.}
     \end{subfigure}
     \begin{subfigure}[t]{\half\textwidth}
       \centering
       \includegraphics[width=\subfigsize\textwidth]{figures/screens/android/dark/items}
-      \caption{A screen with individual receipt items.}
+      \caption{Receipt items.}
     \end{subfigure}
-    \caption{User interface of Receipts Scanner on Android with enabled dark mode.}
+    \caption{User interface of Receipts Scanner on Android in the dark mode.}
     \label{fig:dark_mode_android}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \begin{subfigure}[t]{\half\textwidth}
-      \centering
-      \includegraphics[width=\subfigsize\textwidth]{figures/screens/windows/dark/receipts_list}
-      \caption{Main application screen showing list of receipts.}
-    \end{subfigure}
-    \begin{subfigure}[t]{\half\textwidth}
-      \centering
-      \includegraphics[width=\subfigsize\textwidth]{figures/screens/windows/dark/items}
-      \caption{A screen with individual receipt items.}
-      \label{fig:dark_mode_windows}
-    \end{subfigure}
-    \caption{User interface of Receipts Scanner on Windows with enabled dark mode.}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=\textwidth]{figures/screens/windows/dark/remove_receipt_toast}
+    \end{center}
+    \caption{User interface of Receipts Scanner on Windows in the dark mode.}
+    \label{fig:dark_mode_windows}
 \end{figure}
 
 \section{Real-time user interface}
@@ -1142,7 +1148,7 @@ A graph of this function is shown in Figure \ref{fig:receipts_by_users}.
     \begin{center}
         \includegraphics[width=0.7\textwidth]{figures/graphs/receipts_by_users}
     \end{center}
-    \caption{Number of stored receipts by number of users}
+    \caption{Number of stored receipts by the number of users.}
     \label{fig:receipts_by_users}
 \end{figure}
 
@@ -1163,7 +1169,7 @@ From Figure 4, it is apparent that most of these costs are due to the OCR servic
     \begin{center}
         \includegraphics[width=1\textwidth]{figures/graphs/operational_costs}
     \end{center}
-    \caption{Operational costs of using Form Recognizer compared to other services}
+    \caption{Operational costs of using Form Recognizer compared to other services.}
     \label{fig:operational_costs}
 \end{figure}
 
@@ -1196,7 +1202,7 @@ This feature of Receipts Scanner is meant to bring an element of fun into the ap
     \begin{center}
         \includegraphics[width=0.7\textwidth]{figures/graphs/quality_of_emojis}
     \end{center}
-    \caption{Results of survey evaluating appropriateness of emojis assigned to the receipt items.}
+    \caption{Results of a survey evaluating how accurate the emojis assigned to the receipt items were.}
     \label{fig:quality_of_emojis}
 \end{figure}
 
@@ -1214,7 +1220,7 @@ Based on the survey results, the image processing feature of Receipts Scanner wi
     \begin{center}
         \includegraphics[width=0.7\textwidth]{figures/graphs/which_image_is_more_readable}
     \end{center}
-    \caption{Results of survey comparing original and processed images.}
+    \caption{Results of a survey comparing which image of a receipt was more readable.}
     \label{fig:which_image_is_more_readable}
 \end{figure}
 
@@ -1250,9 +1256,9 @@ The latest application source code can be found on GitHub:
 \item \url{https://github.com/petr7555/bachelors_thesis_accounting_ocr}
 \end{itemize}
 
+\newpage
 \section{Authentication activity diagrams}
-
-    \begin{figure}
+    \begin{figure}[H]
         \begin{center}
             \includegraphics[width=\textwidth]{figures/diagrams/sign_in_flow}
         \end{center}
@@ -1260,7 +1266,8 @@ The latest application source code can be found on GitHub:
         \label{fig:sign_in_flow}
     \end{figure}
     
-    \begin{figure}
+    \newpage
+    \begin{figure}[H]
         \begin{center}
             \includegraphics[width=\textwidth]{figures/diagrams/sign_up_flow}
         \end{center}
@@ -1268,22 +1275,24 @@ The latest application source code can be found on GitHub:
         \label{fig:sign_up_flow}
     \end{figure}
     
-    \begin{figure}
+    \newpage
+    \begin{figure}[H]
         \begin{center}
             \includegraphics[width=0.9\textwidth]{figures/diagrams/google_auth_flow}
         \end{center}
-        \caption{Google authenticating activity diagram.}
+        \caption{Google authentication activity diagram.}
         \label{fig:google_auth_flow}
     \end{figure}
     
+\newpage
 \section{Version control system commit messages}
 
-\begin{figure}
-    \begin{center}
-        \includegraphics[width=\textwidth]{figures/other/emoji_commits}
-    \end{center}
-    \caption{Meaning of emojis in commit messages.}
-    \label{fig:emoji_commits}
-\end{figure}
+    \begin{figure}[ht]
+        \begin{center}
+            \includegraphics[width=\textwidth]{figures/other/emoji_commits}
+        \end{center}
+        \caption{Meaning of emojis in commit messages.}
+        \label{fig:emoji_commits}
+    \end{figure}
 
 \end{document}
