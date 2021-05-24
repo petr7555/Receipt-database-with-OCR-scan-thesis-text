@@ -116,7 +116,7 @@
 \usepackage{xcolor}
 %\usemintedstyle{manni}
 %\definecolor{bg}{rgb}{0.1,0.1,0.1}
-\newcommand{\code}[1]{\mintinline[]{javascript}|#1|} % TODO change to jsx and compile locally using 'latexmk -lualatex --shell-escape fi-lualatex.tex' for jsx syntax support (https://tex.stackexchange.com/a/519333)
+\newcommand{\code}[1]{\mintinline[]{jsx}|#1|} % TODO change to jsx and compile locally using 'latexmk -lualatex --shell-escape fi-lualatex.tex' for jsx syntax support (https://tex.stackexchange.com/a/519333)
 
 % Control inline code background dimensions
 % https://tex.stackexchange.com/a/276750
@@ -229,7 +229,7 @@ The fourth chapter introduces available technologies for developing cross-platfo
 
 An essential part of the thesis is testing and continuous integration. The types of testing used to ensure the high quality and reliability of the application are described in the sixth chapter. 
 
-The seventh chapter describes the implementation and functionality of the application. It shows how Microsoft Form Recognizer~\cite{WhatIsFormRecognizer} was used to extract the information from a receipt photo. This chapter also includes a description of a receipt item categorization 1 using word embeddings. The image processing using the OpenCV\footnote{\url{https://opencv.org/}} library is featured as well. 
+The seventh chapter describes the implementation and functionality of the application. It shows how Microsoft Form Recognizer~\cite{WhatIsFormRecognizer} was used to extract the information from a receipt photo. This chapter also includes a description of a receipt item categorization using word embeddings. The image processing using the OpenCV\footnote{\url{https://opencv.org/}} library is featured as well. 
 
 The subsequent chapter is concerned with the business model of Receipts Scanner. It elaborates the costs of third-party services used in Receipts Scanner and proposes solutions for financing the application. 
 
@@ -318,7 +318,7 @@ React Native is a JavaScript framework created by Facebook. It is based on React
 
 Unlike Capacitor, which uses Web Views, React Native is compiled into native code, allowing developers to create applications that look and feel like native applications written in Java/Kotlin (for Android) and Objective-C/Swift (for iOS). It also comes with performance benefits. 
 
-As opposed to React, which uses elements that correspond to HTML elements, e.g. \code{<div>} and \code{<p>}, React Native uses TO platform-agnostic elements such as \code{<View>} and \code{<Text>}. Those are then translated to native UI elements. It also uses its own abstraction of CSS.
+As opposed to React, which uses elements that correspond to HTML elements, e.g. \code{<div>} and \code{<p>}, React Native uses platform-agnostic elements such as \code{<View>} and \code{<Text>}. Those are then translated to native UI elements. It also uses its own abstraction of CSS.
 
 React Native exposes JavaScript interfaces for platform APIs so that the applications can access platform features like the camera or the user’s location.
 
@@ -382,7 +382,7 @@ In case a native module is not available on a given platform, there are four ava
     
     In case a different module that provides similar functionality is available, it can be used instead. If such a module does not exist, it can be implemented.
     
-    Receipts Scanner implements its own \textit{FilePicker} module to provide the functionality of picking an image from the file system on Windows.
+    Receipts Scanner implements its own \textit{File Picker} module to provide the functionality of picking an image from the file system on Windows.
     
     \item \textbf{Adding the missing platform to the module.}
     
@@ -431,7 +431,7 @@ Storybook\footnote{\url{https://storybook.js.org/}} is a widely used tool for de
 
 Storybook is based on the concept of stories. A story is a permutation of the component with given properties. Each component can have multiple stories. A \texttt{Button} component could have one story displaying the Button in its \textit{enabled} state and a second one for the \textit{disabled} state.
 
-Storybook stories serve as a gallery of available components and as a documentation of their properties. They can be used for snapshot and visual tests, which are described in Sections \ref{sec:snapshot_testing} and \ref{sec:visual_testing} respectively.
+Storybook stories serve as a gallery of available components and as a documentation of their properties. They can be used for snapshot and visual tests, which are described in Sections~\ref{sec:snapshot_testing} and~\ref{sec:visual_testing} respectively.
 
 Storybook supports multiple platforms, including React and React Native. To better distinguish between the two, I will refer to Storybook for React as \textit{Storybook for Web} because React is a web framework.
 
@@ -737,7 +737,7 @@ Next, three sequences of processes happen asynchronously:
 \begin{itemize}
     \item The image of the receipts is sent to Form Recognizer API. The returned data (structured text information extracted from the image) is sent to the Python API \texttt{/category} endpoint, where emojis are added to all items that have been recognized on the receipt.
     
-    Form Recognizer and Python API are described in Sections \ref{sec:form_recognizer} and \ref{sec:python_api}, respectively.
+    Form Recognizer and Python API are described in Sections~\ref{sec:form_recognizer} and~\ref{sec:python_api}, respectively.
     
     \item The image is uploaded to Firebase Storage.
 
@@ -759,9 +759,9 @@ The benefit of the asynchronicity of those processes is that the whole process i
 \subsection{Uploading image from Windows}
 On Android, the image capture and selection from the gallery is provided by library react-native-image-crop-picker\footnote{\url{https://github.com/ivpusic/react-native-image-crop-picker}}. However, this library does not support Windows. A library react-native-document-picker\footnote{\url{https://github.com/rnmods/react-native-document-picker}} used to provide a file selection feature for Windows but is incompatible with the current version of React Native for Windows. 
 
-For this reason, a native C++ module \textit{FilePicker} was implemented. It allows to pick an image from the Windows Explorer and returns an object containing the path to the image, MIME type\footnote{MIME (Multipurpose Internet Mail Extensions) type identifies the format of data transmitted on the internet.} and the image data encoded as Base64\footnote{\definition{Base64} is an encoding that encodes binary data into ASCII text.}. This module is then used in the JavaScript code. However, the image upload functionality is not complete on Windows because Firebase Storage for Web uses Web APIs that are not available in React Native running on Windows. An option to overcome this issue would be finding cloud storage that supports the upload of Base64 strings, preferably without any library, using only REST API.
+For this reason, a native C++ module \textit{File Picker} was implemented. It allows to pick an image from the Windows Explorer and returns an object containing the path to the image, MIME type\footnote{MIME (Multipurpose Internet Mail Extensions) type identifies the format of data transmitted on the internet.} and the image data encoded as Base64\footnote{\definition{Base64} is an encoding that encodes binary data into ASCII text.}. This module is then used in the JavaScript code. However, the image upload functionality is not complete on Windows because Firebase Storage for Web uses Web APIs that are not available in React Native running on Windows. An option to overcome this issue would be finding cloud storage that supports the upload of Base64 strings, preferably without any library, using only REST API.
 
-The \textit{FilePicker} module could be eventually released as a separate package, so that it could be used by other React Native developers.
+The \textit{File Picker} module could be eventually released as a separate package, so that it could be used by other React Native developers.
 
 \section{Form Recognizer}
 \label{sec:form_recognizer}
@@ -892,7 +892,7 @@ The purpose of image processing in the Receipts Scanner is to provide a cleaner 
               \end{cases}
     \end{equation}
     
-    In equation \ref{eqn:binary_tresholding} $src(x,y)$ is a value of a source pixel on coordinates $x$ and $y$ and $dst(x,y)$ is a value of destination, i.e. resulting pixel, on coordinates $x$ and $y$.
+    In Equation~\ref{eqn:binary_tresholding}, $src(x,y)$ is a value of a source pixel on coordinates $x$ and $y$ and $dst(x,y)$ is a value of destination, i.e. resulting pixel, on coordinates $x$ and $y$.
     
     The threshold value can be either fixed, e.g. 127, or computed from the image. Finding the right value for the fixed thresholding is challenging, and each image might have a different optimal threshold value.
     
@@ -961,7 +961,7 @@ The purpose of image processing in the Receipts Scanner is to provide a cleaner 
     \end{figure}
     
     \newpage
-    \item \textbf{Preparing underlying picture}
+    \item \textbf{Preparing the underlying picture}
 
     The previous steps were used to find the corners of a receipt. Although Otsu's thresholding made the edges of the white receipt clearly distinguishable from the dark background, the text of the receipt became unreadable.
     
@@ -1151,7 +1151,7 @@ or as a function of $t$:
 s(t) = \frac{r \cdot u}{2} \cdot t \cdot (t + 1)\text{,}
 \end{equation}
 where $t$ is a point in time (e.g. month), $r$ is the number of receipts per user per chosen time period (in this case month) and $u$ is the number of new users at the end of the chosen time period (i.e. at the end of a month). Since we assume one receipt per user per day, $r = 30$. Assuming \num{1000} new users per month, $u = \num{1000}$. 
-Substitution of the values into the equation \ref{eqn:stored_receipts} gives
+Substitution of the values into Equation~\ref{eqn:stored_receipts} gives
 \begin{equation}
 s(t) = \num{15000} \cdot t \cdot (t + 1)\text{.}
 \end{equation}
@@ -1203,7 +1203,7 @@ This section aims to evaluate how accurately the emoji chosen by the categorizat
 
 Receipts contain very often abbreviations and names of brands. The categorization service cannot handle those items in a meaningful manner. The assigned emojis in this case are rather arbitrary. An example to illustrate this is \textit{P/DY VEGAN STRAW PROT TUB 1KG} classified as \textit{\emoji{teddy-bear} teddy bear} or \textit{DR PEPPER ZERO} classified as \textit{\emoji{key} key}. Another challenge is assigning emojis to restaurant receipts, which often contain peculiar names of dishes.
 
-Seventy items\footnote{All items from the survey are inserted in the archive in the Information System of Masaryk University \ref{appendix:questionnaire_materials}.} have been selected from the data extracted by Form Recognizer on various receipts, excluding items incorrectly classified as a receipt item and items with which the respondents would be unfamiliar. Duplicates and similar items have not been included in this set either.
+Seventy items\footnote{All items from the survey are inserted in the archive in the Information System of Masaryk University~\ref{appendix:questionnaire_materials}.} have been selected from the data extracted by Form Recognizer on various receipts, excluding items incorrectly classified as a receipt item and items with which the respondents would be unfamiliar. Duplicates and similar items have not been included in this set either.
 
 For each item and its assigned emoji, the task was to choose whether the emoji is \textit{Not accurate}, \textit{Mildly accurate} or \textit{Accurate}.
 
@@ -1222,7 +1222,7 @@ This feature of Receipts Scanner is meant to bring an element of fun into the ap
 \section{Image processing}
 The purpose of this section is to evaluate whether the processed images provide any benefits over the original images.
 
-Thirty receipt photos have been processed using Receipts Scanner. The original and processed images have been placed side by side\footnote{All images from the survey are inserted into the archive in the Information System of Masaryk University \ref{appendix:questionnaire_materials}.}. The task was to choose which image was more readable. As presented in Figure~\ref{fig:which_image_is_more_readable}, respondents found 54.5\% of the processed images more readable than the original image.
+Thirty receipt photos have been processed using Receipts Scanner. The original and processed images have been placed side by side\footnote{All images from the survey are inserted into the archive in the Information System of Masaryk University~\ref{appendix:questionnaire_materials}.}. The task was to choose which image was more readable. As presented in Figure~\ref{fig:which_image_is_more_readable}, respondents found 54.5\% of the processed images more readable than the original image.
 
 Sixteen receipts were from the ExpressExpense~\cite{ExpressExpense2019Receipt} dataset, and fourteen were taken with modern phone cameras for the purpose of this survey.
 All new images and one image from the ExpressExpense dataset were considered more readable in the processed form by most respondents. Two ExpressExpense images had an equal number of votes for each option. The common feature of ExpressExpense receipts is that they have lower quality than the newly taken photos. These results show that the image processing provides a more readable form of the original image if the original image is of sufficiently good quality.
